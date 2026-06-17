@@ -1,0 +1,1538 @@
+Archive member included to satisfy reference by file (symbol)
+
+mini_tree/libmini_tree.a(tasks.c.obj)
+                              CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj (vTaskStartScheduler)
+mini_tree/libmini_tree.a(list.c.obj)
+                              mini_tree/libmini_tree.a(tasks.c.obj) (vListInitialise)
+mini_tree/libmini_tree.a(heap_4.c.obj)
+                              mini_tree/libmini_tree.a(tasks.c.obj) (pvPortMalloc)
+mini_tree/libmini_tree.a(port.c.obj)
+                              mini_tree/libmini_tree.a(tasks.c.obj) (xCriticalNesting)
+mini_tree/libmini_tree.a(portASM.S.obj)
+                              mini_tree/libmini_tree.a(port.c.obj) (xPortStartFirstTask)
+mini_tree/libmini_tree.a(safe_state.c.obj)
+                              CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj (enter_safe_state)
+mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                              mini_tree/libmini_tree.a(safe_state.c.obj) (osal_sched_suspend)
+mini_tree/libmini_tree.a(queue.c.obj)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (xQueueGenericCreateStatic)
+mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                              mini_tree/libmini_tree.a(safe_state.c.obj) (hal_platform_critical_hardware_lock)
+mini_tree/libmini_tree.a(printf_output.c.obj)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (my_printf_output)
+mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                              mini_tree/libmini_tree.a(hal_platform_safety.c.obj) (hal_pwm_force_stop_all)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                              mini_tree/libmini_tree.a(tasks.c.obj) (__clzsi2)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (__udivdi3)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o) (__clz_tab)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (calloc)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o) (_calloc_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (free)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o) (_malloc_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o) (__malloc_lock)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+                              mini_tree/libmini_tree.a(osal_freertos.c.obj) (vprintf)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o) (_impure_ptr)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o) (_sbrk_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
+                              mini_tree/libmini_tree.a(tasks.c.obj) (memset)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
+                              mini_tree/libmini_tree.a(queue.c.obj) (memcpy)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o) (_free_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o) (_vfprintf_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (_printf_i)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (__sinit)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (__sfvwrite_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o) (_fwalk_sglue)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o) (__sread)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (__swbuf_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (__swsetup_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o) (memchr)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o) (_close_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o) (errno)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o) (_lseek_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o) (_read_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o) (_write_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memmove.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o) (memmove)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o) (_realloc_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o) (_fflush_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o) (__smakebuf_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o) (_fstat_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o) (_isatty_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o) (_malloc_usable_size_r)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o) (_close)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o) (_fstat)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o) (_isatty)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o) (_lseek)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o) (_read)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o) (_sbrk)
+D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+                              D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o) (_write)
+
+Discarded input sections
+
+ .text          0x00000000       0x94 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_info    0x00000000      0x475 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_abbrev  0x00000000      0x122 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_loclists
+                0x00000000       0x8c CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_aranges
+                0x00000000       0x20 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_line    0x00000000      0x361 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_str     0x00000000      0x27b CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_line_str
+                0x00000000      0x195 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .comment       0x00000000       0x20 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .note.GNU-stack
+                0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .debug_frame   0x00000000      0x1a0 CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .riscv.attributes
+                0x00000000       0x4e CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .text          0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .text          0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .data          0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(list.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(list.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .srodata       0x00000000        0x4 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(port.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(port.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+ .text.freertos_risc_v_exception_handler
+                0x00000000      0x14e mini_tree/libmini_tree.a(portASM.S.obj)
+ .text.freertos_risc_v_interrupt_handler
+                0x00000000       0xd8 mini_tree/libmini_tree.a(portASM.S.obj)
+ .text.freertos_risc_v_mtimer_interrupt_handler
+                0x00000000      0x118 mini_tree/libmini_tree.a(portASM.S.obj)
+ .text.freertos_risc_v_trap_handler
+                0x00000000      0x300 mini_tree/libmini_tree.a(portASM.S.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .data          0x00000000        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .bss           0x00000000        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .eh_frame      0x00000000       0x28 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .text.malloc   0x00000000       0x12 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .text._vprintf_r
+                0x00000000        0xe D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .text.__sprint_r
+                0x00000000       0x28 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .text.vfprintf
+                0x00000000       0x16 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__fp_lock
+                0x00000000        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__fp_unlock
+                0x00000000        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__sfp    0x00000000       0xce D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__sfp_lock_acquire
+                0x00000000        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__sfp_lock_release
+                0x00000000        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__fp_lock_all
+                0x00000000       0x1a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__fp_unlock_all
+                0x00000000       0x1a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .text.__sfvwrite_r
+                0x00000000      0x31a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .comment       0x00000000       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .riscv.attributes
+                0x00000000       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fvwrite.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .text.__seofread
+                0x00000000        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .text.__swbuf  0x00000000       0x14 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .text._reclaim_reent
+                0x00000000      0x112 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+ .text          0x00000000       0x26 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memmove.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memmove.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memmove.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .text._realloc_r
+                0x00000000       0x8a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .comment       0x00000000       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .riscv.attributes
+                0x00000000       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reallocr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .text.fflush   0x00000000       0x34 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .text._malloc_usable_size_r
+                0x00000000       0x14 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .comment       0x00000000       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .riscv.attributes
+                0x00000000       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-msizer.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ .text          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+ .data          0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+ .bss           0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x00000000         0x00048000         xr
+RAM              0x20000000         0x00008000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
+LOAD CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+LOAD CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+LOAD CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+LOAD CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+LOAD CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+LOAD mini_tree/libmini_tree.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libstdc++.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libm_nano.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libc_nano.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a
+START GROUP
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libc_nano.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a
+END GROUP
+START GROUP
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libc_nano.a
+LOAD D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a
+END GROUP
+                0x00000400                        __stack_size = 0x400
+                [!provide]                        PROVIDE (_stack_size = __stack_size)
+
+.init           0x00000000        0x4
+                0x00000000                        _sinit = .
+                0x00000000                        . = ALIGN (0x4)
+ *(SORT_NONE(.init))
+ .init          0x00000000        0x4 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x00000000                _start
+                0x00000004                        . = ALIGN (0x4)
+                0x00000004                        _einit = .
+
+.vector         0x00000004      0x1bc
+ *(.vector)
+ .vector        0x00000004      0x1a0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x000001c0                        . = ALIGN (0x40)
+ *fill*         0x000001a4       0x1c 
+
+.text           0x000001c0     0x86d0
+                0x000001c0                        . = ALIGN (0x4)
+ *(.text)
+ .text          0x000001c0      0x25a CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x00000284                SystemInit
+                0x000002e0                SystemCoreClockUpdate
+ .text          0x0000041a        0x6 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+                0x0000041a                NMI_Handler
+                0x0000041e                HardFault_Handler
+ .text          0x00000420       0x1e CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                0x00000420                vApplicationStackOverflowHook
+                0x00000430                task_rtos_main()
+ .text          0x0000043e     0x3818 mini_tree/libmini_tree.a(tasks.c.obj)
+                0x00000506                xTaskCreateStatic
+                0x0000061c                xTaskCreate
+                0x00000974                vTaskDelete
+                0x00000aca                vTaskDelay
+                0x00000b1a                eTaskGetState
+                0x00000c54                uxTaskPriorityGet
+                0x00000cc2                uxTaskPriorityGetFromISR
+                0x00000d0e                uxTaskBasePriorityGet
+                0x00000d7c                uxTaskBasePriorityGetFromISR
+                0x00000dc8                vTaskPrioritySet
+                0x0000100a                vTaskSuspend
+                0x00001218                vTaskResume
+                0x00001362                xTaskResumeFromISR
+                0x000015bc                vTaskStartScheduler
+                0x0000160c                vTaskEndScheduler
+                0x0000165a                vTaskSuspendAll
+                0x00001678                xTaskResumeAll
+                0x000018f0                xTaskGetTickCount
+                0x0000190e                xTaskGetTickCountFromISR
+                0x00001930                uxTaskGetNumberOfTasks
+                0x00001946                pcTaskGetName
+                0x00001988                xTaskGetStaticBuffers
+                0x00001a40                xTaskCatchUpTicks
+                0x00001aa2                xTaskIncrementTick
+                0x00001d2a                vTaskSetApplicationTaskTag
+                0x00001d8c                xTaskGetApplicationTaskTag
+                0x00001dfa                xTaskGetApplicationTaskTagFromISR
+                0x00001e46                xTaskCallApplicationTaskHook
+                0x00001e9a                vTaskSwitchContext
+                0x00001fc6                vTaskPlaceOnEventList
+                0x00002006                vTaskPlaceOnUnorderedEventList
+                0x000020ac                xTaskRemoveFromEventList
+                0x000022d0                vTaskRemoveFromUnorderedEventList
+                0x000024a0                vTaskSetTimeOutState
+                0x000024fc                vTaskInternalSetTimeOutState
+                0x00002526                xTaskCheckForTimeOut
+                0x00002614                vTaskMissedYield
+                0x00002796                uxTaskGetStackHighWaterMark
+                0x00002878                xTaskGetCurrentTaskHandle
+                0x00002896                xTaskGetCurrentTaskHandleForCore
+                0x000028cc                xTaskGetSchedulerState
+                0x00002902                xTaskPriorityInherit
+                0x00002a9c                xTaskPriorityDisinherit
+                0x00002c1e                vTaskPriorityDisinheritAfterTimeout
+                0x00002dde                uxTaskResetEventItemValue
+                0x00002e12                pvTaskIncrementMutexHeldCount
+                0x00002e46                ulTaskGenericNotifyTake
+                0x00002f92                xTaskGenericNotifyWait
+                0x00003132                xTaskGenericNotify
+                0x00003410                xTaskGenericNotifyFromISR
+                0x00003740                vTaskGenericNotifyGiveFromISR
+                0x0000397a                xTaskGenericNotifyStateClear
+                0x00003a20                ulTaskGenericNotifyValueClear
+                0x00003bf0                vTaskResetState
+ .text          0x00003c56      0x1f2 mini_tree/libmini_tree.a(list.c.obj)
+                0x00003c56                vListInitialise
+                0x00003ca6                vListInitialiseItem
+                0x00003cc4                vListInsertEnd
+                0x00003d2e                vListInsert
+                0x00003dd4                uxListRemove
+ .text          0x00003e48      0x7c6 mini_tree/libmini_tree.a(heap_4.c.obj)
+                0x00003e48                pvPortMalloc
+                0x000040d6                vPortFree
+                0x000041b6                xPortGetFreeHeapSize
+                0x000041d0                xPortGetMinimumEverFreeHeapSize
+                0x000041ea                xPortResetHeapMinimumEverFreeHeapSize
+                0x0000420c                vPortInitialiseBlocks
+                0x0000421e                pvPortCalloc
+                0x000044c2                vPortGetHeapStats
+                0x000045d4                vPortHeapResetState
+ .text          0x0000460e       0x36 mini_tree/libmini_tree.a(port.c.obj)
+                0x0000460e                xPortStartScheduler
+                0x0000463a                vPortEndScheduler
+ .text          0x00004644       0xb6 mini_tree/libmini_tree.a(portASM.S.obj)
+                0x00004644                pxPortInitialiseStack
+                0x00004688                xPortStartFirstTask
+                0x000046de                freertos_risc_v_application_exception_handler
+                0x000046ec                freertos_risc_v_application_interrupt_handler
+ .text          0x000046fa       0x8a mini_tree/libmini_tree.a(safe_state.c.obj)
+                0x000046fa                safe_state_check_bootloop
+                0x00004738                safe_state_clear_bootloop
+                0x00004752                enter_safe_state
+                0x0000476e                safe_state_nmi_emergency_stamp
+ .text          0x00004784      0xf44 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                0x00004804                osal_in_isr
+                0x00004824                osal_spinlock_init
+                0x0000484a                osal_spinlock_lock
+                0x00004886                osal_spinlock_unlock
+                0x000048c8                osal_pool_claim
+                0x00004978                osal_pool_release
+                0x000049f2                osal_time_ms
+                0x00004a0a                osal_delay_ms
+                0x00004a7e                osal_ticks_from_ms
+                0x00004ad4                osal_timeout_to_ticks
+                0x00004b38                osal_calloc
+                0x00004b60                osal_free
+                0x00004b7e                osal_mutex_create_typed
+                0x00004c2c                osal_mutex_create_static_typed
+                0x00004cb6                osal_mutex_create
+                0x00004cd6                osal_mutex_create_static
+                0x00004d06                osal_mutex_create_recursive
+                0x00004d26                osal_mutex_create_static_recursive
+                0x00004d56                osal_mutex_create_plain
+                0x00004d76                osal_mutex_create_static_plain
+                0x00004da6                osal_mutex_destroy
+                0x00004e3c                osal_mutex_lock
+                0x00004ec2                osal_mutex_unlock
+                0x00004f82                osal_sem_create_binary
+                0x0000500c                osal_sem_create_binary_static
+                0x00005070                osal_sem_destroy
+                0x00005102                osal_sem_wait
+                0x0000515e                osal_sem_post
+                0x000051e0                osal_sem_post_from_isr
+                0x00005240                osal_yield_from_isr
+                0x00005262                osal_sched_suspend
+                0x00005278                osal_int_disable
+                0x0000528e                vApplicationGetIdleTaskMemory
+                0x000052f0                osal_task_create
+                0x00005352                osal_task_create_handle
+                0x000053cc                osal_task_self_delete
+                0x000053e4                osal_task_delete
+                0x00005402                osal_task_is_running
+                0x00005436                osal_task_get_name
+                0x00005464                osal_task_get_stack_watermark
+                0x00005496                osal_queue_create
+                0x000054be                osal_queue_delete
+                0x000054dc                osal_queue_send
+                0x00005530                osal_queue_send_from_isr
+                0x00005584                osal_queue_receive
+                0x000055d6                osal_queue_receive_from_isr
+                0x00005628                safety_hardware_shutdown
+                0x00005632                osal_panic_interlock
+                0x00005644                osal_log
+ .text          0x000056c8     0x1876 mini_tree/libmini_tree.a(queue.c.obj)
+                0x000056c8                xQueueGenericReset
+                0x0000580a                xQueueGenericCreateStatic
+                0x000058c0                xQueueGenericGetStaticBuffers
+                0x00005938                xQueueGenericCreate
+                0x00005a9a                xQueueCreateMutex
+                0x00005ada                xQueueCreateMutexStatic
+                0x00005b24                xQueueGetMutexHolder
+                0x00005b90                xQueueGetMutexHolderFromISR
+                0x00005bce                xQueueGiveMutexRecursive
+                0x00005c40                xQueueTakeMutexRecursive
+                0x00005ce0                xQueueCreateCountingSemaphoreStatic
+                0x00005d4a                xQueueCreateCountingSemaphore
+                0x00005daa                xQueueGenericSend
+                0x00005fbe                xQueueGenericSendFromISR
+                0x000060ea                xQueueGiveFromISR
+                0x000061f4                xQueueReceive
+                0x000063e6                xQueueSemaphoreTake
+                0x0000665e                xQueuePeek
+                0x00006846                xQueueReceiveFromISR
+                0x00006944                xQueuePeekFromISR
+                0x000069ce                uxQueueMessagesWaiting
+                0x00006a24                uxQueueSpacesAvailable
+                0x00006a8c                uxQueueMessagesWaitingFromISR
+                0x00006ac4                vQueueDelete
+                0x00006b00                uxQueueGetQueueItemSize
+                0x00006b1c                uxQueueGetQueueLength
+                0x00006e56                xQueueIsQueueEmptyFromISR
+                0x00006ef4                xQueueIsQueueFullFromISR
+ .text          0x00006f3e       0x26 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                0x00006f3e                hal_platform_critical_hardware_lock
+                0x00006f52                hal_platform_nmi_emergency_stamp
+ .text          0x00006f64       0x48 mini_tree/libmini_tree.a(printf_output.c.obj)
+                0x00006f64                my_printf_output
+ .text          0x00006fac      0x2d8 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                0x00007040                hal_gpio_set_level
+                0x000070a2                hal_gpio_get_level
+                0x000070f6                hal_pwm_init_struct
+                0x0000713a                hal_pwm_force_stop_all
+                0x0000714c                hal_cpu_emergency_stop_all_cores
+                0x0000715c                hal_wdt_init_rtc
+                0x00007174                hal_wdt_feed_rtc
+                0x00007186                hal_wdt_rtc_set_long_timeout
+                0x00007198                hal_wdt_rtc_restore_timeout
+                0x000071aa                hal_wdt_init_twdt
+                0x000071c2                hal_wdt_subscribe
+                0x000071da                hal_wdt_unsubscribe
+                0x000071f2                hal_wdt_feed_twdt
+                0x00007204                hal_flash_read
+                0x0000725a                hal_flash_get_app_addr
+                0x0000726e                hal_flash_get_app_size
+ .text          0x00007284       0x10 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
+                0x00007284                memset
+ .text          0x00007294       0x16 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
+                0x00007294                memcpy
+ *(.text.*)
+ .text.vector_handler
+                0x000072aa        0x2 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x000072aa                EXTI2_IRQHandler
+                0x000072aa                TIM8_TRG_COM_IRQHandler
+                0x000072aa                TIM8_CC_IRQHandler
+                0x000072aa                UART8_IRQHandler
+                0x000072aa                TIM1_CC_IRQHandler
+                0x000072aa                TIM6_IRQHandler
+                0x000072aa                SysTick_Handler
+                0x000072aa                PVD_IRQHandler
+                0x000072aa                SDIO_IRQHandler
+                0x000072aa                TIM9_BRK_IRQHandler
+                0x000072aa                DMA2_Channel8_IRQHandler
+                0x000072aa                CAN2_RX1_IRQHandler
+                0x000072aa                EXTI3_IRQHandler
+                0x000072aa                USBHS_IRQHandler
+                0x000072aa                DMA2_Channel9_IRQHandler
+                0x000072aa                TIM10_CC_IRQHandler
+                0x000072aa                USBFS_IRQHandler
+                0x000072aa                EXTI0_IRQHandler
+                0x000072aa                I2C2_EV_IRQHandler
+                0x000072aa                TIM10_TRG_COM_IRQHandler
+                0x000072aa                CAN2_SCE_IRQHandler
+                0x000072aa                ADC1_2_IRQHandler
+                0x000072aa                Break_Point_Handler
+                0x000072aa                SPI1_IRQHandler
+                0x000072aa                TAMPER_IRQHandler
+                0x000072aa                CAN2_RX0_IRQHandler
+                0x000072aa                TIM8_UP_IRQHandler
+                0x000072aa                Ecall_M_Mode_Handler
+                0x000072aa                DMA2_Channel2_IRQHandler
+                0x000072aa                DMA1_Channel4_IRQHandler
+                0x000072aa                TIM9_UP_IRQHandler
+                0x000072aa                USART3_IRQHandler
+                0x000072aa                RTC_IRQHandler
+                0x000072aa                DMA1_Channel7_IRQHandler
+                0x000072aa                CAN1_RX1_IRQHandler
+                0x000072aa                DVP_IRQHandler
+                0x000072aa                UART5_IRQHandler
+                0x000072aa                TIM4_IRQHandler
+                0x000072aa                DMA2_Channel1_IRQHandler
+                0x000072aa                I2C1_EV_IRQHandler
+                0x000072aa                DMA1_Channel6_IRQHandler
+                0x000072aa                UART4_IRQHandler
+                0x000072aa                DMA2_Channel4_IRQHandler
+                0x000072aa                TIM3_IRQHandler
+                0x000072aa                RCC_IRQHandler
+                0x000072aa                TIM1_TRG_COM_IRQHandler
+                0x000072aa                DMA1_Channel1_IRQHandler
+                0x000072aa                DMA2_Channel7_IRQHandler
+                0x000072aa                EXTI15_10_IRQHandler
+                0x000072aa                TIM7_IRQHandler
+                0x000072aa                CAN2_TX_IRQHandler
+                0x000072aa                TIM5_IRQHandler
+                0x000072aa                EXTI9_5_IRQHandler
+                0x000072aa                ETH_WKUP_IRQHandler
+                0x000072aa                SPI2_IRQHandler
+                0x000072aa                TIM10_BRK_IRQHandler
+                0x000072aa                TIM9_CC_IRQHandler
+                0x000072aa                DMA2_Channel5_IRQHandler
+                0x000072aa                DMA1_Channel5_IRQHandler
+                0x000072aa                EXTI4_IRQHandler
+                0x000072aa                USB_LP_CAN1_RX0_IRQHandler
+                0x000072aa                RNG_IRQHandler
+                0x000072aa                USB_HP_CAN1_TX_IRQHandler
+                0x000072aa                DMA1_Channel3_IRQHandler
+                0x000072aa                ETH_IRQHandler
+                0x000072aa                TIM1_UP_IRQHandler
+                0x000072aa                WWDG_IRQHandler
+                0x000072aa                USBHSWakeup_IRQHandler
+                0x000072aa                DMA2_Channel11_IRQHandler
+                0x000072aa                Ecall_U_Mode_Handler
+                0x000072aa                DMA2_Channel6_IRQHandler
+                0x000072aa                TIM2_IRQHandler
+                0x000072aa                SW_Handler
+                0x000072aa                TIM1_BRK_IRQHandler
+                0x000072aa                DMA2_Channel10_IRQHandler
+                0x000072aa                EXTI1_IRQHandler
+                0x000072aa                RTCAlarm_IRQHandler
+                0x000072aa                TIM10_UP_IRQHandler
+                0x000072aa                TIM9_TRG_COM_IRQHandler
+                0x000072aa                UART7_IRQHandler
+                0x000072aa                USART2_IRQHandler
+                0x000072aa                UART6_IRQHandler
+                0x000072aa                I2C2_ER_IRQHandler
+                0x000072aa                DMA1_Channel2_IRQHandler
+                0x000072aa                TIM8_BRK_IRQHandler
+                0x000072aa                CAN1_SCE_IRQHandler
+                0x000072aa                FLASH_IRQHandler
+                0x000072aa                USART1_IRQHandler
+                0x000072aa                SPI3_IRQHandler
+                0x000072aa                I2C1_ER_IRQHandler
+                0x000072aa                USBWakeUp_IRQHandler
+                0x000072aa                DMA2_Channel3_IRQHandler
+ .text.handle_reset
+                0x000072ac       0x90 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x000072ac                handle_reset
+ .text.__clzsi2
+                0x0000733c       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                0x0000733c                __clzsi2
+ .text.__udivdi3
+                0x00007376      0x306 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                0x00007376                __udivdi3
+ .text.calloc   0x0000767c        0xa D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+                0x0000767c                calloc
+ .text._calloc_r
+                0x00007686       0x34 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+                0x00007686                _calloc_r
+ .text.free     0x000076ba        0x8 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+                0x000076ba                free
+ .text.sbrk_aligned
+                0x000076c2       0x50 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .text._malloc_r
+                0x00007712      0x116 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                0x00007712                _malloc_r
+ .text.__malloc_lock
+                0x00007828        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                0x00007828                __malloc_lock
+ .text.__malloc_unlock
+                0x0000782a        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                0x0000782a                __malloc_unlock
+ .text.vprintf  0x0000782c        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+                0x0000782c                viprintf
+                0x0000782c                vprintf
+ .text._sbrk_r  0x00007838       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+                0x00007838                _sbrk_r
+ .text._free_r  0x00007864       0xa2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+                0x00007864                _free_r
+ .text.__sfputc_r
+                0x00007906       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .text.__sfputs_r
+                0x00007930       0x44 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x00007930                __sfputs_r
+ .text._vfprintf_r
+                0x00007974      0x258 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x00007974                _vfprintf_r
+                0x00007974                _vfiprintf_r
+ .text._printf_common
+                0x00007bcc      0x112 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x00007bcc                _printf_common
+ .text._printf_i
+                0x00007cde      0x256 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x00007cde                _printf_i
+ .text.std      0x00007f34       0x62 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.stdio_exit_handler
+                0x00007f96       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.cleanup_stdio
+                0x00007fae       0x4a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.global_stdio_init.part.0
+                0x00007ff8       0x42 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__sinit  0x0000803a       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x0000803a                __sinit
+ .text._fwalk_sglue
+                0x00008052       0x60 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+                0x00008052                _fwalk_sglue
+ .text.__sread  0x000080b2       0x30 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x000080b2                __sread
+ .text.__swrite
+                0x000080e2       0x4e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x000080e2                __swrite
+ .text.__sseek  0x00008130       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x00008130                __sseek
+ .text.__sclose
+                0x0000816a        0x6 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x0000816a                __sclose
+ .text.__swbuf_r
+                0x00008170       0x90 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+                0x00008170                __swbuf_r
+ .text.__swsetup_r
+                0x00008200       0xc0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+                0x00008200                __swsetup_r
+ .text.memchr   0x000082c0       0x1a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+                0x000082c0                memchr
+ .text._close_r
+                0x000082da       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+                0x000082da                _close_r
+ .text._lseek_r
+                0x00008304       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+                0x00008304                _lseek_r
+ .text._read_r  0x00008332       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+                0x00008332                _read_r
+ .text._write_r
+                0x00008360       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+                0x00008360                _write_r
+ .text.__sflush_r
+                0x0000838e      0x126 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                0x0000838e                __sflush_r
+ .text._fflush_r
+                0x000084b4       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                0x000084b4                _fflush_r
+ .text.__swhatbuf_r
+                0x000084ee       0x56 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                0x000084ee                __swhatbuf_r
+ .text.__smakebuf_r
+                0x00008544       0x82 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                0x00008544                __smakebuf_r
+ .text._fstat_r
+                0x000085c6       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+                0x000085c6                _fstat_r
+ .text._isatty_r
+                0x000085f2       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+                0x000085f2                _isatty_r
+ .text._close   0x0000861c        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+                0x0000861c                _close
+ .text._fstat   0x00008628        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+                0x00008628                _fstat
+ .text._isatty  0x00008634        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+                0x00008634                _isatty
+ .text._lseek   0x00008640        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+                0x00008640                _lseek
+ .text._read    0x0000864c        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+                0x0000864c                _read
+ .text._sbrk    0x00008658       0x22 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+                0x00008658                _sbrk
+ .text._write   0x0000867a        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+                0x0000867a                _write
+ *(.rodata)
+ *fill*         0x00008686        0x2 
+ .rodata        0x00008688       0x10 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x00008688                AHBPrescTable
+ .rodata        0x00008698        0x5 mini_tree/libmini_tree.a(tasks.c.obj)
+ *fill*         0x0000869d        0x3 
+ .rodata        0x000086a0       0x28 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .rodata        0x000086c8       0x1a mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ *(.rodata*)
+ *fill*         0x000086e2        0x2 
+ .rodata.str1.4
+                0x000086e4       0x51 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                                 0x18 (size before relaxing)
+ *fill*         0x00008735        0x3 
+ .rodata.__clz_tab
+                0x00008738      0x100 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                0x00008738                __clz_tab
+ .rodata._vfprintf_r.str1.4
+                0x00008838        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                                 0x13 (size before relaxing)
+ .rodata._printf_i.str1.4
+                0x00008838        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                                 0x25 (size before relaxing)
+ .rodata._printf_i
+                0x00008838       0x58 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ *(.gnu.linkonce.t.*)
+                0x00008890                        . = ALIGN (0x4)
+
+.entry          0x00008890       0x10
+ .entry         0x00008890       0x10 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                0x00008890                ch307_node_main
+
+.rela.dyn       0x000088a0        0x0
+ .rela.init     0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.vector   0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.text.handle_reset
+                0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.srodata  0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.text._vfprintf_r
+                0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.text._sbrk
+                0x000088a0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+
+.fini           0x000088a0        0x0
+ *(SORT_NONE(.fini))
+                0x000088a0                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (_eitcm = .)
+
+.preinit_array  0x000088a0        0x0
+                [!provide]                        PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                [!provide]                        PROVIDE (__preinit_array_end = .)
+
+.init_array     0x000088a0        0x0
+                [!provide]                        PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+                [!provide]                        PROVIDE (__init_array_end = .)
+
+.fini_array     0x000088a0        0x0
+                [!provide]                        PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+                [!provide]                        PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.dalign         0x20000000        0x0 load address 0x000088a0
+                0x20000000                        . = ALIGN (0x4)
+                0x20000000                        PROVIDE (_data_vma = .)
+
+.dlalign        0x000088a0        0x0
+                0x000088a0                        . = ALIGN (0x4)
+                0x000088a0                        PROVIDE (_data_lma = .)
+
+.data           0x20000000       0x80 load address 0x000088a0
+ *(.gnu.linkonce.r.*)
+ *(.data .data.*)
+ .data._impure_data
+                0x20000000       0x4c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+                0x20000000                _impure_data
+ .data.__sglue  0x2000004c        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x2000004c                __sglue
+ *(.gnu.linkonce.d.*)
+                0x20000058                        . = ALIGN (0x8)
+                0x20000858                        PROVIDE (__global_pointer$ = (. + 0x800))
+ *(.sdata .sdata.*)
+ .sdata         0x20000058        0x4 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x20000058                SystemCoreClock
+ .sdata         0x2000005c        0xc mini_tree/libmini_tree.a(port.c.obj)
+                0x2000005c                pullNextTime
+                0x20000060                xCriticalNesting
+                0x20000064                pxCriticalNesting
+ .sdata._impure_ptr
+                0x20000068        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+                0x20000068                _impure_ptr
+ *(.sdata2.*)
+ *(.gnu.linkonce.s.*)
+                0x20000070                        . = ALIGN (0x8)
+ *fill*         0x2000006c        0x4 
+ *(.srodata.cst16)
+ *(.srodata.cst8)
+ *(.srodata.cst4)
+ *(.srodata.cst2)
+ *(.srodata .srodata.*)
+ .srodata       0x20000070        0x4 mini_tree/libmini_tree.a(tasks.c.obj)
+ .srodata       0x20000074        0xc mini_tree/libmini_tree.a(port.c.obj)
+                0x20000074                xISRStackTop
+                0x20000078                uxTimerIncrementsForOneTick
+                0x2000007c                ullMachineTimerCompareRegisterBase
+                0x20000080                        . = ALIGN (0x4)
+                0x20000080                        PROVIDE (_edata = .)
+
+.bss            0x20000080     0x3118 load address 0x00008920
+                0x20000080                        . = ALIGN (0x4)
+                0x20000080                        PROVIDE (_sbss = .)
+ *(.sbss*)
+ .sbss          0x20000080        0x4 mini_tree/libmini_tree.a(tasks.c.obj)
+                0x20000080                pxCurrentTCB
+ *fill*         0x20000084        0x4 
+ .sbss          0x20000088       0x10 mini_tree/libmini_tree.a(port.c.obj)
+                0x20000088                ullNextTime
+                0x20000090                pullMachineTimerCompareRegister
+                0x20000094                xTaskReturnAddress
+ .sbss.__malloc_sbrk_start
+                0x20000098        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                0x20000098                __malloc_sbrk_start
+ .sbss.__malloc_free_list
+                0x2000009c        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                0x2000009c                __malloc_free_list
+ .sbss.__stdio_exit_handler
+                0x200000a0        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x200000a0                __stdio_exit_handler
+ .sbss.errno    0x200000a4        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+                0x200000a4                errno
+ .sbss.heap_end.0
+                0x200000a8        0x4 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ *(.gnu.linkonce.sb.*)
+ *(.bss*)
+ .bss           0x200000ac      0x31c mini_tree/libmini_tree.a(tasks.c.obj)
+ .bss           0x200003c8     0x201c mini_tree/libmini_tree.a(heap_4.c.obj)
+ .bss           0x200023e4        0x4 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .bss           0x200023e8      0xc78 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .bss.__sf      0x20003060      0x138 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x20003060                __sf
+ *(.gnu.linkonce.b.*)
+ *(COMMON*)
+                0x20003198                        . = ALIGN (0x4)
+                0x20003198                        PROVIDE (_ebss = .)
+                [!provide]                        PROVIDE (_end = _ebss)
+                0x20003198                        PROVIDE (end = .)
+
+.stack          0x20007c00      0x400
+                [!provide]                        PROVIDE (_heap_end = .)
+                0x20007c00                        . = ALIGN (0x4)
+                [!provide]                        PROVIDE (_susrstack = .)
+                0x20008000                        . = (. + __stack_size)
+ *fill*         0x20007c00      0x400 
+                0x20008000                        PROVIDE (_eusrstack = .)
+                0x20008000                        PROVIDE (__freertos_irq_stack_top = _eusrstack)
+OUTPUT(ch307_node elf32-littleriscv)
+
+.debug_info     0x00000000     0x6d07
+ .debug_info    0x00000000      0x2f2 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_info    0x000002f2       0x23 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_info    0x00000315       0xa0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_info    0x000003b5      0x132 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_info    0x000004e7       0x63 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_info    0x0000054a     0x2229 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_info    0x00002773      0x2ab mini_tree/libmini_tree.a(list.c.obj)
+ .debug_info    0x00002a1e      0x4d5 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_info    0x00002ef3      0x221 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_info    0x00003114       0x23 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_info    0x00003137      0x13d mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_info    0x00003274     0x157b mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_info    0x000047ef     0x1430 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_info    0x00005c1f       0x9e mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_info    0x00005cbd       0xf7 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_info    0x00005db4      0x4a9 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_info    0x0000625d      0x168 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_info    0x000063c5      0x850 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_info    0x00006c15       0xf2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+
+.debug_abbrev   0x00000000     0x181e
+ .debug_abbrev  0x00000000      0x19b CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_abbrev  0x0000019b       0x12 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_abbrev  0x000001ad       0x4b CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_abbrev  0x000001f8       0xec CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_abbrev  0x000002e4       0x5c CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_abbrev  0x00000340      0x321 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_abbrev  0x00000661       0xf2 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_abbrev  0x00000753      0x1f7 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_abbrev  0x0000094a       0xe3 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_abbrev  0x00000a2d       0x12 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_abbrev  0x00000a3f       0xf7 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_abbrev  0x00000b36      0x3f2 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_abbrev  0x00000f28      0x2d0 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_abbrev  0x000011f8       0x75 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_abbrev  0x0000126d       0xbe mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_abbrev  0x0000132b      0x1f7 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_abbrev  0x00001522       0xd9 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x000015fb      0x1ad D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x000017a8       0x76 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+
+.debug_loclists
+                0x00000000      0xd87
+ .debug_loclists
+                0x00000000      0x11d CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_loclists
+                0x0000011d       0x3c CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_loclists
+                0x00000159       0x5f D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_loclists
+                0x000001b8      0xbcf D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+
+.debug_aranges  0x00000000      0x288
+ .debug_aranges
+                0x00000000       0x20 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_aranges
+                0x00000020       0x30 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_aranges
+                0x00000050       0x20 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_aranges
+                0x00000070       0x20 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_aranges
+                0x00000090       0x20 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_aranges
+                0x000000b0       0x20 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_aranges
+                0x000000d0       0x20 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_aranges
+                0x000000f0       0x20 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_aranges
+                0x00000110       0x20 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_aranges
+                0x00000130       0x40 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_aranges
+                0x00000170       0x20 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_aranges
+                0x00000190       0x20 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_aranges
+                0x000001b0       0x20 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_aranges
+                0x000001d0       0x20 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_aranges
+                0x000001f0       0x20 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_aranges
+                0x00000210       0x20 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_aranges
+                0x00000230       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_aranges
+                0x00000250       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_aranges
+                0x00000270       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+
+.debug_line     0x00000000     0x7eec
+ .debug_line    0x00000000      0x528 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_line    0x00000528      0x11a CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_line    0x00000642       0x70 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_line    0x000006b2       0xab CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_line    0x0000075d       0x72 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_line    0x000007cf     0x2bbb mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_line    0x0000338a      0x279 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_line    0x00003603      0x83a mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_line    0x00003e3d       0xb3 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_line    0x00003ef0      0x2e7 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_line    0x000041d7       0xfc mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_line    0x000042d3     0x1001 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_line    0x000052d4     0x1bb5 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_line    0x00006e89       0x6f mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_line    0x00006ef8       0x72 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_line    0x00006f6a      0x323 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_line    0x0000728d       0xef D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_line    0x0000737c      0xb27 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_line    0x00007ea3       0x49 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+
+.debug_str      0x00000000     0x2be7
+ .debug_str     0x00000000     0x2be7 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                                0x29e (size before relaxing)
+ .debug_str     0x00002be7        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                                 0x65 (size before relaxing)
+ .debug_str     0x00002be7        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+                                0x153 (size before relaxing)
+ .debug_str     0x00002be7        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                                0x1eb (size before relaxing)
+ .debug_str     0x00002be7        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                                 0xf1 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+                               0x1257 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(list.c.obj)
+                                0x251 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+                                0x4a0 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(port.c.obj)
+                                0x289 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+                                 0x77 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+                                0x1fc (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                                0xc69 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+                                0xb20 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                                0x149 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+                                0x145 (size before relaxing)
+ .debug_str     0x00002be7        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                                0x355 (size before relaxing)
+ .debug_str     0x00002be7        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                                0x21b (size before relaxing)
+ .debug_str     0x00002be7        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                                0x2b1 (size before relaxing)
+ .debug_str     0x00002be7        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                                0x1fe (size before relaxing)
+
+.debug_line_str
+                0x00000000      0xa08
+ .debug_line_str
+                0x00000000      0xa08 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                                0x1f4 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                                 0x59 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+                                 0x7c (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                                 0xf2 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                                 0x9d (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+                                0x397 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(list.c.obj)
+                                0x257 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+                                0x39f (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(port.c.obj)
+                                0x290 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+                                 0x6b (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+                                0x25d (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                                0x438 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+                                0x394 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                                0x113 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+                                0x1d6 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                                0x36f (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                                 0x97 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                                 0x97 (size before relaxing)
+ .debug_line_str
+                0x00000a08        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                                 0x97 (size before relaxing)
+
+.comment        0x00000000       0x1f
+ .comment       0x00000000       0x1f CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(list.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(port.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+                                 0x20 (size before relaxing)
+ .comment       0x0000001f        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+                                 0x20 (size before relaxing)
+
+.note.GNU-stack
+                0x00000000        0x0
+ .note.GNU-stack
+                0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .note.GNU-stack
+                0x00000000        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .note.GNU-stack
+                0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .note.GNU-stack
+                0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(list.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(port.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ .note.GNU-stack
+                0x00000000        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+
+.riscv.attributes
+                0x00000000       0x66
+ .riscv.attributes
+                0x00000000       0x4e CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .riscv.attributes
+                0x0000004e       0x4e CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .riscv.attributes
+                0x0000009c       0x4e CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .riscv.attributes
+                0x000000ea       0x4e CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .riscv.attributes
+                0x00000138       0x66 mini_tree/libmini_tree.a(tasks.c.obj)
+ .riscv.attributes
+                0x0000019e       0x66 mini_tree/libmini_tree.a(list.c.obj)
+ .riscv.attributes
+                0x00000204       0x66 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .riscv.attributes
+                0x0000026a       0x66 mini_tree/libmini_tree.a(port.c.obj)
+ .riscv.attributes
+                0x000002d0       0x66 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .riscv.attributes
+                0x00000336       0x66 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .riscv.attributes
+                0x0000039c       0x66 mini_tree/libmini_tree.a(queue.c.obj)
+ .riscv.attributes
+                0x00000402       0x66 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .riscv.attributes
+                0x00000468       0x66 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .riscv.attributes
+                0x000004ce       0x66 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .riscv.attributes
+                0x00000534       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .riscv.attributes
+                0x0000059a       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .riscv.attributes
+                0x00000600       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .riscv.attributes
+                0x00000666       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+ .riscv.attributes
+                0x000006cc       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+ .riscv.attributes
+                0x00000732       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+ .riscv.attributes
+                0x00000798       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+ .riscv.attributes
+                0x000007fe       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+ .riscv.attributes
+                0x00000864       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+ .riscv.attributes
+                0x000008ca       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-impure.o)
+ .riscv.attributes
+                0x00000930       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+ .riscv.attributes
+                0x00000996       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+ .riscv.attributes
+                0x000009fc       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+ .riscv.attributes
+                0x00000a62       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+ .riscv.attributes
+                0x00000ac8       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .riscv.attributes
+                0x00000b2e       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+ .riscv.attributes
+                0x00000b94       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+ .riscv.attributes
+                0x00000bfa       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+ .riscv.attributes
+                0x00000c60       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+ .riscv.attributes
+                0x00000cc6       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+ .riscv.attributes
+                0x00000d2c       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+ .riscv.attributes
+                0x00000d92       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-reent.o)
+ .riscv.attributes
+                0x00000df8       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+ .riscv.attributes
+                0x00000e5e       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+ .riscv.attributes
+                0x00000ec4       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+ .riscv.attributes
+                0x00000f2a       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+ .riscv.attributes
+                0x00000f90       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+ .riscv.attributes
+                0x00000ff6       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+ .riscv.attributes
+                0x0000105c       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+ .riscv.attributes
+                0x000010c2       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+ .riscv.attributes
+                0x00001128       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+ .riscv.attributes
+                0x0000118e       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+ .riscv.attributes
+                0x000011f4       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+ .riscv.attributes
+                0x0000125a       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+ .riscv.attributes
+                0x000012c0       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+ .riscv.attributes
+                0x00001326       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+
+.debug_frame    0x00000000     0x20a0
+ .debug_frame   0x00000000       0x74 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .debug_frame   0x00000074       0x30 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_frame   0x000000a4       0x44 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_frame   0x000000e8       0x2c CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_frame   0x00000114      0xa7c mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_frame   0x00000b90       0xd8 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_frame   0x00000c68      0x1c8 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_frame   0x00000e30       0x54 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_frame   0x00000e84       0xa4 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_frame   0x00000f28      0x85c mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_frame   0x00001784      0x5b8 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_frame   0x00001d3c       0x60 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_frame   0x00001d9c       0x38 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_frame   0x00001dd4      0x2ac mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_frame   0x00002080       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+
+.debug_rnglists
+                0x00000000      0x152
+ .debug_rnglists
+                0x00000000       0x20 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_rnglists
+                0x00000020       0x13 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_rnglists
+                0x00000033       0x1c mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_rnglists
+                0x0000004f       0x30 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_rnglists
+                0x0000007f       0x22 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_rnglists
+                0x000000a1       0xb1 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)

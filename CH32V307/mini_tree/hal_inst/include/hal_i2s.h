@@ -1,0 +1,26 @@
+#ifndef HAL_I2S_H
+#define HAL_I2S_H
+
+#include "hal_i2s_bus.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ioctl 兼容层 */
+#define I2S_CMD_WRITE       0x50
+#define I2S_CMD_DEINIT      0x51
+
+struct i2s_write_arg
+{
+    const int16_t* samples;
+    size_t bytes;
+    size_t* written;
+    uint32_t timeout_ms;
+};
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* HAL_I2S_H */

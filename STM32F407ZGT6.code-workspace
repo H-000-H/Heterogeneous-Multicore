@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "STM32F407ZGT6",
+      "path": "STM32F407ZGT6"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/build/.cache": true
+    },
+    "devicetree.cwd": "${workspaceFolder:STM32F407ZGT6}",
+    "devicetree.autoChangeContext": true,
+    "devicetree.preferredContext": "stm32f407zgt6",
+    "devicetree.allowAdhocContexts": true,
+    "devicetree.defaultBindingType": "DevicetreeOrg",
+    "devicetree.defaultShowFormattingErrorAsDiagnostics": false,
+    "devicetree.contexts": [
+      {
+        "ctxName": "stm32f407zgt6",
+        "cwd": "${workspaceFolder:STM32F407ZGT6}",
+        "dtsFile": "mini_tree/board/dts/stm32f407zgt6.dts",
+        "bindingType": "DevicetreeOrg",
+        "formattingErrorAsDiagnostics": false,
+        "includePaths": [
+          "mini_tree/board/dts",
+          "mini_tree/board/dtsi",
+          "mini_tree/board/dt-bindings",
+          "mini_tree/board"
+        ]
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "KyleMicallefBonnici.dts-lsp",
+      "llvm-vs-code-extensions.vscode-clangd"
+    ]
+  }
+}

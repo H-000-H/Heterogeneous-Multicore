@@ -1,0 +1,60 @@
+{
+  "folders": [
+    {
+      "name": "ESP32-S3",
+      "path": "ESP32-S3"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/build/.cache": true
+    },
+    "files.associations": {
+      "*.dts": "devicetree",
+      "*.dtsi": "devicetree"
+    },
+    "devicetree.cwd": "${workspaceFolder:ESP32-S3}",
+    "devicetree.autoChangeContext": true,
+    "devicetree.preferredContext": "esp32-s3-devkitc-1",
+    "devicetree.allowAdhocContexts": true,
+    "devicetree.defaultBindingType": "DevicetreeOrg",
+    "devicetree.defaultShowFormattingErrorAsDiagnostics": false,
+    "devicetree.defaultIncludePaths": [
+      "components/mini_tree/board/dts",
+      "components/mini_tree/board/dtsi",
+      "components/mini_tree/board/dt-bindings",
+      "components/mini_tree/board"
+    ],
+    "devicetree.contexts": [
+      {
+        "ctxName": "esp32-s3-devkitc-1",
+        "cwd": "${workspaceFolder:ESP32-S3}",
+        "dtsFile": "components/mini_tree/board/dts/esp32-s3-devkitc-1.dts",
+        "bindingType": "DevicetreeOrg",
+        "formattingErrorAsDiagnostics": false,
+        "includePaths": [
+          "components/mini_tree/board/dts",
+          "components/mini_tree/board/dtsi",
+          "components/mini_tree/board/dt-bindings",
+          "components/mini_tree/board"
+        ]
+      }
+    ],
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "clangd.enable": true,
+    "clangd.path": "D:\\Espressif_vscode\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
+    "clangd.arguments": [
+      "--background-index",
+      "--compile-commands-dir=${workspaceFolder:ESP32-S3}/build",
+      "--query-driver=D:\\Espressif_vscode\\tools\\xtensa-esp-elf\\*\\xtensa-esp-elf\\bin\\xtensa-*-elf-gcc.exe,D:\\Espressif_vscode\\tools\\xtensa-esp-elf\\*\\xtensa-esp-elf\\bin\\xtensa-*-elf-g++.exe",
+      "--header-insertion=never"
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "KyleMicallefBonnici.dts-lsp",
+      "llvm-vs-code-extensions.vscode-clangd",
+      "espressif.esp-idf-extension"
+    ]
+  }
+}

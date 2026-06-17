@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * WCH CH32V307 board
+ *
+ * dtc-lite 推荐布局 (无序全解耦版):
+ *   1. /dts-v1/
+ *   2. #include SoC + IP dtsi（可集中放在文件头）
+ *   3. / { model, compatible, aliases }
+ *   4. &label { 板级引脚 / gpio / status = "okay" }
+ *
+ * 常量宏在 board/dt-bindings/，由 IP dtsi #include；板级只覆写实例参数。
+ */
+
+/dts-v1/;
+
+#include "ch32v307.dtsi"
+#include "ch32v307-spi.dtsi"
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	model = "WCH CH32V307";
+	compatible = "wch,ch32v307-mini-tree", "wch,ch32v307";
+};

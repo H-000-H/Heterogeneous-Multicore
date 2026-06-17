@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "name": "说明（请打开下方独立工作区）",
+      "path": "_workspace_docs"
+    }
+  ],
+  "settings": {
+    "clangd.enable": false,
+    "C_Cpp.intelliSenseEngine": "disabled"
+  }
+}

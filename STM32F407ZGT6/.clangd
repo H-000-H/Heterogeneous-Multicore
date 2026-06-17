@@ -1,0 +1,134 @@
+﻿CompileFlags:
+  Remove: [-f*, -m*, -W*]
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
+
+---
+If:
+  PathMatch: .*mini_tree[/\\].*\.(c|cpp|S)$
+CompileFlags:
+  # compile_commands 提供绝对 -I；另加 isystem 供 esp-clang 找到 stdio.h 等
+  CompilationDatabase: build/Debug
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*hal_inst[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I../../hal_bus/include
+    - -I.
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*hal_bus[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*hal_if[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I../../hal_bus/include
+    - -I.
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*board[/\\]include[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -I../../core/include
+    - -I../../osal/include
+    - -I../../../build/Debug/generated/board/mini_tree
+    - -I../../../build/Debug/generated/kconfig/mini_tree
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*osal[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -I../../core/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
+    - -isystem
+    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
+
+---
+If:
+  PathMatch: .*[/\\]app[/\\].*\.(c|cpp|S)$
+CompileFlags:
+  CompilationDatabase: build/Debug
+
+---
+If:
+  PathMatch: .*[/\\]Core[/\\].*\.(c|cpp|S)$
+CompileFlags:
+  CompilationDatabase: build/Debug

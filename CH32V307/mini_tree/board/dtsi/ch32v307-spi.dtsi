@@ -1,0 +1,27 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * CH32V307 SPI — host + device 两级节点 (默认 disabled)
+ * Bindings: ch32,spi-host / ch32,spi-device
+ */
+
+#include "ch32v307.dtsi"
+#include <dt-bindings/spi/spi-parameter.h>
+
+&soc {
+	spi1: spi@0 {
+		compatible = "ch32,spi-host";
+		reg = <0>;
+		host-id = <SPI_DEFAULT_HOST_ID>;
+		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
+		status = "disabled";
+
+		spi_dev0: device@0 {
+			compatible = "ch32,spi-device";
+			reg = <0>;
+			spi-mode = <SPI_DEFAULT_MODE>;
+			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
+			status = "disabled";
+		};
+	};
+};

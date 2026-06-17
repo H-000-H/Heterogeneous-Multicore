@@ -1,0 +1,58 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMake: Configure CH307 Node",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-G", "Ninja",
+                "-B", "${workspaceFolder}/build/Debug",
+                "-S", "${workspaceFolder}",
+                "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/cmake/riscv32-wch-elf-ch32v307.cmake",
+                "-DCMAKE_BUILD_TYPE=Debug"
+            ],
+            "options": {
+                "env": {
+                    "PATH": "${env:PATH};C:/ST/STM32CubeCLT_1.20.0/Ninja/bin;D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin"
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMake: Build CH307 Node",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/Debug"
+            ],
+            "dependsOn": "CMake: Configure CH307 Node",
+            "options": {
+                "env": {
+                    "PATH": "${env:PATH};C:/ST/STM32CubeCLT_1.20.0/Ninja/bin;D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin"
+                }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "CMake: Clean CH307 Node",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build",
+                "${workspaceFolder}/build/Debug",
+                "--target",
+                "clean"
+            ],
+            "options": {
+                "env": {
+                    "PATH": "${env:PATH};C:/ST/STM32CubeCLT_1.20.0/Ninja/bin;D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin"
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}
