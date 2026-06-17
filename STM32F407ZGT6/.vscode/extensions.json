@@ -1,9 +1,0 @@
-{
-  "recommendations": [
-    "KyleMicallefBonnici.dts-lsp",
-    "llvm-vs-code-extensions.vscode-clangd"
-  ],
-  "unwantedRecommendations": [
-    "ms-vscode.cpptools"
-  ]
-}

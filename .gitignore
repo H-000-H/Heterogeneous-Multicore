@@ -1,0 +1,19 @@
+# 过滤整个编译输出目录（最核心，这一下就能干掉 6000 多个文件）
+build/
+
+# 过滤本地配置文件（每个人的编译环境路径不同，不该上传）
+sdkconfig
+sdkconfig.old
+dependencies.lock
+
+# 过滤编辑器本地配置
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# 过滤临时或日志文件
+*.log

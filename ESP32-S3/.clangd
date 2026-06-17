@@ -1,0 +1,154 @@
+CompileFlags:
+  # GCC/xtensa 专用参数 clang 不支持；靠 query-driver（见 .vscode/settings.json）向 gcc 查询系统头路径
+  Remove:
+    - -fno-shrink-wrap
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+    - -fno-reorder-functions
+    - -mlongcalls
+    - -f*
+    - -m*
+    - -W*
+  Add:
+    # query-driver 未生效时仍需指定 Xtensa 目标，否则 newlib 中 __alloc_size2 / hal.h 等会误报
+    - --target=xtensa-esp32s3-elf
+    - -D__XTENSA__
+    - -fgnuc-version=14.2
+    # query-driver 未生效时的兜底（与 c_cpp_properties.json 中 xtensa-esp-elf 版本一致）
+    - -isystem
+    - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
+    - -isystem
+    - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
+  CompilationDatabase: build
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
+  Suppress:
+    - asm_expected_string
+    - unused-includes
+    - unused-result
+    - visibility
+
+---
+# mini_tree 源文件 fallback（CDB 缺项或新增文件尚未 reconfigure 时）
+# vfs/spi 勿走 CDB 启发式（路径含 spi 会误匹配 esp_lcd_panel_io_spi.c）
+If:
+  PathMatch: .*[/\\]components[/\\]mini_tree[/\\]vfs[/\\]spi[/\\].*
+CompileFlags:
+  Add:
+    - --target=xtensa-esp32s3-elf
+    - -D__XTENSA__
+    - -fgnuc-version=14.2
+    - -std=gnu17
+    - -DCONFIG_OSAL_FREERTOS
+    - -DESP_PLATFORM
+    - -DCONFIG_SYS_LOG_USE_PRINTF
+    - -Icomponents/mini_tree/vfs/spi
+    - -Icomponents/mini_tree/board/include
+    - -Icomponents/mini_tree/core/include
+    - -Icomponents/mini_tree/osal/include
+    - -Icomponents/mini_tree/hal_bus/include
+    - -Icomponents/mini_tree/hal_inst/include
+    - -Icomponents/mini_tree/hal_if/include
+    - -Ibuild/generated/board/mini_tree
+    - -Ibuild/generated/kconfig/mini_tree
+    - -Ibuild/generated/scrubber/mini_tree
+    - -Ibuild/config
+Diagnostics:
+  UnusedIncludes: None
+
+---
+# mini_tree 其余源文件 fallback
+If:
+  PathMatch: .*[/\\]components[/\\]mini_tree[/\\].*
+CompileFlags:
+  Add:
+    - --target=xtensa-esp32s3-elf
+    - -D__XTENSA__
+    - -fgnuc-version=14.2
+    - -std=gnu17
+    - -DCONFIG_OSAL_FREERTOS
+    - -DESP_PLATFORM
+    - -DCONFIG_SYS_LOG_USE_PRINTF
+    - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/esp_driver_spi/include
+    - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/esp32s3/include
+    - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/include
+    - -Icomponents/mini_tree/board/include
+    - -Icomponents/mini_tree/core/include
+    - -Icomponents/mini_tree/osal/include
+    - -Icomponents/mini_tree/hal_bus/include
+    - -Icomponents/mini_tree/hal_inst/include
+    - -Icomponents/mini_tree/hal_if/include
+    - -Icomponents/mini_tree/vfs/spi
+    - -Icomponents/mini_tree/drivers/ws2812
+    - -Icomponents/mini_tree/algorithm/buffer
+    - -Ibuild/generated/board/mini_tree
+    - -Ibuild/generated/kconfig/mini_tree
+    - -Ibuild/generated/scrubber/mini_tree
+    - -Ibuild/config
+Diagnostics:
+  UnusedIncludes: None
+
+---
+# system_cpp / C++ 头文件 fallback（CDB 缺项或 .hpp 推断自 g++ 时）
+If:
+  PathMatch: .*[/\\](system_cpp|core)[/\\].*\.(cpp|hpp|hxx|cc|cxx)$
+CompileFlags:
+  Add:
+    - -std=gnu++23
+    - -DCONFIG_OSAL_FREERTOS
+    - -DESP_PLATFORM
+    - -DCONFIG_SYS_LOG_USE_PRINTF
+    - -Icomponents/mini_tree/board/include
+    - -Icomponents/mini_tree/core/include
+    - -Icomponents/mini_tree/osal/include
+    - -Icomponents/mini_tree/hal_bus/include
+    - -Icomponents/mini_tree/hal_inst/include
+    - -Icomponents/mini_tree/hal_if/include
+    - -Icomponents/mini_tree/system_cpp/include
+    - -Icomponents/mini_tree/system_c/include
+    - -Icomponents/mini_tree/drivers/ws2812
+    - -Icomponents/mini_tree/algorithm/buffer
+    - -Ibuild/generated/board/mini_tree
+    - -Ibuild/generated/kconfig/mini_tree
+    - -Ibuild/generated/scrubber/mini_tree
+    - -Ibuild/config
+Diagnostics:
+  UnusedIncludes: None
+
+---
+# app 组件 C++ fallback（CDB 缺项时）
+If:
+  PathMatch: .*[/\\]components[/\\]app[/\\].*
+CompileFlags:
+  Add:
+    - --target=xtensa-esp32s3-elf
+    - -D__XTENSA__
+    - -fgnuc-version=14.2
+    - -std=gnu++2b
+    - -DESP_PLATFORM
+    - -Icomponents/app/inc
+    - -Icomponents/mini_tree/board/include
+    - -Icomponents/mini_tree/core/include
+    - -Icomponents/mini_tree/osal/include
+    - -Icomponents/mini_tree/hal_bus/include
+    - -Icomponents/mini_tree/hal_inst/include
+    - -Icomponents/mini_tree/hal_if/include
+    - -Icomponents/mini_tree/system_c/include
+    - -Icomponents/mini_tree/drivers/ws2812
+    - -Ibuild/generated/board/mini_tree
+    - -Ibuild/config
+Diagnostics:
+  UnusedIncludes: None
+
+---
+# system_cpp 为可选 C++ 后端
+If:
+  PathMatch: .*[/\\]system_cpp[/\\].*
+CompileFlags:
+  Add:
+    - -std=gnu++17
+    - -DCONFIG_OSAL_FREERTOS
+    - -DESP_PLATFORM
+    - -DCONFIG_SYS_LOG_USE_PRINTF

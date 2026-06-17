@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/18514/AppData/Roaming/Cursor/User/**)",
+      "Read(//c/Users/18514/.cursor/**)",
+      "Read(//c/Users/18514/AppData/Roaming/Code/User/**)"
+    ]
+  }
+}

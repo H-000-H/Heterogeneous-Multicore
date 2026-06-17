@@ -1,8 +1,0 @@
-D:/can_project/CH32V307/build/CMakeFiles/ch307_node.dir
-D:/can_project/CH32V307/build/CMakeFiles/edit_cache.dir
-D:/can_project/CH32V307/build/CMakeFiles/rebuild_cache.dir
-D:/can_project/CH32V307/build/mini_tree/CMakeFiles/kconfig_generate.dir
-D:/can_project/CH32V307/build/mini_tree/CMakeFiles/mini_tree.dir
-D:/can_project/CH32V307/build/mini_tree/CMakeFiles/mini_tree_gen.dir
-D:/can_project/CH32V307/build/mini_tree/CMakeFiles/edit_cache.dir
-D:/can_project/CH32V307/build/mini_tree/CMakeFiles/rebuild_cache.dir
