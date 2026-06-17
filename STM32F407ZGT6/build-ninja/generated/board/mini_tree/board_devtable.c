@@ -16,6 +16,13 @@ static const struct device_property DEV__props[] = {
     {"model", "STMicro STM32F407ZGT6"},
 };
 
+/* /cpus/cpu@0 */
+static const struct device_property DEV_cpu_0_props[] = {
+    {"device_type", "cpu"},
+    {"reg", "0x0"},
+    {"clock-frequency", "0xa037a00"},
+};
+
 /* /soc */
 static const struct device_property DEV_soc_props[] = {
     {"ranges", "true"},
@@ -23,13 +30,53 @@ static const struct device_property DEV_soc_props[] = {
     {"#size-cells", "0x0"},
 };
 
+/* /soc/spi@0 */
+static const struct device_property DEV_spi_0_props[] = {
+    {"reg", "0x0"},
+    {"host-id", "0x1"},
+    {"dma-chan", "-0x1"},
+};
+
+/* /soc/spi@0/device@0 */
+static const struct device_property DEV_device_0_props[] = {
+    {"reg", "0x0"},
+    {"spi-mode", "0x0"},
+    {"spi-max-frequency", "0x989680"},
+    {"queue-size", "0x4"},
+};
+
 /* ===== 依赖表 ===== */
 
-/* ===== reg 分组表 (预分组, 按 #address-cells / #size-cells) ===== */
+static const device_id_t DEV_device_0_deps[] = {
+    DEV_ID_SPI_0,
+};
 
-/* ===== irq 表 (预分组, 按 #interrupt-cells) ===== */
+/* ===== reg 分组表 ===== */
 
-/* ===== 主节点表 (只读 .rodata) ===== */
+static const uint32_t DEV_cpu_0_REG_DATA[] = {
+    0x0,
+};
+static const uint32_t DEV_spi_0_REG_DATA[] = {
+    0x0,
+};
+static const uint32_t DEV_device_0_REG_DATA[] = {
+    0x0,
+};
+static const struct device_reg DEV_cpu_0_REGS[] = {
+    { .addr = &DEV_cpu_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_spi_0_REGS[] = {
+    { .addr = &DEV_spi_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_device_0_REGS[] = {
+    { .addr = &DEV_device_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+/* ===== irq 表 ===== */
+
+/* ===== 主节点表 ===== */
 static const struct device_node s_nodes[DEV_ID_COUNT] = {
     [DEV_ID_] = {
         .name       = "",
@@ -45,6 +92,23 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .deps       = (const device_id_t*)NULL,
         .reg_count  = 0,
         .regs       = (const struct device_reg*)NULL,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_CPU_0] = {
+        .name       = "cpu@0",
+        .label      = "",
+        .compatible = "arm,cortex-m4",
+        .path       = "/cpus/cpu@0",
+        .status     = DEVICE_STATUS_DISABLED,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 3,
+        .props      = DEV_cpu_0_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_cpu_0_REGS,
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
@@ -65,9 +129,41 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
+    [DEV_ID_SPI_0] = {
+        .name       = "spi@0",
+        .label      = "spi1",
+        .compatible = "stm32,spi-host",
+        .path       = "/soc/spi@0",
+        .status     = DEVICE_STATUS_DISABLED,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 3,
+        .props      = DEV_spi_0_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_spi_0_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_DEVICE_0] = {
+        .name       = "device@0",
+        .label      = "spi_dev0",
+        .compatible = "stm32,spi-device",
+        .path       = "/soc/spi@0/device@0",
+        .status     = DEVICE_STATUS_DISABLED,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 4,
+        .props      = DEV_device_0_props,
+        .dep_count  = 1,
+        .deps       = (const device_id_t*)DEV_device_0_deps,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_device_0_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
 };
-
-/* ===== API 实现 ===== */
 
 const struct device_node* board_node_get(device_id_t id) {
     if ((int)id < 0 || (int)id >= DEV_ID_COUNT) return NULL;

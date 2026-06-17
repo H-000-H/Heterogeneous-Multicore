@@ -34,12 +34,14 @@ add_custom_command(
     OUTPUT  ${GENERATED_BOARD_SRCS} ${GENERATED_BOARD_HDRS}
     COMMAND ${Python3_EXECUTABLE}
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../drivers"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi"
     DEPENDS
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/ch32v307.dtsi"
         "${BOARD_DTSI_DIR}/ch32v307-spi.dtsi"
         "${CMAKE_CURRENT_SOURCE_DIR}/dt-bindings/spi/spi-parameter.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_bus.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_client.c"
         "${DTC_LITE}"
     VERBATIM
 )
@@ -53,6 +55,7 @@ add_library(board STATIC
     "src/task_config.c"
     "src/task_utils.c"
     "src/board_device.c"
+    "src/bus.c"
     "src/dev_lifecycle.c"
     "src/board_driver.c"
     "src/config_store.c"

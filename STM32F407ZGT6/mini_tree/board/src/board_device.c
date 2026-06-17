@@ -66,7 +66,6 @@ int device_tree_init(void)
         s_devices[i].node        = node;
         s_devices[i].status      = node ? node->status : DEVICE_STATUS_DISABLED;
         s_devices[i].priv_data   = NULL;
-        s_devices[i].subsys_priv = NULL;
         s_devices[i].ops         = NULL;
         s_devices[i].lock        = NULL;
         s_devices[i].platform_data = NULL;
@@ -354,18 +353,6 @@ void* device_get_priv(const struct device* dev)
     return dev ? dev->priv_data : NULL;
 }
 
-int device_set_subsys_priv(struct device* dev, void* subsys_priv)
-{
-    if (!dev) return -1;
-    dev->subsys_priv = subsys_priv;
-    return 0;
-}
-
-void* device_get_subsys_priv(const struct device* dev)
-{
-    return dev ? dev->subsys_priv : NULL;
-}
-
 /* ── 设备遍历 ── */
 struct device* device_get_first(void)
 {
@@ -593,7 +580,6 @@ void device_ops_unregister(struct device* dev)
     if (device_lock(dev) != 0) return;
 
     COMPAT_IGNORE_RESULT(device_set_priv(dev, NULL));
-    dev->subsys_priv = NULL;
     dev->ops = NULL;
 
     COMPAT_IGNORE_RESULT(device_unlock(dev));

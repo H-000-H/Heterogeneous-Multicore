@@ -102,7 +102,6 @@ struct device
     const struct device_node* node;       /* 指向编译期节点 */
     enum device_status        status;     /* 运行时状态 */
     void*                     priv_data;  /* 驱动私有数据 (VFS 层) */
-    void*                     subsys_priv;/* 子系统私有数据 (sensor_if/display_if 魔术头, 零偏移假设) */
     const struct file_operations* ops;    /* 操作函数表 */
     struct osal_mutex*        lock;       /* per-device 递归锁 (create_static_recursive) */
     struct dev_lifecycle           lc;         /* 驱动 I/O 生命周期 (probe 时 device_lc_bind) */
@@ -147,10 +146,6 @@ int device_get_irq(const struct device* dev, int idx, const struct device_irq** 
 int device_set_status(struct device* dev, enum device_status status) COMPAT_WARN_UNUSED_RESULT;
 int device_set_priv(struct device* dev, void* priv) COMPAT_WARN_UNUSED_RESULT;
 void* device_get_priv(const struct device* dev);
-
-/* ── 子系统私有数据 (MISRA C 2012 Rule 11.3 合规, 替代隐式偏移继承) ── */
-int device_set_subsys_priv(struct device* dev, void* subsys_priv) COMPAT_WARN_UNUSED_RESULT;
-void* device_get_subsys_priv(const struct device* dev);
 
 /* ── 设备遍历 ── */
 struct device* device_get_first(void);

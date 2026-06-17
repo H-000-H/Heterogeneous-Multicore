@@ -1,5 +1,6 @@
 #include "app_rtos.hpp"
 #include "app_led_task.hpp"
+#include "app_spi_task.hpp"
 
 #include "system_init.h"
 #include "driver.h"
@@ -23,6 +24,7 @@ extern "C" int app_rtos_start(void)
     board_register_all_drivers();
     mini_tree_start_tasks();
     app_led_task_start();
+    app_spi_task_start();
     system_init_complete();
     vTaskStartScheduler();
 

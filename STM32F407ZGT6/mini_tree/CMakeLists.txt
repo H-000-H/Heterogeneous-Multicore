@@ -80,13 +80,15 @@ add_custom_command(
     OUTPUT  ${GEN_SRCS} ${GEN_HDRS}
     COMMAND "${CMAKE_COMMAND}" -E make_directory "${GENERATED_BOARD_DIR}"
     COMMAND "${Python3_EXECUTABLE}" "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
-            "${CMAKE_CURRENT_LIST_DIR}/drivers"
+            "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
     DEPENDS
         "${DTC_LITE}"
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/stm32f407.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-spi.dtsi"
         "${CMAKE_CURRENT_LIST_DIR}/board/dt-bindings/spi/spi-parameter.h"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_bus.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_client.c"
     COMMENT "Running dtc-lite on stm32f407zgt6.dts"
     VERBATIM
 )
@@ -104,14 +106,17 @@ add_custom_command(
 add_library(mini_tree STATIC
     ${OSAL_SRCS}
     "hal_bus/src/hal_bus_dummy.c"
-    "hal_inst/src/hal_inst_dummy.c"
+    "hal_inst/src/hal_spi_stub.c"
     "hal_if/src/hal_cpu_amp.c"
     "board/src/board_device.c"
+    "board/src/bus.c"
     "board/src/dev_lifecycle.c"
     "board/src/board_driver.c"
     "board/src/config_store.c"
     "board/src/task_config.c"
     "board/src/task_utils.c"
+    "vfs/spi/spi_bus.c"
+    "vfs/spi/spi_client.c"
     ${GEN_SRCS}
     "core/src/event_bus.c"
     "core/src/buffer_pool.c"
@@ -130,7 +135,6 @@ target_include_directories(mini_tree
         "${CMAKE_CURRENT_LIST_DIR}/board/include"
         "${CMAKE_CURRENT_LIST_DIR}/compat"
         "${CMAKE_CURRENT_LIST_DIR}/core/include"
-        "${CMAKE_CURRENT_LIST_DIR}/display_if/include"
         "${CMAKE_CURRENT_LIST_DIR}/hal_bus/include"
         "${CMAKE_CURRENT_LIST_DIR}/hal_inst/include"
         "${CMAKE_CURRENT_LIST_DIR}/hal_if/include"

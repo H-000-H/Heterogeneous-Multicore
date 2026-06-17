@@ -2,6 +2,7 @@ set(APP_SRCS
 
     "${CMAKE_CURRENT_SOURCE_DIR}/src/app_freertos.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/app_led_task.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/app_spi_task.cpp"
 
 )
 
