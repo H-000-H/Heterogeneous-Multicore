@@ -1132,7 +1132,7 @@ class DTSCompiler:
     def _validate_compatibles(self) -> None:
         PLATFORM: Set[str] = {
             'esp32,cpu', 'esp32,i2s-bus', 'esp32,uart', 'esp32,gpio',
-            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'simple-bus',
+            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'esp32,spi', 'simple-bus',
             'arm,gic-400', 'arm,cortex-a12', 'arm,cortex-a7', 'arm,cortex-m4',
             'arm,cortex-m3', 'arm,cortex-m7', 'arm,cortex-m0', 'arm,armv7-timer',
         }
@@ -1669,7 +1669,7 @@ class CGenerator:
 
         PLATFORM: Set[str] = {
             'esp32,cpu', 'esp32,i2s-bus', 'esp32,uart', 'esp32,gpio',
-            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'simple-bus',
+            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'esp32,spi', 'simple-bus',
             'arm,gic-400', 'arm,cortex-a12', 'arm,cortex-a7', 'arm,cortex-m4',
             'arm,cortex-m3', 'arm,cortex-m7', 'arm,cortex-m0', 'arm,armv7-timer',
         }

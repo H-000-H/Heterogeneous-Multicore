@@ -36,6 +36,7 @@ add_custom_command(
     COMMAND ${Python3_EXECUTABLE}
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
             "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/ws2812"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft"
             "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi"
     DEPENDS
         "${BOARD_DTS}"
@@ -44,7 +45,9 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_vfs.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft/fft_spi_drv.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_bus.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_client.c"
         "${DTC_LITE}"
     VERBATIM
 )
@@ -58,6 +61,7 @@ add_library(board STATIC
     "src/task_config.c"
     "src/task_utils.c"
     "src/board_device.c"
+    "src/bus.c"
     "src/board_driver.c"
     "src/config_store.c"
     ${GENERATED_BOARD_SRCS}

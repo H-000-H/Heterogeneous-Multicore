@@ -97,11 +97,12 @@ struct file_operations {
 };
 
 /* ── 运行时设备实例 ── */
-struct device {
+struct device 
+{
     const struct device_node* node;       /* 指向编译期节点 */
     enum device_status        status;     /* 运行时状态 */
     void*                     priv_data;  /* 驱动私有数据 (VFS 层) */
-    void*                     subsys_priv;/* 子系统私有数据 (sensor_if/display_if 魔术头, 零偏移假设, MISRA 11.3 合规) */
+    void*                     subsys_priv;/* 子系统私有数据 (sensor_if/display_if 魔术头, 零偏移假设) */
     const struct file_operations* ops;    /* 操作函数表 */
     struct osal_mutex*        lock;       /* per-device 递归锁 (create_static_recursive) */
     struct dev_lifecycle           lc;         /* 驱动 I/O 生命周期 (probe 时 device_lc_bind) */

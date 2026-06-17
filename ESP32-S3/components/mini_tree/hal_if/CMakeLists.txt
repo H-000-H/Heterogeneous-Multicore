@@ -1,6 +1,6 @@
 # ==============================================================================
 # hal_if — 普通外设 HAL (GPIO / UART / ADC / PWM / Flash 等, 非共享总线)
-# 总线抽象见 hal_bus; 总线实例见 hal_inst.
+# 总线实例见 hal_inst.
 # ESP-IDF 构建: 源文件在父 CMakeLists.txt 的 idf_component_register() 中指定。
 # ==============================================================================
 
@@ -15,6 +15,4 @@ target_include_directories(hal_if
 )
 
 target_link_libraries(hal_if
-    PUBLIC
-        hal_bus
 )

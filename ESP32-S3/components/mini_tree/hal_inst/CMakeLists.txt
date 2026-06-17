@@ -1,6 +1,5 @@
 # ==============================================================================
 # hal_inst — 总线实例层 (ctx、DMA 池、平台实现)
-# 依赖 hal_bus; 实现文件可引用 board / VFS 错误码.
 # ==============================================================================
 
 add_library(hal_inst STATIC
@@ -18,8 +17,6 @@ target_include_directories(hal_inst
 )
 
 target_link_libraries(hal_inst
-    PUBLIC
-        hal_bus
     PRIVATE
         osal
         core

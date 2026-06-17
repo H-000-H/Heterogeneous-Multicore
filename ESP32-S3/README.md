@@ -59,7 +59,7 @@ ESP32-S3/
 ```
 
 - **USB 虚拟网卡**：USB **OTG** 口、**CDC-ECM** Device 模式，经 `hal_usb` 与 ESP-IDF USB 栈对接 i.MX6ULL。
-- **SPI FFT**：走 `hal_spi`（`esp32,spi-host` + `esp32,spi-device` 两级节点），引脚与速率由 `board/dts/*.dts` 配置。
+- **SPI FFT**：走 `hal_spi`（`esp32,spi` 总线控制器 + `heterogeneous,fft-spi-slave` 功能子设备），引脚与速率由 `board/dts/*.dts` 配置。
 - **烧录调试**：使用板载 **USB Serial/JTAG** 接电脑，与 OTG 网卡通路无关。
 
 设备树说明见 `[components/mini_tree/board/docs/devicetree.md](components/mini_tree/board/docs/devicetree.md)`。

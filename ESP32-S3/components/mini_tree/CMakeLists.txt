@@ -50,6 +50,7 @@ set(HAL_SRCS
 # ── Board layer (device tree, driver, config store, tasks) ──
 set(BOARD_SRCS
     "board/src/board_device.c"
+    "board/src/bus.c"
     "board/src/dev_lifecycle.c"
     "board/src/board_driver.c"
     "board/src/config_store.c"
@@ -114,8 +115,9 @@ endif()
 # ── VFS 设备驱动 ──
 set(DRIVER_SRCS
     "drivers/ws2812/ws2812_drv.c"
-    "vfs/spi/spi_bus_vfs.c"
-    "vfs/spi/spi_vfs.c"
+    "drivers/fft/fft_spi_drv.c"
+    "vfs/spi/spi_bus.c"
+    "vfs/spi/spi_client.c"
 )
 
 # ── Algorithm ──
@@ -148,6 +150,7 @@ idf_component_register(
         "system_c/include"
         "system_cpp/include"
         "drivers/ws2812"
+        "drivers/fft"
         "vfs/spi"
         "algorithm/buffer"
     REQUIRES
@@ -196,6 +199,7 @@ add_custom_command(
     COMMAND ${Python3_EXECUTABLE}
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/ws2812"
+            "${CMAKE_CURRENT_LIST_DIR}/drivers/fft"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
     DEPENDS
         "${BOARD_DTS}"
@@ -204,8 +208,9 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_bus_vfs.c"
+        "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_bus.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_client.c"
         "${DTC_LITE}"
     COMMENT "Running dtc-lite on esp32-s3-devkitc-1.dts"
     VERBATIM

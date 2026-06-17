@@ -10,7 +10,7 @@ struct hal_spi_ctx;
 extern "C" {
 #endif
 
-/* SPI 总线控制器实体 (全局每 host_id 一份, 由 esp32,spi-host probe 初始化) */
+/* SPI 总线控制器实体 (全局每 host_id 一份, 由 esp32,spi probe 初始化) */
 struct hal_spi_bus_host
 {
     struct hal_spi_bus              bus;
@@ -23,12 +23,12 @@ struct hal_spi_bus_host
     struct hal_spi_ctx*             active_ctx;    /* 当前 I/O 绑定的 interface */
 };
 
-/* Bus 层 — esp32,spi-host probe 时调用, 每个 host_id 全局一次 */
+/* Bus 层 — esp32,spi probe 时调用, 每个 host_id 全局一次 */
 int hal_spi_bus_host_init(int host_id, const struct hal_spi_bus_config* cfg);
 int hal_spi_bus_host_deinit(int host_id);
 struct hal_spi_bus_host* hal_spi_bus_host_get(int host_id);
 
-/* Interface 层 — esp32,spi-device open/close 调用, 不 init/deinit 总线控制器 */
+/* Interface 层 — SPI 客户端 open/close 调用, 不 init/deinit 总线控制器 */
 int hal_spi_interface_attach(struct hal_spi_bus_host* host,
                              const struct hal_spi_device_config* dev_cfg);
 int hal_spi_interface_detach(struct hal_spi_bus_host* host);

@@ -13,7 +13,8 @@ static int dev_lc_lock_live(struct dev_lifecycle* lc, uint32_t timeout_ms)
     if (osal_mutex_lock(lc->io_lock, timeout_ms) != 0)
         return VFS_ERR_TIMEOUT;
 
-    if (lc->state != DEV_LC_LIVE) {
+    if (lc->state != DEV_LC_LIVE) 
+    {
         (void)osal_mutex_unlock(lc->io_lock);
         return VFS_ERR_NODEV;
     }

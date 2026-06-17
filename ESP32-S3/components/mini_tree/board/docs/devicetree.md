@@ -124,30 +124,32 @@ board/dt-bindings/                 #include <dt-bindings/...> 常量
 
 ---
 
-## compatible: `esp32,spi-host` / `esp32,spi-device`
+## compatible: `esp32,spi` / `heterogeneous,fft-spi-slave`
 
-SPI 采用 **Bus Host + Interface** 两级节点：
+SPI 采用 **Linux 风格总线 + 功能驱动** 模型：
 
 | 节点 | compatible | 驱动 | probe 职责 |
 |------|------------|------|------------|
-| 父节点 `spi@N` | `esp32,spi-host` | `vfs/spi/spi_bus_vfs.c` | 总线引脚、DMA、互斥（仅一次） |
-| 子节点 `device@M` | `esp32,spi-device` | `vfs/spi/spi_vfs.c` | 绑定父 host；CS / 模式 / 队列 |
+| 父节点 `spi@N` | `esp32,spi` | `vfs/spi/spi_bus.c` | 总线引脚、DMA、枚举子设备 |
+| 子节点 `fft@M` | `heterogeneous,fft-spi-slave` | `drivers/fft/fft_spi_drv.c` | 经 `spi_client` 绑定父总线；CS / 模式 / 队列 |
 
-模板见 `board/dtsi/esp32s3-spi.dtsi`；板级在 `&spi1` 配置引脚，在 `&fft_slave`（或自定义 label）配置 CS。
+模板见 `board/dtsi/esp32s3-spi.dtsi`；板级在 `&spi1` 配置引脚，在 `&fft_slave` 配置 CS。
 
-### host 节点属性 (`esp32,spi-host`)
+### 总线控制器属性 (`esp32,spi`)
 
 | 属性 | 说明 |
 |------|------|
+| `#address-cells` / `#size-cells` | 子设备寻址（通常为 `<1>` / `<0>`） |
 | `host-id` | SPI 控制器编号 |
 | `mosi-pin` / `miso-pin` / `sclk-pin` | 总线引脚 |
 | `dma-chan` | DMA 通道，`-1` 为自动 |
 | `max-trans-buffer` | 最大传输字节 |
 
-### device 子节点属性 (`esp32,spi-device`)
+### SPI 客户端属性 (`heterogeneous,fft-spi-slave` 等功能 compatible)
 
 | 属性 | 说明 |
 |------|------|
+| `reg` | 总线片选 / 地址 |
 | `cs-pin` | 片选引脚 |
 | `spi-mode` | 模式 0–3 |
 | `spi-max-frequency` | 记录用（从机由主机定钟） |
@@ -155,6 +157,6 @@ SPI 采用 **Bus Host + Interface** 两级节点：
 
 ### 生命周期
 
-- **Bus**：`board_driver_probe_all()` 时 host probe 初始化，运行期常驻
-- **Interface**：`open` → attach（ref++）；`close` → detach（ref--，不关闭总线硬件）
+- **Bus 控制器**：`board_driver_probe_all()` 时 `esp32,spi` probe 初始化 HAL 并 `bus_client_bind` 子节点
+- **SPI 客户端**：功能驱动 probe 调用 `spi_client_probe()`；`open` → attach；`close` → detach
 - **I/O**：`hal_spi_xfer_begin` 持 bus 锁 + reconfigure，再 `host->bus.write/read`

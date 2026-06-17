@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * ESP32-S3 SPI — SoC default parameters (host + device 两级节点)
+ * ESP32-S3 SPI — SoC default parameters (Linux-style bus + functional child)
  *
  * Board-specific pins / status in board *.dts &spi1 { } / &fft_slave { }.
  * Bindings:
- *   esp32,spi-host   — vfs/spi/spi_bus_vfs.c
- *   esp32,spi-device — vfs/spi/spi_vfs.c
+ *   esp32,spi                      — vfs/spi/spi_bus.c
+ *   heterogeneous,fft-spi-slave    — drivers/fft/fft_spi_drv.c
  */
 
 #include "esp32s3.dtsi"
@@ -13,14 +13,16 @@
 
 &soc {
 	spi1: spi@0 {
-		compatible = "esp32,spi-host";
+		compatible = "esp32,spi";
 		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 		host-id = <SPI_DEFAULT_HOST_ID>;
 		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
 		status = "disabled";
 
-		fft_slave: device@0 {
-			compatible = "esp32,spi-device";
+		fft_slave: fft@0 {
+			compatible = "heterogeneous,fft-spi-slave";
 			reg = <0>;
 			spi-mode = <SPI_DEFAULT_MODE>;
 			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;

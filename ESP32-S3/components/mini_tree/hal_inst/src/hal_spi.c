@@ -14,7 +14,7 @@
 #include "driver/spi_slave.h"
 #include "esp_err.h"
 
-#define SPI_DEVICE_COUNT       DTC_GEN_COUNT_ESP32_SPI_DEVICE
+#define SPI_DEVICE_COUNT       DTC_GEN_COUNT_HETEROGENEOUS_FFT_SPI_SLAVE
 #define SPI_MAX_TRANSFER_BYTES 64
 #define SPI_HOST_MAX           3
 #define DMA_SPI_ALIGNMENT      COMPAT_ALIGNED(4)
@@ -324,6 +324,7 @@ int hal_spi_interface_detach(struct hal_spi_bus_host* host)
     return VFS_OK;
 }
 
+/*改写寄存器设置同步不同的配置*/
 int hal_spi_bus_reconfigure(struct hal_spi_bus_host* host,
                             const struct hal_spi_device_config* dev_cfg)
 {
@@ -353,7 +354,7 @@ int hal_spi_xfer_begin(struct hal_spi_ctx* ctx, uint32_t timeout_ms)
 
     int ret = hal_spi_bus_reconfigure(host, &ctx->cfg);
     if (ret != VFS_OK) {
-        (void)osal_mutex_unlock(host->bus_mutex);
+        COMPAT_IGNORE_RESULT(osal_mutex_unlock(host->bus_mutex));
         return ret;
     }
 

@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-/* SPI interface 实例 (由 esp32,spi-device VFS 持有) */
+/* SPI interface 实例 (由 spi_client 持有) */
 struct hal_spi_ctx
 {
     struct hal_spi_bus_host*    host;

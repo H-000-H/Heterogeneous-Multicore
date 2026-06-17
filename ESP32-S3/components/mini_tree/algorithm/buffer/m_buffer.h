@@ -4,25 +4,18 @@
 extern "C"
 {
 #endif
-#include <stdatomic.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 /*
  * 警告: 无锁 SPSC（单生产者单消费者）环形缓冲区。
  *   - 对恰好一个写入线程和一个读取线程是线程安全的。
  *   - 严重: 禁止在没有外部互斥锁的情况下允许多个线程并发写入或读取！
  *   - 内存序: acquire/release 协议。已在弱内存一致性双核 SMP（Xtensa / ARM Cortex-A）上验证。
- *   - size 必须为 2 的幂（64/128/1024 等），内部用位与代替取模。
  */
 
 typedef int16_t Fifo_Data_type;
-
-#define FIFO_IS_POWER_OF_TWO(x) (((x) != 0) && (((x) & ((x) - 1)) == 0))
-
-/* 在 size 为编译期常量时使用，例如 FIFO_SPSC_STATIC_ASSERT_SIZE(128); */
-#define FIFO_SPSC_STATIC_ASSERT_SIZE(size) \
-    _Static_assert(FIFO_IS_POWER_OF_TWO(size), "fifo size must be a power of two")
 
 /*
  * Cache Line 隔离 (False-Sharing 防御):
@@ -33,9 +26,9 @@ typedef int16_t Fifo_Data_type;
 struct fifo_spsc
 {
     Fifo_Data_type* buf;
-    atomic_uint_fast16_t w_ptr;
+    uint16_t w_ptr;
     uint8_t _pad1[32];
-    atomic_uint_fast16_t r_ptr;
+    uint16_t r_ptr;
     uint8_t _pad2[32];
     uint16_t size;
 };
