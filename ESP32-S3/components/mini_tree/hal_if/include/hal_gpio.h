@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 跨平台引脚抽象 ──
@@ -91,3 +92,4 @@ int hal_gpio_get_level(hal_pin_t pin);
 #endif
 
 #endif /* HAL_GPIO_H */
+

@@ -5,10 +5,11 @@
 #include "hal_spi_bus_host.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
-/* SPI interface 实例 (由 spi_client 持有) */
+/* SPI interface 实例 (由 spi_slave_client / w25q64 等持有) */
 struct hal_spi_ctx
 {
     struct hal_spi_bus_host*    host;
@@ -28,8 +29,13 @@ void hal_spi_ctx_detach(struct hal_spi_ctx* ctx);
 int hal_spi_get_trans_result(struct hal_spi_ctx* ctx, uint8_t* rx_data, size_t rx_cap,
                              size_t* trans_len, uint32_t timeout_ms);
 
+/* Master 全双工传输 (内部持 xfer 会话) */
+int hal_spi_transfer(struct hal_spi_ctx* ctx, const uint8_t* tx, uint8_t* rx,
+                     size_t len, uint32_t timeout_ms);
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* HAL_SPI_H */
+

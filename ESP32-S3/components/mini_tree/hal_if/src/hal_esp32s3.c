@@ -43,7 +43,8 @@ void hal_pwm_force_stop_all(void)
 
 void hal_pwm_init_struct(struct hal_pwm_channel* pwm)
 {
-    if (pwm) {
+    if (pwm)
+    {
         pwm->init     = NULL;
         pwm->set_duty = NULL;
         pwm->get_duty = NULL;
@@ -57,7 +58,8 @@ IRAM_ATTR void hal_cpu_emergency_stop_all_cores(void)
 {
     /* 禁用全局中断后死锁 */
     __asm__ volatile("rsil a2, 5" ::: "a2", "memory");
-    while (1) {
+    while (1)
+    {
         asm volatile("waiti 0" ::: "memory");
     }
 }
@@ -90,13 +92,15 @@ bool hal_wdt_init_twdt(uint32_t timeout_ms)
 {
     if (s_twdt_inited) return true;
 
-    esp_task_wdt_config_t cfg = {
+    esp_task_wdt_config_t cfg =
+    {
         .timeout_ms     = timeout_ms,
         .idle_core_mask = 0,
         .trigger_panic  = true,
     };
     esp_err_t err = esp_task_wdt_init(&cfg);
-    if (err == ESP_ERR_INVALID_STATE) {
+    if (err == ESP_ERR_INVALID_STATE)
+    {
         s_twdt_inited = true;
         return true;
     }

@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* RTC 时间结构体 */
@@ -53,3 +54,4 @@ void hal_rtc_force_stop(void);
 #endif
 
 #endif /* HAL_RTC_H */
+

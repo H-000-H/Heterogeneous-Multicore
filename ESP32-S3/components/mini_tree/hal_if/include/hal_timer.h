@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 定时器工作模式 */
@@ -67,3 +68,4 @@ void hal_timer_force_stop(void);
 #endif
 
 #endif /* HAL_TIMER_H */
+

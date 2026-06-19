@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* I2C 总线配置 */
@@ -42,3 +43,4 @@ int hal_i2c_unlock_bus(int port);
 #endif
 
 #endif /* HAL_I2C_BUS_H */
+

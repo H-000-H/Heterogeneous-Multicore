@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── ISR 安全红线 ──
@@ -50,7 +51,8 @@ static inline int hal_is_in_isr(void)
 /* ── ISR 安全断言 (DEBUG 时检测非法 VFS 调用) ──
  *
  * 在任何 VFS 入口处插入 HAL_ASSERT_NOT_ISR():
- *   int device_write(struct device* dev, ...) {
+ *   int device_write(struct device* dev, ...)
+ {
  *       HAL_ASSERT_NOT_ISR();
  *       ...
  *   }
@@ -145,3 +147,4 @@ static inline void hal_irq_restore(uint32_t mask) { (void)mask; }
 #endif
 
 #endif /* HAL_CPU_FAST_H */
+

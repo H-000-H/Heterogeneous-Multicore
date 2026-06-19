@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* PWM 通道配置 */
@@ -38,3 +39,4 @@ void hal_pwm_force_stop_all(void);
 #endif
 
 #endif /* HAL_PWM_H */
+

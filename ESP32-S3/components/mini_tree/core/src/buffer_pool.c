@@ -2,8 +2,6 @@
 #include "osal.h"
 #include "compiler_compat.h"
 
-#include <string.h>
-
 /* ── 内部常量 ── */
 #define BP_FREE_ALL  0xFFFFFFFFu
 
@@ -124,7 +122,8 @@ static uint32_t bitmap_alloc(volatile uint32_t* mask)
     uint32_t old, new_mask;
     int bit;
 
-    do {
+    do
+    {
         old = *mask;
         if (old == 0) return BP_MAX_BUFS;
         bit = COMPAT_CTZ(old);  /* 找最低位 1 → 第一个空闲 */
@@ -166,7 +165,7 @@ struct bp_pool* bp_create(const struct bp_config* config)
             osal_free(pool);
             return NULL;
         }
-        memset(config->static_mem, 0, config->static_len);
+        __builtin_memset(config->static_mem, 0, config->static_len);
         pool->pool_mem     = (uint8_t*)config->static_mem;
         pool->pool_mem_raw = NULL;
         pool->owned        = 0;
@@ -206,7 +205,8 @@ void* bp_alloc(struct bp_pool* pool)
     uint32_t u = BP_ADD_FETCH(&pool->used, 1);
     /* 更新峰值 (无锁 CAS) */
     uint32_t p;
-    do {
+    do
+    {
         p = pool->peak;
         if (u <= p) break;
     } while (!BP_CAS(&pool->peak, &p, u));
@@ -268,3 +268,4 @@ void bp_destroy(struct bp_pool* pool)
     }
     osal_free(pool);
 }
+

@@ -2,7 +2,8 @@
 #define HAL_PLATFORM_SAFETY_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 平台级安全硬件闭锁 (IEC 61508 §7.4.3)
@@ -31,3 +32,4 @@ void hal_platform_nmi_emergency_stamp(void);
 #endif
 
 #endif /* HAL_PLATFORM_SAFETY_H */
+

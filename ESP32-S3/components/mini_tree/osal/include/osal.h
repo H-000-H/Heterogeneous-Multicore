@@ -11,7 +11,8 @@
 #include "osal_tick.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define OSAL_WAIT_FOREVER UINT32_MAX
@@ -175,9 +176,25 @@ int  osal_sem_wait(struct osal_sem* sem, uint32_t timeout_ms) COMPAT_WARN_UNUSED
 bool osal_sem_post(struct osal_sem* sem) COMPAT_WARN_UNUSED_RESULT;
 bool osal_sem_post_from_isr(struct osal_sem* sem, bool* px_yield_required) COMPAT_WARN_UNUSED_RESULT;
 
-/* ── 静态池辅助函数 ── */
-int osal_pool_claim(volatile uint8_t* used_slots, size_t slot_count) COMPAT_WARN_UNUSED_RESULT;
-void osal_pool_release(volatile uint8_t* used_slots, size_t slot_count, int slot_index);
+/* ── 槽位池 (线程/中断安全 claim/release) ──
+ * used_slots[] 由调用方提供; osal_pool_init() 须在首次 claim 前调用一次.
+ * ESP32: 池内嵌 portMUX, 任务与 ISR 均可安全 claim/release.
+ */
+#ifndef OSAL_POOL_MUX_STORAGE_SIZE
+#define OSAL_POOL_MUX_STORAGE_SIZE 16
+#endif
+
+typedef struct osal_pool
+{
+    volatile uint8_t* used_slots;
+    size_t            slot_count;
+    uint8_t           mux_storage[OSAL_POOL_MUX_STORAGE_SIZE];
+} osal_pool_t;
+
+int  osal_pool_init(osal_pool_t* pool, volatile uint8_t* buffer, size_t count)
+    COMPAT_WARN_UNUSED_RESULT;
+int  osal_pool_claim(osal_pool_t* pool) COMPAT_WARN_UNUSED_RESULT;
+void osal_pool_release(osal_pool_t* pool, int slot_index);
 
 /* ── 任务 (stack_size 单位: 字节, 所有后端统一) ── */
 int osal_task_create(const char* name, uint32_t stack_size,

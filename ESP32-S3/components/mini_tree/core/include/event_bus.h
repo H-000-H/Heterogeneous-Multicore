@@ -7,7 +7,8 @@
 #include "compiler_compat.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 框架级事件 ID (框架内部使用, 不涉及任何业务语义) ── */
@@ -50,3 +51,4 @@ size_t event_bus_dropped_count(void);
 #endif
 
 #endif /* EVENT_BUS_H */
+

@@ -4,8 +4,10 @@
  *
  * Board-specific pins / status in board *.dts &spi1 { } / &fft_slave { }.
  * Bindings:
- *   esp32,spi                      — vfs/spi/spi_bus.c
- *   heterogeneous,fft-spi-slave    — drivers/fft/fft_spi_drv.c
+ *   esp32,spi                        — vfs/spi/spi_bus.c (Slave 总线)
+ *   esp32,spi-master                 — vfs/spi/spi_bus.c (Master 总线)
+ *   heterogeneous,fft-spi-slave      — drivers/fft/fft_spi_drv.c → spi_slave_client
+ *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c
  */
 
 #include "esp32s3.dtsi"
@@ -28,6 +30,25 @@
 			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
 			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
 			status = "disabled";
+		};
+	};
+
+	spi2: spi@1{
+		compatible = "esp32,spi-master";
+		reg = <1>;
+		#address-cells =<1>;
+		#size-cells    =<0>;
+		host-id	       =<SPI_FLASH_HOST_ID>;
+		dma-chan       =<SPI_DEFAULT_DMA_CHAN>;
+		status 	       ="disabled";
+
+		w25q64_master: w25q64@0 {
+			compatible = "heterogeneous,w25q64-master";
+			reg	   		=<0>;
+			spi-mode   		=<SPI_DEFAULT_MODE>;
+			spi-max-frequency	=<SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+			queue-size		=<SPI_DEFAULT_QUEUE_SIZE>;
+			status			="disabled";
 		};
 	};
 };

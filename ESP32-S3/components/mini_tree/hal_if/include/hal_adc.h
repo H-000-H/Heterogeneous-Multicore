@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ADC 转换精度 */
@@ -55,3 +56,4 @@ struct adc_read_arg
 #endif
 
 #endif /* HAL_ADC_H */
+

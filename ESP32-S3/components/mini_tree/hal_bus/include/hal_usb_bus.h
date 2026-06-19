@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* USB 工作模式 */
@@ -90,3 +91,4 @@ void hal_usb_force_stop(void);
 #endif
 
 #endif /* HAL_USB_BUS_H */
+

@@ -14,7 +14,8 @@
 
 #define WS2812_COUNT  DTC_GEN_COUNT_ESP32_WS2812
 
-struct ws2812_device {
+struct ws2812_device
+{
     struct device*        dev;
     struct hal_pulse_ws2812_hw hw;
     struct osal_mutex*         io_mutex;
@@ -38,8 +39,15 @@ _Static_assert(WS2812_DRV_TX_BUF_MAX <= (size_t)INT_MAX,
 
 static struct ws2812_device s_ws2812_pool[WS2812_COUNT];
 static uint8_t s_ws2812_used[WS2812_COUNT];
+static osal_pool_t s_ws2812_pool_ctrl;
 static uint8_t s_ws2812_tx_buf[WS2812_COUNT][WS2812_DRV_TX_BUF_MAX];
 static uint8_t s_ws2812_mutex_storage[WS2812_COUNT][OSAL_MUTEX_STORAGE_SIZE];
+
+pre_execution(160)
+static void ws2812_pool_boot_init(void)
+{
+    osal_pool_init(&s_ws2812_pool_ctrl, s_ws2812_used, WS2812_COUNT);
+}
 
 enum {
     WS2812_COLOR_R = 0,
@@ -54,10 +62,12 @@ static int ws2812_parse_color_order(const char* order, uint8_t out[3])
     if (!order || strlen(order) != 3)
         return VFS_ERR_INVAL;
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         uint8_t component;
 
-        switch (order[i]) {
+        switch (order[i])
+        {
         case 'r':
         case 'R':
             component = WS2812_COLOR_R;
@@ -92,7 +102,7 @@ static int ws2812_push_frame(struct ws2812_device* wsdev, uint32_t timeout_ms)
 
 static void ws2812_clear_frame(struct ws2812_device* wsdev)
 {
-    memset(wsdev->tx_buf, 0, (size_t)wsdev->num_leds * (size_t)wsdev->bytes_per_led);
+    __builtin_memset(wsdev->tx_buf, 0, (size_t)wsdev->num_leds * (size_t)wsdev->bytes_per_led);
 }
 
 static void ws2812_set_pixel(struct ws2812_device* wsdev, int index,
@@ -129,30 +139,44 @@ static int ws2812_set_color(struct ws2812_device* wsdev,
 
 static struct ws2812_device* ws2812_get_drvdata(struct device* dev)
 {
-    return dev ? (struct ws2812_device*)device_get_priv(dev) : NULL;
+    void* priv;
+
+    if (!dev)
+        return (struct ws2812_device*)ERR_PTR(VFS_ERR_INVAL);
+
+    priv = device_get_priv(dev);
+    if (IS_ERR(priv))
+        return (struct ws2812_device*)priv;
+
+    return (struct ws2812_device*)priv;
 }
 
 static int ws2812_open(struct device* dev, void* arg)
 {
     (void)arg;
-    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
-    if (!dev || !wsdev)
+    if (!dev)
         return VFS_ERR_INVAL;
 
+    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
+    if (IS_ERR(wsdev))
+        return PTR_ERR(wsdev);
+
     struct dev_lifecycle* lc = device_lc(dev);
-    if (!lc)
-        return VFS_ERR_INVAL;
+    if (IS_ERR(lc))
+        return PTR_ERR(lc);
 
     int first = dev_lc_open_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
     if (first < 0)
         return first;
 
     int ret = VFS_OK;
-    if (first) {
+    if (first)
+    {
         ws2812_clear_frame(wsdev);
         ret = ws2812_push_frame(wsdev, wsdev->default_timeout_ms) == 0 ?
               VFS_OK : VFS_ERR_IO;
-        if (ret != VFS_OK) {
+        if (ret != VFS_OK)
+        {
             dev_lc_open_abort(lc);
             return ret;
         }
@@ -164,19 +188,23 @@ static int ws2812_open(struct device* dev, void* arg)
 
 static int ws2812_close(struct device* dev)
 {
-    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
-    if (!dev || !wsdev)
+    if (!dev)
         return VFS_ERR_INVAL;
 
+    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
+    if (IS_ERR(wsdev))
+        return PTR_ERR(wsdev);
+
     struct dev_lifecycle* lc = device_lc(dev);
-    if (!lc)
-        return VFS_ERR_INVAL;
+    if (IS_ERR(lc))
+        return PTR_ERR(lc);
 
     int last = dev_lc_close_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
     if (last < 0)
         return last;
 
-    if (last) {
+    if (last)
+    {
         ws2812_clear_frame(wsdev);
         /* close 不因灭灯失败而向上报错; 失败时记 log 便于排查硬件 */
         if (ws2812_push_frame(wsdev, wsdev->default_timeout_ms) != 0)
@@ -189,34 +217,41 @@ static int ws2812_close(struct device* dev)
 
 static int ws2812_write(struct device* dev, const void* buf, size_t len, uint32_t timeout_ms)
 {
-    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
-    if (!dev || !wsdev)
+    if (!dev)
         return VFS_ERR_INVAL;
 
+    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
+    if (IS_ERR(wsdev))
+        return PTR_ERR(wsdev);
+
     struct dev_lifecycle* lc = device_lc(dev);
-    if (!lc)
-        return VFS_ERR_INVAL;
+    if (IS_ERR(lc))
+        return PTR_ERR(lc);
 
     int ret = dev_lc_io_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
     if (ret != VFS_OK) return ret;
 
-    if (len == 0) {
+    if (len == 0)
+    {
         dev_lc_io_end(lc);
-        return 0;
+        return VFS_OK;
     }
-    if (!buf) {
+    if (!buf)
+    {
         dev_lc_io_end(lc);
         return VFS_ERR_INVAL;
     }
 
     size_t bpl = wsdev->bytes_per_led;
     size_t max_len = (size_t)wsdev->num_leds * bpl;
-    if (len > max_len || (len > 0U && (len % bpl) != 0U)) {
+    if (len > max_len || (len > 0U && (len % bpl) != 0U))
+    {
         dev_lc_io_end(lc);
         return VFS_ERR_INVAL;
     }
     memcpy(wsdev->tx_buf, buf, len);
-    if (ws2812_push_frame(wsdev, timeout_ms) != 0) {
+    if (ws2812_push_frame(wsdev, timeout_ms) != 0)
+    {
         dev_lc_io_end(lc);
         return VFS_ERR_IO;
     }
@@ -226,27 +261,37 @@ static int ws2812_write(struct device* dev, const void* buf, size_t len, uint32_
 
 static int ws2812_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uint32_t timeout_ms)
 {
-    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
-    if (!dev || !wsdev)
+    if (!dev)
         return VFS_ERR_INVAL;
 
+    struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
+    if (IS_ERR(wsdev))
+        return PTR_ERR(wsdev);
+
     struct dev_lifecycle* lc = device_lc(dev);
-    if (!lc)
-        return VFS_ERR_INVAL;
+    if (IS_ERR(lc))
+        return PTR_ERR(lc);
 
     int ret = dev_lc_io_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
     if (ret != VFS_OK) return ret;
 
-    switch (cmd) {
+    switch (cmd)
+    {
     case WS2812_CMD_SET_COLOR:
         if (!arg || arg_len != sizeof(struct ws2812_color)) ret = VFS_ERR_INVAL;
         else ret = ws2812_set_color(wsdev, (const struct ws2812_color*)arg, timeout_ms);
         break;
     case WS2812_CMD_SET_BRIGHTNESS:
-        if (!arg || arg_len != sizeof(uint8_t)) ret = VFS_ERR_INVAL;
-        else { wsdev->brightness = *(const uint8_t*)arg; ret = VFS_OK; }
+        if (!arg || arg_len != sizeof(uint8_t))
+            ret = VFS_ERR_INVAL;
+        else
+        {
+            wsdev->brightness = *(const uint8_t*)arg;
+            ret = VFS_OK;
+        }
         break;
-    case WS2812_CMD_OFF: {
+    case WS2812_CMD_OFF:
+    {
         const struct ws2812_color off = {0, 0, 0};
         ret = ws2812_set_color(wsdev, &off, timeout_ms);
         break;
@@ -260,7 +305,8 @@ static int ws2812_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, 
     return ret;
 }
 
-static const struct file_operations ws2812_fops = {
+static const struct file_operations ws2812_fops =
+{
     .init = NULL,
     .open = ws2812_open,
     .close = ws2812_close,
@@ -291,30 +337,34 @@ static int ws2812_probe(struct device* dev)
         device_get_prop_int(dev, "t0l-ticks", &t0l_ticks) != 0 ||
         device_get_prop_int(dev, "t1h-ticks", &t1h_ticks) != 0 ||
         device_get_prop_int(dev, "t1l-ticks", &t1l_ticks) != 0 ||
-        device_get_prop_int(dev, "reset-ticks", &reset_ticks) != 0) {
+        device_get_prop_int(dev, "reset-ticks", &reset_ticks) != 0)
+        {
         return VFS_ERR_INVAL;
     }
 
-    if (num_leds <= 0 || bytes_per_led <= 0) {
+    if (num_leds <= 0 || bytes_per_led <= 0)
+    {
         return VFS_ERR_INVAL;
     }
 
-    if (brightness < 0 || brightness > 255) {
+    if (brightness < 0 || brightness > 255)
+    {
         return VFS_ERR_INVAL;
     }
 
     {
         size_t frame_len = (size_t)num_leds * (size_t)bytes_per_led;
-        if (frame_len > WS2812_DRV_TX_BUF_MAX) {
+        if (frame_len > WS2812_DRV_TX_BUF_MAX)
+        {
             return VFS_ERR_INVAL;
         }
     }
 
-    int pool_idx = osal_pool_claim(s_ws2812_used, WS2812_COUNT);
+    int pool_idx = osal_pool_claim(&s_ws2812_pool_ctrl);
     if (pool_idx < 0) return VFS_ERR_NOMEM;
 
     struct ws2812_device* wsdev = &s_ws2812_pool[pool_idx];
-    memset(wsdev, 0, sizeof(*wsdev));
+    __builtin_memset(wsdev, 0, sizeof(*wsdev));
     wsdev->dev = dev;
     wsdev->engine_id = pool_idx;
     wsdev->pool_idx = pool_idx;
@@ -346,7 +396,7 @@ static int ws2812_probe(struct device* dev)
     if (hal_pulse_ws2812_open(wsdev->engine_id, &wsdev->hw) != 0)
         goto err_mutex;
 
-    if (device_set_priv(dev, wsdev) != 0)
+    if (device_set_priv(dev, wsdev) != VFS_OK)
         goto err_mutex;
     dev->ops = &ws2812_fops;
     DRV_LOGI(kTag, "probe OK: gpio=%d, num_leds=%d", wsdev->gpio, wsdev->num_leds);
@@ -356,23 +406,27 @@ err_mutex:
     osal_mutex_destroy(wsdev->io_mutex);
     wsdev->io_mutex = NULL;
 err_pool:
-    memset(wsdev, 0, sizeof(*wsdev));
-    osal_pool_release(s_ws2812_used, WS2812_COUNT, pool_idx);
+    __builtin_memset(wsdev, 0, sizeof(*wsdev));
+    osal_pool_release(&s_ws2812_pool_ctrl, pool_idx);
     return VFS_ERR_IO;
 }
 
 static int ws2812_remove(struct device* dev)
 {
+    if (!dev)
+        return VFS_ERR_INVAL;
+
     struct ws2812_device* wsdev = ws2812_get_drvdata(dev);
-    if (!dev || !wsdev) return VFS_ERR_INVAL;
+    if (IS_ERR(wsdev))
+        return PTR_ERR(wsdev);
 
     struct osal_mutex* io_mutex = wsdev->io_mutex;
     int engine_id = wsdev->engine_id;
     int pool_idx = wsdev->pool_idx;
 
     struct dev_lifecycle* lc = device_lc(dev);
-    if (!lc)
-        return VFS_ERR_INVAL;
+    if (IS_ERR(lc))
+        return PTR_ERR(lc);
 
     dev_lc_remove_start(lc);
     device_ops_unregister(dev);
@@ -385,7 +439,8 @@ static int ws2812_remove(struct device* dev)
 #ifndef NDEBUG
     assert(ret == VFS_OK);
 #else
-    if (ret != VFS_OK) {
+    if (ret != VFS_OK)
+    {
         DRV_LOGE(kTag, "remove drain failed ret=%d opens=%d io_active=%d — "
                  "leaving pool slot allocated",
                  ret, dev_lc_opens(lc), dev_lc_io_active_count(lc));
@@ -400,9 +455,11 @@ static int ws2812_remove(struct device* dev)
     hal_pulse_ws2812_close(engine_id);
     osal_mutex_destroy(io_mutex);
     dev_lc_remove_finish(lc);
-    osal_pool_release(s_ws2812_used, WS2812_COUNT, pool_idx);
-    memset(wsdev, 0, sizeof(*wsdev));
+    osal_pool_release(&s_ws2812_pool_ctrl, pool_idx);
+    __builtin_memset(wsdev, 0, sizeof(*wsdev));
     return VFS_OK;
 }
 
 DRIVER_REGISTER(ws2812, "esp32,ws2812", ws2812_probe, ws2812_remove)
+
+

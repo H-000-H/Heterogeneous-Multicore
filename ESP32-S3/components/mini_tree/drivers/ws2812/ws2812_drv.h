@@ -11,7 +11,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define WS2812_CMD_SET_COLOR       1  /* arg: struct ws2812_color* */
@@ -36,3 +37,4 @@ struct ws2812_color
 #endif
 
 #endif /* WS2812_DRV_H */
+

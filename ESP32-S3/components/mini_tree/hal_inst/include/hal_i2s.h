@@ -4,7 +4,8 @@
 #include "hal_i2s_bus.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ioctl 兼容层 */
@@ -24,3 +25,4 @@ struct i2s_write_arg
 #endif
 
 #endif /* HAL_I2S_H */
+

@@ -6,7 +6,8 @@
 #include "dev_lifecycle.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── Driver 核心 API ── */
@@ -35,11 +36,13 @@ void board_safety_register_shutdown(safety_shutdown_fn_t fn);
  * 由编译期 dtc-lite.py 扫描收录, 运行时无 strcmp 匹配
  *
  * 带 fops 的驱动 remove 标准序列 (dev_lifecycle):
- *   dev_lc_remove_start(device_lc(dev));
+ *   lc = device_lc(dev);
+ *   if (IS_ERR(lc)) return PTR_ERR(lc);
+ *   dev_lc_remove_start(lc);
  *   device_ops_unregister(dev);
- *   dev_lc_remove_drain(device_lc(dev), OSAL_WAIT_FOREVER);  // 持 io_lock 返回
+ *   dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER);  // 持 io_lock 返回
  *   ... teardown ...
- *   dev_lc_remove_finish(device_lc(dev));
+ *   dev_lc_remove_finish(lc);
  * probe 阶段: device_lc_bind(dev, io_mutex);  io_mutex 用 osal_mutex_create_static (plain)
  */
 #define DRIVER_REGISTER(name, compat, probe_fn, remove_fn)        \
@@ -57,3 +60,4 @@ void board_safety_register_shutdown(safety_shutdown_fn_t fn);
 #endif
 
 #endif /* BOARD_DRIVER_H */
+

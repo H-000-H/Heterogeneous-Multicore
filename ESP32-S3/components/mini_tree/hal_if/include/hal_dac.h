@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 数据对齐模式 */
@@ -43,3 +44,4 @@ void hal_dac_force_stop(void);
 #endif
 
 #endif /* HAL_DAC_H */
+

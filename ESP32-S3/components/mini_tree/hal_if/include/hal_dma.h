@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 传输方向 */
@@ -114,3 +115,4 @@ static inline int hal_dma_config_block(struct hal_dma_chan* chan,
 #endif
 
 #endif /* HAL_DMA_H */
+

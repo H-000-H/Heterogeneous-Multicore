@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── RMS 单调速率调度优先级 (数值越高优先级越高) ── */
@@ -23,3 +24,4 @@ struct board_task_config
 #endif
 
 #endif /* TASK_CONFIG_H */
+

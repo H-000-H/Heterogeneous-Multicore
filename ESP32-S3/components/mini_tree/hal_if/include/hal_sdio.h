@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 总线宽度 */
@@ -63,3 +64,4 @@ void hal_sdio_force_stop(void);
 #endif
 
 #endif /* HAL_SDIO_H */
+

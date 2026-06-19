@@ -223,6 +223,13 @@ struct osal_queue_obj
 /* ── 队列控制块池 ── */
 static struct osal_queue_obj s_queues[OSAL_NULL_MAX_QUEUES];
 static uint8_t s_queue_used[OSAL_NULL_MAX_QUEUES];
+static osal_pool_t s_queue_pool_ctrl;
+
+pre_execution(152)
+static void osal_null_queue_pool_boot_init(void)
+{
+    osal_pool_init(&s_queue_pool_ctrl, s_queue_used, OSAL_NULL_MAX_QUEUES);
+}
 
 /* ── 裸机临界区: 关全局中断 (单核 ISR vs 主循环互斥) ── */
 #if defined(__ARM_ARCH_7M__) || defined(__ARM_ARCH_7EM__) || \
@@ -270,7 +277,14 @@ static int osal_mutex_init(struct osal_mutex* m, osal_mutex_type_t type)
 }
 
 static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE];
-static uint8_t s_mutex_used[OSAL_MUTEX_POOL_SIZE];
+static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE];
+static osal_pool_t       s_mutex_pool_ctrl;
+
+pre_execution(150)
+static void osal_null_mutex_pool_boot_init(void)
+{
+    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+}
 
 /* ── 单调时钟 (由 SysTick 或定时器中断累加) ── */
 static osal_atomic_u32_t s_sys_tick_ms = OSAL_ATOMIC_U32_INIT(0U);
@@ -280,17 +294,32 @@ static osal_atomic_i32_t s_isr_nest = OSAL_ATOMIC_I32_INIT(0);
 
 /* ── 池操作 ── */
 
-static int pool_claim(volatile uint8_t* used, size_t count)
+int osal_pool_init(osal_pool_t* pool, volatile uint8_t* buffer, size_t count)
 {
-    if (!used || count == 0) return -1;
+    if (!pool || !buffer || count == 0)
+        return -1;
+
+    pool->used_slots = buffer;
+    pool->slot_count = count;
+
+    for (size_t i = 0; i < count; i++)
+        buffer[i] = 0;
+
+    return 0;
+}
+
+int osal_pool_claim(osal_pool_t* pool)
+{
+    if (!pool || !pool->used_slots || pool->slot_count == 0)
+        return -1;
 
     uint32_t irq = osal_null_irq_disable();
     int claimed = -1;
-    for (size_t i = 0; i < count; i++)
+    for (size_t i = 0; i < pool->slot_count; i++)
     {
-        if (!used[i])
+        if (!pool->used_slots[i])
         {
-            used[i] = 1;
+            pool->used_slots[i] = 1;
             claimed = (int)i;
             break;
         }
@@ -299,12 +328,13 @@ static int pool_claim(volatile uint8_t* used, size_t count)
     return claimed;
 }
 
-static void pool_release(volatile uint8_t* used, size_t count, int idx)
+void osal_pool_release(osal_pool_t* pool, int idx)
 {
-    if (!used || idx < 0 || (size_t)idx >= count) return;
+    if (!pool || !pool->used_slots || idx < 0 || (size_t)idx >= pool->slot_count)
+        return;
 
     uint32_t irq = osal_null_irq_disable();
-    used[idx] = 0;
+    pool->used_slots[idx] = 0;
     osal_null_irq_restore(irq);
 }
 
@@ -334,7 +364,8 @@ int osal_in_isr(void)
 /*
  * 以下两个函数由移植层在中断入口/出口调用.
  * 典型用法 (startup_xxx.s 或 C 中断处理):
- *   void SysTick_Handler(void) {
+ *   void SysTick_Handler(void)
+ {
  *       osal_null_isr_enter();
  *       // ... 中断处理 ...
  *       osal_null_isr_exit();
@@ -471,12 +502,12 @@ int osal_mutex_create_typed(struct osal_mutex** out, osal_mutex_type_t type)
     if (type != OSAL_MUTEX_RECURSIVE && type != OSAL_MUTEX_PLAIN) return -1;
     *out = NULL;
 
-    int idx = pool_claim(s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    int idx = osal_pool_claim(&s_mutex_pool_ctrl);
     if (idx < 0) return -1;
 
     if (osal_mutex_init(&s_mutex_pool[idx], type) != 0)
     {
-        pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, idx);
+        osal_pool_release(&s_mutex_pool_ctrl, idx);
         return -1;
     }
     *out = (struct osal_mutex*)&s_mutex_pool[idx];
@@ -538,7 +569,7 @@ void osal_mutex_destroy(struct osal_mutex* mutex)
     {
         if (&s_mutex_pool[i] == (struct osal_mutex*)mutex)
         {
-            pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, i);
+            osal_pool_release(&s_mutex_pool_ctrl, i);
             break;
         }
     }
@@ -612,17 +643,6 @@ int osal_mutex_unlock(struct osal_mutex* mutex)
     return 0;
 }
 
-/* ── 池操作 (对外接口, 供 osal_pool_claim/release 宏或外部调用) ── */
-int osal_pool_claim(volatile uint8_t* used_slots, size_t slot_count)
-{
-    return pool_claim(used_slots, slot_count);
-}
-
-void osal_pool_release(volatile uint8_t* used_slots, size_t slot_count, int slot_index)
-{
-    pool_release(used_slots, slot_count, slot_index);
-}
-
 /* ═══════════════════════════════════════════════════════════════════════════
  *  任务 (裸机不支持多任务, 创建固定失败)
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -689,14 +709,21 @@ _Static_assert(sizeof(struct osal_sem) <= OSAL_SEM_STORAGE_SIZE,
                "OSAL_SEM_STORAGE_SIZE too small");
 
 static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE];
-static uint8_t s_sem_used[OSAL_SEM_POOL_SIZE];
+static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE];
+static osal_pool_t   s_sem_pool_ctrl;
+
+pre_execution(151)
+static void osal_null_sem_pool_boot_init(void)
+{
+    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+}
 
 int osal_sem_create_binary(struct osal_sem** out)
 {
     if (!out)
         return -1;
 
-    int idx = pool_claim(s_sem_used, OSAL_SEM_POOL_SIZE);
+    int idx = osal_pool_claim(&s_sem_pool_ctrl);
     if (idx < 0)
         return -1;
 
@@ -725,10 +752,13 @@ void osal_sem_destroy(struct osal_sem* sem)
         return;
 
     osal_atomic_store_relaxed_u32(&sem->signaled, 0U);
-    if (sem->from_pool) {
-        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++) {
-            if (&s_sem_pool[i] == sem) {
-                pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
+    if (sem->from_pool)
+    {
+        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++)
+        {
+            if (&s_sem_pool[i] == sem)
+            {
+                osal_pool_release(&s_sem_pool_ctrl, (int)i);
                 break;
             }
         }
@@ -754,13 +784,18 @@ int osal_sem_wait(struct osal_sem* sem, uint32_t timeout_ms)
     if (timeout_ms == 0U)
         return -1;
 
-    if (timeout_ms == OSAL_WAIT_FOREVER) {
-        while (osal_sem_try_wait(sem) != 0) { /* 裸机忙等 */ }
+    if (timeout_ms == OSAL_WAIT_FOREVER)
+    {
+        while (osal_sem_try_wait(sem) != 0)
+        {
+            /* 裸机忙等 */
+        }
         return 0;
     }
 
     uint32_t start = osal_time_ms();
-    while (osal_sem_try_wait(sem) != 0) {
+    while (osal_sem_try_wait(sem) != 0)
+    {
         if ((osal_time_ms() - start) >= timeout_ms)
             return -1;
     }
@@ -799,7 +834,7 @@ osal_queue_handle_t osal_queue_create(size_t queue_len, size_t item_size)
     size_t needed = item_size * queue_len;
     if (needed == 0 || needed > OSAL_NULL_QUEUE_BUF_SZ) return NULL;
 
-    int idx = pool_claim(s_queue_used, OSAL_NULL_MAX_QUEUES);
+    int idx = osal_pool_claim(&s_queue_pool_ctrl);
     if (idx < 0) return NULL;
 
     struct osal_queue_obj* q = &s_queues[idx];
@@ -808,7 +843,7 @@ osal_queue_handle_t osal_queue_create(size_t queue_len, size_t item_size)
     q->buf = (uint8_t*)osal_calloc(1, needed);
     if (!q->buf)
     {
-        pool_release(s_queue_used, OSAL_NULL_MAX_QUEUES, idx);
+        osal_pool_release(&s_queue_pool_ctrl, idx);
         return NULL;
     }
 
@@ -834,7 +869,7 @@ void osal_queue_delete(osal_queue_handle_t queue)
         q->buf = NULL;
     }
     q->used = false;
-    pool_release(s_queue_used, OSAL_NULL_MAX_QUEUES, idx);
+    osal_pool_release(&s_queue_pool_ctrl, idx);
 }
 
 bool osal_queue_send(osal_queue_handle_t queue, const void* item, uint32_t timeout_ms)

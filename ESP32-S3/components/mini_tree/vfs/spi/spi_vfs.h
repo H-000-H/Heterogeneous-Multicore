@@ -3,19 +3,31 @@
 
 #include <stddef.h>
 #include <stdint.h>
-
+#include "compiler_compat.h"
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 struct device;
 struct hal_spi_bus;
 
-/* VFS ioctl 命令 */
-#define SPI_CMD_DEINIT           0x40
-#define SPI_CMD_READ             0x41
-#define SPI_CMD_QUEUE_TX         0x42  /* write_top_half: 只入队, 等主机 */
-#define SPI_CMD_GET_TRANS_RESULT 0x43  /* 下半部: 等待 queue 的事务完成 */
+/* VFS ioctl 命令 (每条总线 namespace 0x100, 命令在 base 内递增) */
+#define SPI_CMD_BASE             COMPAT_MAGIC(SPI) + 0x40
+#define SPI_CMD_DEINIT           SPI_CMD_BASE+0x01
+#define SPI_CMD_READ             SPI_CMD_BASE+0x02
+#define SPI_CMD_QUEUE_TX         SPI_CMD_BASE+0x03  /* write_top_half: 只入队, 等主机 */
+#define SPI_CMD_GET_TRANS_RESULT SPI_CMD_BASE+0x04  /* 下半部: 等待 queue 的事务完成 */
+
+/* 默认对外 poison SPI_CMD_DEINIT；vfs/spi 驱动通过 spi_vfs_drv.h 关闭 */
+#ifndef SPI_VFS_PUBLIC_POISON_DEINIT
+#define SPI_VFS_PUBLIC_POISON_DEINIT 1
+#endif
+#if SPI_VFS_PUBLIC_POISON_DEINIT
+#ifdef __GNUC__
+#pragma GCC poison SPI_CMD_DEINIT
+#endif
+#endif
 
 struct spi_read_arg
 {
@@ -38,10 +50,11 @@ struct spi_trans_result_arg
     size_t* trans_len;
 };
 
-struct hal_spi_bus* device_get_spi_bus(struct device* dev);
+int device_get_spi_bus(struct device* dev, struct hal_spi_bus** out) COMPAT_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* SPI_VFS_H */
+

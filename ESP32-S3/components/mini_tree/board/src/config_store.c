@@ -58,7 +58,8 @@ static config_store_write_hook_t s_write_hook = NULL;
  */
 static uint32_t crc32_le(uint32_t crc, const uint8_t* buf, uint32_t len)
 {
-    static const uint32_t kTable[256] = {
+    static const uint32_t kTable[256] =
+    {
         0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F,
         0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
         0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91, 0x1DB71064, 0x6AB020F2,
@@ -150,7 +151,7 @@ static struct cs_entry* add_entry(const char* key, cs_type_t type)
     e->key[sizeof(e->key) - 1] = '\0';
     e->type  = type;
     e->dirty = false;
-    memset(&e->value, 0, sizeof(e->value));
+    __builtin_memset(&e->value, 0, sizeof(e->value));
     return e;
 }
 
@@ -218,7 +219,8 @@ static bool load_factory_defaults(void)
             case CS_TYPE_FLOAT:
                 e->value.f = (float)atof(val_start);
                 break;
-            case CS_TYPE_STRING: {
+            case CS_TYPE_STRING:
+            {
                 const char* q1 = strchr(val_start, '"');
                 const char* q2 = q1 ? strchr(q1 + 1, '"') : NULL;
                 if (q1 && q2)
@@ -263,7 +265,8 @@ static bool blob_serialize(uint8_t* buf, size_t buf_size, size_t* out_len)
             buf[pos++] = (uint8_t)((e->value.i >> 16) & 0xFF);
             buf[pos++] = (uint8_t)((e->value.i >> 24) & 0xFF);
             break;
-        case CS_TYPE_FLOAT: {
+        case CS_TYPE_FLOAT:
+        {
             uint32_t bits;
             memcpy(&bits, &e->value.f, sizeof(bits));
             buf[pos++] = (uint8_t)(bits & 0xFF);
@@ -275,7 +278,8 @@ static bool blob_serialize(uint8_t* buf, size_t buf_size, size_t* out_len)
         case CS_TYPE_BOOL:
             buf[pos++] = e->value.b ? 1 : 0;
             break;
-        case CS_TYPE_STRING: {
+        case CS_TYPE_STRING:
+        {
             uint16_t slen = (uint16_t)strlen(e->value.s);
             buf[pos++] = (uint8_t)(slen & 0xFF);
             buf[pos++] = (uint8_t)((slen >> 8) & 0xFF);
@@ -324,7 +328,8 @@ static bool blob_deserialize(const uint8_t* buf, size_t len)
                        | ((int)buf[pos + 3] << 24);
             pos += 4;
             break;
-        case CS_TYPE_FLOAT: {
+        case CS_TYPE_FLOAT:
+        {
             if (pos + 4 > len) return false;
             uint32_t bits = (uint32_t)buf[pos]
                           | ((uint32_t)buf[pos + 1] << 8)
@@ -338,7 +343,8 @@ static bool blob_deserialize(const uint8_t* buf, size_t len)
             if (pos >= len) return false;
             e->value.b = (buf[pos++] != 0);
             break;
-        case CS_TYPE_STRING: {
+        case CS_TYPE_STRING:
+        {
             if (pos + 2 > len) return false;
             uint16_t slen = (uint16_t)buf[pos] | ((uint16_t)buf[pos + 1] << 8);
             pos += 2;
@@ -593,3 +599,4 @@ int config_store_health(void)
 {
     return s_health;
 }
+

@@ -5,7 +5,7 @@
  *
  * 配置真相源:
  *   1. board/dts/, board/dtsi/, board/dt-bindings/ — 硬件实例与属性
- *   2. dt_config_gen.h      — DTC 编译期聚合 (DTC_GEN_COUNT_*)
+ *   2. dt_config_gen.h      — DTC 编译期聚合 (DTC_GEN_COUNT_*); 构建产物优先于 board/include 内 IDE stub
  *   3. system_scrubber_crc_gen.h — 构建后 CRC 基线
  *   4. config.h (Kconfig)   — 运行时容量 (OSAL 池、栈监控等)
  *

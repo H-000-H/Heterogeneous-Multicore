@@ -2,7 +2,7 @@
 #define COMPILER_COMPAT_H
 
 #include <stddef.h>
-
+#include <stdint.h>
 /* 统一类型获取宏 */
 #ifdef __cplusplus
 #define TYPEOF(expr) decltype(expr)
@@ -44,7 +44,29 @@
 #define COMPAT_TRAP()     __builtin_trap()
 #define COMPAT_CTZ(x)     __builtin_ctz(x)
 #define COMPAT_PACKED     __attribute__((packed))
+/* VFS ioctl 总线 namespace: 每条总线占 0x100, 新增总线只在表里加一行 */
+#define COMPAT_MAGIC_SLOT_STRIDE 0x100u
+#define COMPAT_MAGIC_TABLE(X) \
+    X(SPI,   0x00) \
+    X(UART,  0x01) \
+    X(I2C,   0x02) \
+    X(I2S,   0x03) \
+    X(USB,   0x04) \
+    X(CAN,   0x05) \
+    X(ETH,   0x06) \
+    X(GPIO,  0x07) \
+    X(SDIO,  0x08)
+#define COMPAT_MAGIC_ENUM(name, slot) \
+    COMPAT_MAGIC_##name = (uint32_t)((slot) * COMPAT_MAGIC_SLOT_STRIDE),
 
+enum 
+{
+    COMPAT_MAGIC_TABLE(COMPAT_MAGIC_ENUM)
+};
+
+#undef COMPAT_MAGIC_ENUM
+
+#define COMPAT_MAGIC(x) COMPAT_MAGIC_##x
 #if defined(__CC_ARM) && (!defined(__ARMCC_VERSION) || (__ARMCC_VERSION < 6000000))
 #define COMPAT_ARM_COMPILER_5 1
 #endif
@@ -102,7 +124,8 @@
 static inline void auto_free_ptr(void *ptr)
 {
     void **real_ptr = (void **)ptr;
-    if (*real_ptr != NULL) {
+    if (*real_ptr != NULL)
+    {
         free(*real_ptr);
         *real_ptr = NULL;
     }
@@ -133,4 +156,35 @@ static inline void auto_free_ptr(void *ptr)
  */
 #define RAM_EXEC  __attribute__((section(".ram_code")))
 
+/*伪随机数生成器*/
+/*================================================================================================*/
+static uint32_t xorshift_state = 2463532242UL;
+#include <stdlib.h>
+
+static inline uint32_t COMPAT_RAND(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
+{
+    a ^= xorshift_state;
+
+    // ChaCha20
+    a += b; d ^= a; d = (d << 16) | (d >> 16);
+    c += d; b ^= c; b = (b << 12) | (b >> 20);
+    a += b; d ^= a; d = (d << 8)  | (d >> 24);
+    c += d; b ^= c; b = (b << 7)  | (b >> 25);
+
+    // ChaCha20 交替给 Xorshift
+    uint32_t x = a ^ b ^ c ^ d;
+
+    // Xorshift 核心变换
+    x ^= x << 13;
+    x ^= x >> 17;
+    x ^= x << 5;
+
+    //  Xorshift 的结果再与 ChaCha20 的非线性项异或后输
+    xorshift_state = x ^ (c + d);
+
+    return xorshift_state;
+}
+
+/*================================================================================================= */
 #endif /* COMPILER_COMPAT_H */
+

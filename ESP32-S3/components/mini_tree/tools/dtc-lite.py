@@ -1232,7 +1232,7 @@ class DTSCompiler:
             )
         return result
 
-    def compute_cascade_tables(self) -> Dict[int, List[int]]:
+    def _build_dep_graph(self) -> Tuple[List[List[int]], Dict[int, int]]:
         n: int = len(self.device_list)
         label_to_idx: Dict[str, int] = {}
         for i, dev in enumerate(self.device_list):
@@ -1251,6 +1251,19 @@ class DTSCompiler:
 
         order: List[int] = self.topological_sort()
         order_idx: Dict[int, int] = {dev: pos for pos, dev in enumerate(order)}
+        return graph, order_idx
+
+    def compute_direct_children_tables(self) -> Dict[int, List[int]]:
+        graph, order_idx = self._build_dep_graph()
+        children: Dict[int, List[int]] = {}
+        for i, direct in enumerate(graph):
+            if direct:
+                children[i] = sorted(direct, key=lambda x: order_idx.get(x, x))
+        return children
+
+    def compute_cascade_tables(self) -> Dict[int, List[int]]:
+        graph, order_idx = self._build_dep_graph()
+        n: int = len(self.device_list)
 
         cascade: Dict[int, List[int]] = {}
         for i in range(n):
@@ -1410,6 +1423,7 @@ class CGenerator:
             'remove_fn_t board_remove_get_fn(device_id_t id);',
             '',
             'const device_id_t* board_cascade_get(device_id_t id, int* count);',
+            'const device_id_t* board_children_get(device_id_t id, int* count);',
             '',
             '#ifdef __cplusplus',
             '}',
@@ -1662,6 +1676,60 @@ class CGenerator:
         ]
         self._write_if_changed(path, '\n'.join(lines))
 
+    def _append_device_id_relation_table(
+        self,
+        lines: List[str],
+        devs: List[DtsNode],
+        table: Dict[int, List[int]],
+        sym_prefix: str,
+        func_name: str,
+    ) -> None:
+        dev_count: int = len(devs)
+        counts: List[int] = [0] * dev_count
+        for i in range(dev_count):
+            if i in table:
+                counts[i] = len(table[i])
+
+        offsets: List[int] = [0] * dev_count
+        cumulative: int = 0
+        for i in range(dev_count):
+            offsets[i] = cumulative
+            cumulative += counts[i]
+
+        lines.append(f'static const device_id_t s_{sym_prefix}_data[] = {{')
+        has_data: bool = False
+        for i in range(dev_count):
+            if i in table:
+                has_data = True
+                for child_idx in table[i]:
+                    child_dev: DtsNode = devs[child_idx]
+                    lines.append(f'    DEV_ID_{self._snake_name(child_dev.name)},')
+        if not has_data:
+            lines.append('    0,')
+        lines += [
+            '};',
+            '',
+            f'static const uint8_t s_{sym_prefix}_counts[DEV_ID_COUNT] = {{',
+        ]
+        for i in range(dev_count):
+            lines.append(f'    [DEV_ID_{self._snake_name(devs[i].name)}] = {counts[i]},')
+        lines += [
+            '};',
+            '',
+            f'static const uint16_t s_{sym_prefix}_offset[DEV_ID_COUNT] = {{',
+        ]
+        for i in range(dev_count):
+            lines.append(f'    [DEV_ID_{self._snake_name(devs[i].name)}] = {offsets[i]},')
+        lines += [
+            '};',
+            '',
+            f'const device_id_t* {func_name}(device_id_t id, int* count) {{',
+            '    if ((int)id < 0 || (int)id >= DEV_ID_COUNT) { *count = 0; return NULL; }',
+            f'    *count = s_{sym_prefix}_counts[id];',
+            f'    return *count ? &s_{sym_prefix}_data[s_{sym_prefix}_offset[id]] : NULL;',
+            '}',
+        ]
+
     def _gen_board_probe_c(self) -> None:
         devs: List[DtsNode] = self.compiler.device_list
         order: List[int] = self.compiler.topological_sort()
@@ -1767,55 +1835,13 @@ class CGenerator:
         ]
 
         cascade: Dict[int, List[int]] = self.compiler.compute_cascade_tables()
-        dev_count: int = len(devs)
+        children: Dict[int, List[int]] = self.compiler.compute_direct_children_tables()
 
-        flat_data: List[int] = []
-        counts: List[int] = [0] * dev_count
-        for i in range(dev_count):
-            if i in cascade:
-                counts[i] = len(cascade[i])
-                flat_data.extend(cascade[i])
-            else:
-                counts[i] = 0
-
-        offsets: List[int] = [0] * dev_count
-        cumulative: int = 0
-        for i in range(dev_count):
-            offsets[i] = cumulative
-            cumulative += counts[i]
-
-        lines += [
-            'static const device_id_t s_cascade_data[] = {',
-        ]
-        if flat_data:
-            for idx in order:
-                if idx in cascade:
-                    for dep_idx in cascade[idx]:
-                        dep_dev: DtsNode = devs[dep_idx]
-                        lines.append(f'    DEV_ID_{self._snake_name(dep_dev.name)},')
-        lines += [
-            '};',
-            '',
-            'static const uint8_t s_cascade_counts[DEV_ID_COUNT] = {',
-        ]
-        for i in range(dev_count):
-            lines.append(f'    [DEV_ID_{self._snake_name(devs[i].name)}] = {counts[i]},')
-        lines += [
-            '};',
-            '',
-            'static const uint16_t s_cascade_offset[DEV_ID_COUNT] = {',
-        ]
-        for i in range(dev_count):
-            lines.append(f'    [DEV_ID_{self._snake_name(devs[i].name)}] = {offsets[i]},')
-        lines += [
-            '};',
-            '',
-            'const device_id_t* board_cascade_get(device_id_t id, int* count) {',
-            '    if ((int)id < 0 || (int)id >= DEV_ID_COUNT) { *count = 0; return NULL; }',
-            '    *count = s_cascade_counts[id];',
-            '    return *count ? &s_cascade_data[s_cascade_offset[id]] : NULL;',
-            '}',
-        ]
+        self._append_device_id_relation_table(
+            lines, devs, cascade, 'cascade', 'board_cascade_get')
+        lines.append('')
+        self._append_device_id_relation_table(
+            lines, devs, children, 'children', 'board_children_get')
 
         lines += ['']
         self._write_if_changed(path, '\n'.join(lines))

@@ -6,8 +6,9 @@
  */
 
 #define SPI_DEFAULT_HOST_ID           2
-#define SPI_DEFAULT_MAX_FREQUENCY_HZ  10000000
-#define SPI_DEFAULT_MODE              0
-#define SPI_DEFAULT_BITS_PER_WORD     8
-#define SPI_DEFAULT_QUEUE_SIZE        4
-#define SPI_DEFAULT_DMA_CHAN          (-1)
+#define SPI_FLASH_HOST_ID             3
+#define SPI_DEFAULT_MAX_FREQUENCY_HZ  40000000 /*fft传输去主机imx的spi波特率*/
+#define SPI_DEFAULT_MODE              0/*CPOL低 CPHA 低 上升沿采样*/
+#define SPI_DEFAULT_BITS_PER_WORD     8/*8bit模式*/
+#define SPI_DEFAULT_QUEUE_SIZE        8/*最多可以有8个传输*/
+#define SPI_DEFAULT_DMA_CHAN          (-1)/*idf自动分配dma通道*/

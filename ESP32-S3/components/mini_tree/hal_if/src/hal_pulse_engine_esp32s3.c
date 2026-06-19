@@ -11,9 +11,8 @@
 #include "driver/rmt_encoder.h"
 #include "driver/gpio.h"
 
-#include <string.h>
-
-struct pulse_engine {
+struct pulse_engine
+{
     bool                 used;
     gpio_num_t           gpio;
     rmt_channel_handle_t chan;
@@ -35,7 +34,8 @@ static struct pulse_engine* pulse_engine_get(int id)
 static int pulse_engine_hw_init(struct pulse_engine* engine,
                                 const struct hal_pulse_ws2812_hw* hw)
 {
-    rmt_tx_channel_config_t tx_cfg = {
+    rmt_tx_channel_config_t tx_cfg =
+    {
         .clk_src           = RMT_CLK_SRC_DEFAULT,
         .gpio_num          = (gpio_num_t)hw->gpio,
         .mem_block_symbols = hw->rmt_mem_block,
@@ -48,14 +48,17 @@ static int pulse_engine_hw_init(struct pulse_engine* engine,
     if (rmt_new_tx_channel(&tx_cfg, &engine->chan) != ESP_OK)
         return -1;
 
-    rmt_bytes_encoder_config_t byte_cfg = {
-        .bit0 = {
+    rmt_bytes_encoder_config_t byte_cfg =
+    {
+        .bit0 =
+        {
             .duration0 = hw->t0h_ticks,
             .level0    = 1,
             .duration1 = hw->t0l_ticks,
             .level1    = 0,
         },
-        .bit1 = {
+        .bit1 =
+        {
             .duration0 = hw->t1h_ticks,
             .level0    = 1,
             .duration1 = hw->t1l_ticks,
@@ -90,7 +93,7 @@ err_del_bytes:
     rmt_del_encoder(engine->bytes_enc);
 err_del_chan:
     rmt_del_channel(engine->chan);
-    memset(engine, 0, sizeof(*engine));
+    __builtin_memset(engine, 0, sizeof(*engine));
     return -1;
 }
 
@@ -103,7 +106,7 @@ static void pulse_engine_hw_exit(struct pulse_engine* engine)
     rmt_del_encoder(engine->copy_enc);
     rmt_del_encoder(engine->bytes_enc);
     rmt_del_channel(engine->chan);
-    memset(engine, 0, sizeof(*engine));
+    __builtin_memset(engine, 0, sizeof(*engine));
 }
 
 static int pulse_engine_xmit(struct pulse_engine* engine,
@@ -160,3 +163,4 @@ void hal_pulse_ws2812_close(int engine_id)
 {
     pulse_engine_hw_exit(pulse_engine_get(engine_id));
 }
+

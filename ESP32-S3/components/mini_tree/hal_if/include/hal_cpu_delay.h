@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 硬实时微秒延时 ──
@@ -87,7 +88,8 @@ static inline void hal_delay_us(uint32_t us)
     /* 尝试读 SysTick->VAL (0xE000E018)，若不可用则走 NOP 回退 */
     uint32_t start = *(volatile uint32_t*)0xE000E018;
     int32_t remaining = (int32_t)ticks;
-    while (remaining > 0) {
+    while (remaining > 0)
+    {
         uint32_t now = *(volatile uint32_t*)0xE000E018;
         int32_t elapsed = (int32_t)(start - now); /* SysTick 递减 */
         if (elapsed < 0) elapsed += 0x01000000; /* 处理重载 */
@@ -99,7 +101,8 @@ static inline void hal_delay_us(uint32_t us)
     __asm__ volatile("rdcycle %0" : "=r"(start));
     uint32_t ticks = HAL_DELAY_US_TO_TICKS(us);
     uint32_t now;
-    do {
+    do
+    {
         __asm__ volatile("rdcycle %0" : "=r"(now));
     } while ((now - start) < ticks);
 #else
@@ -126,7 +129,8 @@ static inline void hal_delay_cycles(uint32_t cycles)
     uint32_t start;
     __asm__ volatile("rdcycle %0" : "=r"(start));
     uint32_t now;
-    do {
+    do
+    {
         __asm__ volatile("rdcycle %0" : "=r"(now));
     } while ((now - start) < cycles);
 #else
@@ -153,3 +157,4 @@ static inline void hal_delay_ms(uint32_t ms)
 #endif
 
 #endif /* HAL_CPU_DELAY_H */
+

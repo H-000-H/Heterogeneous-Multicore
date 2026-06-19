@@ -4,7 +4,8 @@
 #include "hal_pcie_bus.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 typedef struct hal_pcie_bus hal_pcie;
@@ -16,3 +17,4 @@ typedef struct hal_pcie_bus hal_pcie;
 #endif
 
 #endif /* HAL_PCIE_H */
+

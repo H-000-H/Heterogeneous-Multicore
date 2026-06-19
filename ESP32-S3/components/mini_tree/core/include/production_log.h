@@ -6,7 +6,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define PROD_LOG_SLOT_COUNT 32

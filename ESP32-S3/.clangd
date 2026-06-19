@@ -19,6 +19,8 @@ CompileFlags:
     - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
     - -isystem
     - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
+    - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/esp32s3/include
+    - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/include
   CompilationDatabase: build
 
 Diagnostics:
@@ -29,34 +31,7 @@ Diagnostics:
     - unused-includes
     - unused-result
     - visibility
-
----
-# mini_tree 源文件 fallback（CDB 缺项或新增文件尚未 reconfigure 时）
-# vfs/spi 勿走 CDB 启发式（路径含 spi 会误匹配 esp_lcd_panel_io_spi.c）
-If:
-  PathMatch: .*[/\\]components[/\\]mini_tree[/\\]vfs[/\\]spi[/\\].*
-CompileFlags:
-  Add:
-    - --target=xtensa-esp32s3-elf
-    - -D__XTENSA__
-    - -fgnuc-version=14.2
-    - -std=gnu17
-    - -DCONFIG_OSAL_FREERTOS
-    - -DESP_PLATFORM
-    - -DCONFIG_SYS_LOG_USE_PRINTF
-    - -Icomponents/mini_tree/vfs/spi
-    - -Icomponents/mini_tree/board/include
-    - -Icomponents/mini_tree/core/include
-    - -Icomponents/mini_tree/osal/include
-    - -Icomponents/mini_tree/hal_bus/include
-    - -Icomponents/mini_tree/hal_inst/include
-    - -Icomponents/mini_tree/hal_if/include
-    - -Ibuild/generated/board/mini_tree
-    - -Ibuild/generated/kconfig/mini_tree
-    - -Ibuild/generated/scrubber/mini_tree
-    - -Ibuild/config
-Diagnostics:
-  UnusedIncludes: None
+    - expansion-to-defined
 
 ---
 # mini_tree 其余源文件 fallback

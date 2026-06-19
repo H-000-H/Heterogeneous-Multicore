@@ -1,6 +1,7 @@
 #include "app_spi_task.hpp"
 
 #include "device.h"
+#include "VFS.h"
 #include "task_manager.h"
 #include "system_wdt.h"
 #include "osal.h"
@@ -24,7 +25,7 @@ static void spi_task_entry(void* arg)
     enum device_status st = device_get_status(dev);
     ESP_LOGI(kTag, "fft_slave status=%d (expect PROBED=%d)", (int)st, (int)DEVICE_STATUS_PROBED);
 
-    if (device_open(dev, NULL) != 0)
+    if (device_open(dev, NULL) != VFS_OK)
     {
         ESP_LOGE(kTag, "device_open failed");
         osal_task_self_delete();

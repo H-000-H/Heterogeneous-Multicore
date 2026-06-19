@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* UART 配置 */
@@ -55,3 +56,4 @@ struct uart_read_arg
 #endif
 
 #endif /* HAL_UART_H */
+

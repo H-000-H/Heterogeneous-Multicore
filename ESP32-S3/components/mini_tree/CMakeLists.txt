@@ -116,8 +116,10 @@ endif()
 set(DRIVER_SRCS
     "drivers/ws2812/ws2812_drv.c"
     "drivers/fft/fft_spi_drv.c"
+    "drivers/flash/w25q64_spi_drv.c"
     "vfs/spi/spi_bus.c"
-    "vfs/spi/spi_client.c"
+    "vfs/spi/spi_slave_client.c"
+    "vfs/spi/spi_master_client.c"
 )
 
 # ── Algorithm ──
@@ -140,8 +142,8 @@ idf_component_register(
         ${ALGO_SRCS}
     INCLUDE_DIRS
         "."
-        "board/include"
         "${GENERATED_BOARD_DIR}"
+        "board/include"
         "core/include"
         "hal_bus/include"
         "hal_inst/include"
@@ -151,6 +153,7 @@ idf_component_register(
         "system_cpp/include"
         "drivers/ws2812"
         "drivers/fft"
+        "drivers/flash"
         "vfs/spi"
         "algorithm/buffer"
     REQUIRES
@@ -189,7 +192,9 @@ target_include_directories(${COMPONENT_LIB} PRIVATE ${KCONFIG_GEN_DIR})
 target_compile_definitions(${COMPONENT_LIB} PRIVATE
     ${OSAL_DEFINE}
 )
-
+target_linker_script(${COMPONENT_LIB} INTERFACE
+    "${CMAKE_CURRENT_LIST_DIR}/error_symbols.ld"
+)
 # ═══════════════════════════════════════════════════════════════
 # Generate board DTS tables via dtc-lite (see board/CMakeLists.txt for layout)
 # ═══════════════════════════════════════════════════════════════
@@ -200,6 +205,7 @@ add_custom_command(
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/ws2812"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/fft"
+            "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
     DEPENDS
         "${BOARD_DTS}"
@@ -209,8 +215,10 @@ add_custom_command(
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
+        "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_bus.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_client.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_slave_client.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_master_client.c"
         "${DTC_LITE}"
     COMMENT "Running dtc-lite on esp32-s3-devkitc-1.dts"
     VERBATIM

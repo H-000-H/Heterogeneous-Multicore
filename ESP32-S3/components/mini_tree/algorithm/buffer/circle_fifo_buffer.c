@@ -69,7 +69,7 @@ bool fifo_read_data(struct fifo_spsc* handle, Fifo_Data_type* p_data)
 
 uint16_t fifo_read_block(struct fifo_spsc* handle, Fifo_Data_type* p_data, uint16_t len)
 {
-    memset(p_data, 0, sizeof(*p_data) * len);
+    __builtin_memset(p_data, 0, sizeof(*p_data) * len);
     uint16_t w = FIFO_LOAD_ACQ(handle->w_ptr);
     uint16_t r = FIFO_LOAD_RELAX(handle->r_ptr);
     uint16_t count = (w + handle->size - r) % handle->size;

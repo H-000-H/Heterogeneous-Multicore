@@ -1,28 +1,52 @@
 #ifndef VFS_H
 #define VFS_H
-
-/* struct file_operations 已由 device.h 统一提供 */
-
 #include <errno.h>
+#include <stdbool.h>
+#include <stdint.h>
+
+#define VFS_ERR_MAX 255
+#define VFS_OK 0
+#ifndef EHWPOISON
+#define EHWPOISON 134     
+#endif
 
 #ifndef EPROBE_DEFER
-#define EPROBE_DEFER 517
+#define EPROBE_DEFER 140   
 #endif
-#ifndef EHWPOISON
-#define EHWPOISON 134
-#endif
+#define VFS_ERR_INVAL    (-EINVAL)       /* 无效参数 */
+#define VFS_ERR_NOMEM    (-ENOMEM)       /* 内存不足 */
+#define VFS_ERR_IO       (-EIO)          /* 物理 IO 错误 */
+#define VFS_ERR_BUSY     (-EBUSY)        /* 设备忙 */
+#define VFS_ERR_AGAIN    (-EAGAIN)       /* 重试 */
+#define VFS_ERR_NOSPC    (-ENOSPC)       /* 无剩余空间/通道 */
+#define VFS_ERR_TIMEOUT  (-ETIMEDOUT)    /* 锁获取/操作超时 */
+#define VFS_ERR_HW_FATAL (-EHWPOISON)    /* 硬件物理故障, 不可恢复 */
+#define VFS_ERR_DEFER    (-EPROBE_DEFER) /* 依赖未就绪, 稍后重试 */
+#define VFS_ERR_NODEV    (-ENODEV)       /* 设备已拆除或不存在 */
 
-/* ── Linux 内核风格: 返回负 errno ── */
-#define VFS_OK            0
-#define VFS_ERR_INVAL     (-EINVAL)       /* 无效参数 */
-#define VFS_ERR_NOMEM     (-ENOMEM)       /* 内存不足 */
-#define VFS_ERR_IO        (-EIO)          /* 物理 IO 错误 */
-#define VFS_ERR_BUSY      (-EBUSY)        /* 设备忙 */
-#define VFS_ERR_AGAIN     (-EAGAIN)       /* 重试 */
-#define VFS_ERR_NOSPC     (-ENOSPC)       /* 无剩余空间/通道 */
-#define VFS_ERR_TIMEOUT   (-ETIMEDOUT)    /* 锁获取/操作超时 */
-#define VFS_ERR_HW_FATAL  (-EHWPOISON)    /* 硬件物理故障, 不可恢复 */
-#define VFS_ERR_DEFER     (-EPROBE_DEFER) /* 依赖未就绪, 稍后重试 */
-#define VFS_ERR_NODEV     (-ENODEV)       /* 设备已拆除或不存在 */
+/* 指针的特殊处理 */
+extern const char ERR_SECTION_BASE;
+#define ERR_BASE ((uintptr_t)&ERR_SECTION_BASE)
+
+static inline void* ERR_PTR(int err)
+{
+    int abs_err = (err < 0) ? -err : err;
+
+    // 边界控制：超过 255 的归拢为 INVAL
+    if (abs_err > VFS_ERR_MAX) {
+        abs_err = EINVAL; 
+    }
+
+    return (void *)(ERR_BASE + (uintptr_t)abs_err);
+}
+static inline int PTR_ERR(const void* PTR)
+{
+    return -(int)(((uintptr_t)PTR) - ERR_BASE);
+}
+
+static inline bool IS_ERR(const void* ptr)
+{
+    return (uintptr_t)ptr >= ERR_BASE;
+}
 
 #endif /* VFS_H */

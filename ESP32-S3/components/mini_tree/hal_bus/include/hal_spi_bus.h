@@ -5,8 +5,12 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
+
+#define HAL_SPI_BUS_ROLE_SLAVE  0
+#define HAL_SPI_BUS_ROLE_MASTER 1
 
 /* SPI 总线配置 */
 struct hal_spi_bus_config
@@ -17,6 +21,7 @@ struct hal_spi_bus_config
     int sclk;
     int max_transfer_sz;
     int dma_chan;
+    int bus_role;   /* HAL_SPI_BUS_ROLE_SLAVE | HAL_SPI_BUS_ROLE_MASTER */
 };
 
 /* SPI 设备配置 */
@@ -37,7 +42,7 @@ struct hal_spi_bus
     void* _impl;
 };
 
-void hal_spi_bus_init_struct(struct hal_spi_bus* bus);
+void hal_spi_bus_init_struct(struct hal_spi_bus* bus, int bus_role);
 
 int hal_spi_lock_bus(int bus_id, uint32_t timeout_ms);
 int hal_spi_unlock_bus(int bus_id);
@@ -50,3 +55,4 @@ void hal_spi_force_stop(void);
 #endif
 
 #endif /* HAL_SPI_BUS_H */
+

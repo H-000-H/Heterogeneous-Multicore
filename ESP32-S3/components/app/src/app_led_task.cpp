@@ -1,6 +1,7 @@
 #include "app_led_task.hpp"
 
 #include "device.h"
+#include "VFS.h"
 #include "ws2812_drv.h"
 #include "task_manager.h"
 #include "system_wdt.h"
@@ -37,7 +38,7 @@ static void led_task_entry(void* arg)
 
         struct ws2812_color color = kColors[color_idx];
         if (device_ioctl(dev, WS2812_CMD_SET_COLOR, &color, sizeof(color),
-                         kLedTimeoutMs) != 0)
+                         kLedTimeoutMs) != VFS_OK)
         {
             ESP_LOGW(kTag, "set color failed");
         }
