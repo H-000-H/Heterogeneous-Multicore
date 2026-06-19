@@ -62,13 +62,11 @@ static inline int hal_is_in_isr(void)
 #ifndef DEBUG
 #define HAL_ASSERT_NOT_ISR()  ((void)0)
 #else
-#include "printf_output.h"
+#include "compiler_compat.h"
 #define HAL_ASSERT_NOT_ISR()                                             \
     do {                                                                 \
         if (hal_is_in_isr()) {                                           \
-            my_printf_output("[FATAL] VFS call from ISR context! "                 \
-                   "Remove VFS calls from ISR or bypass VFS.\n");        \
-            while (1) { /* trap */ }                                      \
+            COMPAT_TRAP();                                               \
         }                                                                \
     } while (0)
 #endif

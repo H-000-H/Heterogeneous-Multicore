@@ -1,6 +1,7 @@
 #include "buffer_pool.h"
 #include "osal.h"
 #include "compiler_compat.h"
+#include "compiler_compat_poison.h"
 
 /* ── 内部常量 ── */
 #define BP_FREE_ALL  0xFFFFFFFFu

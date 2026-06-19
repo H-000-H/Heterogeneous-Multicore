@@ -15,6 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 #define W25Q64_COUNT           DTC_GEN_COUNT_HETEROGENEOUS_W25Q64_MASTER
 #define W25Q64_XFER_BUF_SIZE   512U

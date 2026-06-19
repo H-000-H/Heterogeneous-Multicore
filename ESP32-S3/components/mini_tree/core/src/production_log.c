@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include "compiler_compat_poison.h"
 
 /* ═══════════════════════════════════════════════════════════════════
  * CONFIG_PRODUCTION_LOG — 启用时通过 hal_storage 持久化

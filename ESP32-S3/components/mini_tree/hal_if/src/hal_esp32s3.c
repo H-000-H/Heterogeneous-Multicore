@@ -20,6 +20,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 /* ── GPIO ── */
 int hal_gpio_set_level(hal_pin_t pin, int level)

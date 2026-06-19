@@ -12,6 +12,7 @@
 #include "device.h"
 #include "driver.h"
 #include "VFS.h"
+#include "compiler_compat_poison.h"
 
 /* ── 启动期全局中断控制 (平台抽象) ──
  * 在 Pre_OS_Init 入口关全局中断, 阻断 ISR 抢跑访问未就绪的框架状态.

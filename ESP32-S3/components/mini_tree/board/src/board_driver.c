@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 static const char* kTag = "board_drv";
 

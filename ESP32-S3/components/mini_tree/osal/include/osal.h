@@ -6,8 +6,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "printf_output.h"
+#include <string.h>
 #include "compiler_compat.h"
+#include "printf_output.h"
 #include "osal_tick.h"
 
 #ifdef __cplusplus
@@ -262,7 +263,7 @@ void system_safety_hardware_shutdown(const char* reason);
  */
 #undef OSAL_PANIC
 #define OSAL_PANIC(fmt, ...) do { \
-    my_printf_output("\r\n[FATAL ERROR] " fmt "\r\n", ##__VA_ARGS__); \
+    osal_log_fatal(fmt, ##__VA_ARGS__); \
     system_safety_hardware_shutdown("OSAL_PANIC"); \
     while (1) \
     { ; } \
@@ -275,8 +276,7 @@ void system_safety_hardware_shutdown(const char* reason);
 #define CRITICAL_ASSERT(cond, fmt, ...) do { \
     if (!(cond)) \
     { \
-        my_printf_output("\r\n[CRITICAL_ASSERT FAILED] %s:%d: " fmt "\r\n", \
-               __FILE__, __LINE__, ##__VA_ARGS__); \
+        osal_log_critical_assert(__FILE__, __LINE__, fmt, ##__VA_ARGS__); \
         system_safety_hardware_shutdown("CRITICAL_ASSERT"); \
         while (1) \
         { ; } \
@@ -285,6 +285,9 @@ void system_safety_hardware_shutdown(const char* reason);
 
 /* ── 日志 ── */
 void osal_log(osal_log_level_t level, const char* tag, const char* fmt, ...);
+void osal_log_fatal(const char* fmt, ...) COMPAT_FMT_PRINTF(1, 2);
+void osal_log_critical_assert(const char* file, int line, const char* fmt, ...)
+    COMPAT_FMT_PRINTF(3, 4);
 
 #ifdef __cplusplus
 }

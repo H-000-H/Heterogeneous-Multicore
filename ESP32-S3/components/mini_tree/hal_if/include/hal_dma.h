@@ -77,21 +77,17 @@ void hal_dma_force_stop(void);
  * 上层应用应合并小包为块传输，而非逐字节调用 DMA。
  */
 #ifdef DEBUG
-#include "printf_output.h"
+#include "compiler_compat.h"
 #define HAL_DMA_ASSERT_BLOCK(len, width)                                     \
     do {                                                                     \
         if (((size_t)(len) & ((size_t)(width) - 1)) != 0) {                  \
-            my_printf_output("[DMA] misaligned len=%zu (width=%d)\n",                  \
-                   (size_t)(len), (int)(width));                             \
-            while (1);                                                        \
+            COMPAT_TRAP();                                                   \
         }                                                                    \
     } while (0)
 #define HAL_DMA_ASSERT_BLOCK_MIN(len, min)                                   \
     do {                                                                     \
         if ((size_t)(len) < (size_t)(min)) {                                 \
-            my_printf_output("[DMA] block too small: len=%zu < min=%zu\n",             \
-                   (size_t)(len), (size_t)(min));                            \
-            while (1);                                                        \
+            COMPAT_TRAP();                                                   \
         }                                                                    \
     } while (0)
 #else

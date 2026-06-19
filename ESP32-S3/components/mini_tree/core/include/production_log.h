@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include "compiler_compat.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -35,7 +36,7 @@ int  production_log_init(void);
 void production_log_push(prod_log_level_t level, const char* tag, const char* msg);
 
 void production_log_push_fmt(prod_log_level_t level, const char* tag, const char* fmt, ...)
-    __attribute__((format(printf, 3, 4)));
+    COMPAT_FMT_PRINTF(3, 4);
 
 int  production_log_count(void);
 

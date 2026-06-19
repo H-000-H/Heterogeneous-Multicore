@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 #define WS2812_COUNT  DTC_GEN_COUNT_ESP32_WS2812
 

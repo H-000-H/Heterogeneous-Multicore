@@ -1,6 +1,7 @@
 #include "dev_lifecycle.h"
 #include "VFS.h"
 #include "osal.h"
+#include "compiler_compat_poison.h"
 
 // 辅助宏：用于简化入参校验
 #define VALIDATE_LC(lc) if (IS_ERR(lc) || !(lc)) return VFS_ERR_INVAL

@@ -14,6 +14,7 @@
 #include "driver/spi_slave.h"
 #include "driver/spi_master.h"
 #include "esp_err.h"
+#include "compiler_compat_poison.h"
 
 #define SPI_SLAVE_DEVICE_COUNT  DTC_GEN_COUNT_HETEROGENEOUS_FFT_SPI_SLAVE
 #define SPI_MASTER_DEVICE_COUNT DTC_GEN_COUNT_HETEROGENEOUS_W25Q64_MASTER

@@ -15,6 +15,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "compiler_compat_poison.h"
 
 #define SPI_MASTER_CLIENT_COUNT DTC_GEN_COUNT_HETEROGENEOUS_W25Q64_MASTER
 

@@ -15,6 +15,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include "compiler_compat_poison.h"
 
 #define SPI_SLAVE_CLIENT_COUNT DTC_GEN_COUNT_HETEROGENEOUS_FFT_SPI_SLAVE
 

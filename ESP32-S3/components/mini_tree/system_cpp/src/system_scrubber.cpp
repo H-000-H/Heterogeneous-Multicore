@@ -6,6 +6,7 @@
 #include "system_cfg.h"
 #include "system_wdt.hpp"
 #include "osal.h"
+#include "compiler_compat_poison.h"
 
 static constexpr const char* kTag = "Scrubber";
 static constexpr uint32_t kScrubberPrio =

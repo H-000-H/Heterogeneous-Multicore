@@ -10,6 +10,7 @@
 #include "driver/rmt_tx.h"
 #include "driver/rmt_encoder.h"
 #include "driver/gpio.h"
+#include "compiler_compat_poison.h"
 
 struct pulse_engine
 {

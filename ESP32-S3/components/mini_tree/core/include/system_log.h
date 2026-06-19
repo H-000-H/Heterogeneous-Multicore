@@ -17,10 +17,10 @@
   #define SYS_LOGE  ESP_LOGE
 
 #elif defined(CONFIG_SYS_LOG_USE_PRINTF)
-#include "printf_output.h"
-  #define SYS_LOGI(tag, fmt, ...)  my_printf_output("[I][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
-  #define SYS_LOGW(tag, fmt, ...)  my_printf_output("[W][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
-  #define SYS_LOGE(tag, fmt, ...)  my_printf_output("[E][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
+#include "osal.h"
+  #define SYS_LOGI(tag, fmt, ...)  osal_log(OSAL_LOG_INFO,  tag, fmt, ##__VA_ARGS__)
+  #define SYS_LOGW(tag, fmt, ...)  osal_log(OSAL_LOG_WARN,  tag, fmt, ##__VA_ARGS__)
+  #define SYS_LOGE(tag, fmt, ...)  osal_log(OSAL_LOG_ERROR, tag, fmt, ##__VA_ARGS__)
 
 #else
   #error "SYS_LOG backend not configured — choose one in Kconfig"
