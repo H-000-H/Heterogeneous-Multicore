@@ -87,6 +87,7 @@ if(NOT "mini_tree" STREQUAL CMAKE_PROJECT_NAME)
     )
     target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
         -T "${LINKER_SCRIPT}"
+        -T "${CMAKE_CURRENT_SOURCE_DIR}/mini_tree/error_symbols.ld"
         -nostartfiles
         --specs=nosys.specs
         --specs=nano.specs

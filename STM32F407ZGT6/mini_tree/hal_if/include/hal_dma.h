@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 传输方向 */
@@ -32,7 +33,8 @@ typedef enum
 } hal_dma_inc_t;
 
 /* DMA 通道配置 */
-struct hal_dma_config
+struct hal_dma_config
+
 {
     int             dma_id;         /* DMA 控制器编号, 0 开始 */
     hal_dma_dir_t   dir;            /* 传输方向 */
@@ -114,4 +116,5 @@ static inline int hal_dma_config_block(struct hal_dma_chan* chan,
 #endif
 
 #endif /* HAL_DMA_H */
+
 

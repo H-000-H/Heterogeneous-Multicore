@@ -6,7 +6,8 @@
 #include "compiler_compat.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── Buffer Pool — 预分配定长缓冲区池 ──
@@ -22,7 +23,8 @@ extern "C" {
  *   - 内置峰值追踪 (调试/认证用)
  *
  * 用法:
- *   static struct bp_config cfg = {
+ *   static struct bp_config cfg =
+ {
  *       .name = "audio",
  *       .buf_size = 256,
  *       .buf_count = 16,
@@ -76,3 +78,5 @@ void     bp_reset_peak(struct bp_pool* pool);
 #ifdef __cplusplus
 }
 #endif
+
+

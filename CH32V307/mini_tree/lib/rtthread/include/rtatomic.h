@@ -351,7 +351,8 @@ rt_inline rt_atomic_t rt_atomic_fetch_add_unless(volatile rt_atomic_t *ptr, rt_a
 {
     rt_atomic_t c = rt_atomic_load(ptr);
 
-    do {
+    do
+    {
         if (c == u)
         {
             break;
@@ -407,3 +408,4 @@ rt_inline rt_ll_slist_t *rt_ll_slist_dequeue(rt_ll_slist_t *l)
 #endif /* __cplusplus */
 
 #endif /* __RT_ATOMIC_H__ */
+

@@ -106,7 +106,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -288,3 +289,4 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* PORTABLE_H */
+

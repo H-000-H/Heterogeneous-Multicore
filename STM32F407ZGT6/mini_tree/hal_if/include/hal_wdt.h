@@ -5,7 +5,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 硬件看门狗抽象接口 (IEC 61508 SIL 4 §7.4.3.3)
@@ -32,3 +33,4 @@ void hal_wdt_feed_twdt(void);
 #endif
 
 #endif /* HAL_WDT_H */
+

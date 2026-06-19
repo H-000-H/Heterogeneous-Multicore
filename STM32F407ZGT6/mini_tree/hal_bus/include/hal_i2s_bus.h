@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* I2S 总线配置 */
@@ -41,3 +42,4 @@ void hal_i2s_force_stop(void);
 #endif
 
 #endif /* HAL_I2S_BUS_H */
+

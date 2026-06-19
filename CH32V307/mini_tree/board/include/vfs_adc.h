@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 与 hal_if/include/hal_adc.h 类型相同，二者选一。 */
@@ -13,7 +14,8 @@ extern "C" {
 #define ADC_CMD_READ_RAW 0x70
 #define ADC_CMD_STOP     0x71
 
-struct adc_read_arg
+struct adc_read_arg
+
 {
     int channel;
     int atten;
@@ -28,3 +30,4 @@ struct adc_read_arg
 #endif
 
 #endif /* VFS_ADC_H */
+

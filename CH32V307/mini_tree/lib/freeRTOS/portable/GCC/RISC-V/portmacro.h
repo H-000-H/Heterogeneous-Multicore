@@ -32,7 +32,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -204,3 +205,4 @@ extern size_t xCriticalNesting;
 /* *INDENT-ON* */
 
 #endif /* PORTMACRO_H */
+

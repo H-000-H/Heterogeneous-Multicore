@@ -11388,11 +11388,12 @@ int osal_sem_create_binary(struct osal_sem** out)
     4fc4:	b8070713          	addi	a4,a4,-1152 # 20002b80 <s_sem_pool>
     4fc8:	97ba                	add	a5,a5,a4
     4fca:	fef42423          	sw	a5,-24(s0)
-    if (osal_sem_init_binary(sem) != 0) {
+    if (osal_sem_init_binary(sem) != 0)
     4fce:	fe842503          	lw	a0,-24(s0)
     4fd2:	379d                	jal	4f38 <osal_sem_init_binary>
     4fd4:	87aa                	mv	a5,a0
     4fd6:	cb99                	beqz	a5,4fec <osal_sem_create_binary+0x6a>
+    {
         osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, idx);
     4fd8:	fec42603          	lw	a2,-20(s0)
     4fdc:	45a1                	li	a1,8
@@ -11498,14 +11499,16 @@ void osal_sem_destroy(struct osal_sem* sem)
     5096:	fdc42783          	lw	a5,-36(s0)
     509a:	0007a023          	sw	zero,0(a5)
 
-    if (sem->from_pool) {
+    if (sem->from_pool)
     509e:	fdc42783          	lw	a5,-36(s0)
     50a2:	04c7c783          	lbu	a5,76(a5)
     50a6:	cbb1                	beqz	a5,50fa <osal_sem_destroy+0x8a>
-        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++) {
+    {
+        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++)
     50a8:	fe042623          	sw	zero,-20(s0)
     50ac:	a081                	j	50ec <osal_sem_destroy+0x7c>
-            if (&s_sem_pool[i] == sem) {
+        {
+            if (&s_sem_pool[i] == sem)
     50ae:	fec42703          	lw	a4,-20(s0)
     50b2:	87ba                	mv	a5,a4
     50b4:	078a                	slli	a5,a5,0x2
@@ -11516,6 +11519,7 @@ void osal_sem_destroy(struct osal_sem* sem)
     50c2:	97ba                	add	a5,a5,a4
     50c4:	fdc42703          	lw	a4,-36(s0)
     50c8:	00f71d63          	bne	a4,a5,50e2 <osal_sem_destroy+0x72>
+            {
                 osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
     50cc:	fec42783          	lw	a5,-20(s0)
     50d0:	863e                	mv	a2,a5
@@ -11525,7 +11529,7 @@ void osal_sem_destroy(struct osal_sem* sem)
     50dc:	89dff0ef          	jal	4978 <osal_pool_release>
                 break;
     50e0:	a829                	j	50fa <osal_sem_destroy+0x8a>
-        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++) {
+        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++)
     50e2:	fec42783          	lw	a5,-20(s0)
     50e6:	0785                	addi	a5,a5,1
     50e8:	fef42623          	sw	a5,-20(s0)

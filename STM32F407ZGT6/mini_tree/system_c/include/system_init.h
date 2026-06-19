@@ -5,7 +5,8 @@
  *
  * 用户工程在 main() 中按两段式点火调用:
  *
- *   int main(void) {
+ *   int main(void)
+ {
  *       platform_hardware_init();
  *       mini_tree_pre_os_init();     // Phase 1
  *       platform_register_drivers();
@@ -19,7 +20,8 @@
  */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 void mini_tree_pre_os_init(void);
@@ -35,3 +37,5 @@ void system_init_complete(void);
 #ifdef __cplusplus
 }
 #endif
+
+

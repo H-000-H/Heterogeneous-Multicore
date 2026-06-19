@@ -20,7 +20,8 @@
 #include <rtdef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /**
@@ -335,3 +336,4 @@ rt_inline int rt_slist_isempty(rt_slist_t *l)
 #endif
 
 #endif
+

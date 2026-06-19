@@ -58,7 +58,8 @@
 
 /* *INDENT-OFF* */
 #if defined( __cplusplus )
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -1278,3 +1279,4 @@ size_t xStreamBufferNextMessageLengthBytes( StreamBufferHandle_t xStreamBuffer )
 /* *INDENT-ON* */
 
 #endif /* !defined( STREAM_BUFFER_H ) */
+

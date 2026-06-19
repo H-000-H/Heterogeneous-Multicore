@@ -15,7 +15,8 @@
 #include <rttypes.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #if defined(RT_USING_LIBC) && !defined(RT_USING_NANO)
@@ -76,3 +77,4 @@ const char *rt_strerror(rt_err_t error);
 #endif
 
 #endif
+

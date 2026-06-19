@@ -8,10 +8,12 @@
 #include "osal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
-struct bh_os {
+struct bh_os
+{
     struct bh_queue  q;
     struct osal_sem* sem; /* 二值信号量, 初始计数 0 */
 };
@@ -71,7 +73,8 @@ static inline void bh_os_task_entry(void* arg)
     if (!b || !b->sem)
         return;
 
-    for (;;) {
+    for (;;)
+    {
         if (osal_sem_wait(b->sem, OSAL_WAIT_FOREVER) != 0)
             continue;
         bh_drain(&b->q);
@@ -99,3 +102,4 @@ static inline int bh_os_start_task(struct bh_os* b,
 #endif
 
 #endif /* BH_OS_H */
+

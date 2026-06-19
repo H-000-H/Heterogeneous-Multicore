@@ -2,7 +2,7 @@
 #define COMPILER_COMPAT_H
 
 #include <stddef.h>
-
+#include <stdint.h>
 /* 统一类型获取宏 */
 #ifdef __cplusplus
 #define TYPEOF(expr) decltype(expr)
@@ -44,9 +44,29 @@
 #define COMPAT_TRAP()     __builtin_trap()
 #define COMPAT_CTZ(x)     __builtin_ctz(x)
 #define COMPAT_PACKED     __attribute__((packed))
+/* VFS ioctl 总线 namespace: 每条总线占 0x100, 新增总线只在表里加一行 */
+#define COMPAT_MAGIC_SLOT_STRIDE 0x100u
+#define COMPAT_MAGIC_TABLE(X) \
+    X(SPI,   0x00) \
+    X(UART,  0x01) \
+    X(I2C,   0x02) \
+    X(I2S,   0x03) \
+    X(USB,   0x04) \
+    X(CAN,   0x05) \
+    X(ETH,   0x06) \
+    X(GPIO,  0x07) \
+    X(SDIO,  0x08)
+#define COMPAT_MAGIC_ENUM(name, slot) \
+    COMPAT_MAGIC_##name = (uint32_t)((slot) * COMPAT_MAGIC_SLOT_STRIDE),
 
-/* Keil 5 / ARM Compiler 5 (armcc): __CC_ARM 且 __ARMCC_VERSION < 6000000
- * Keil 6 (armclang): __clang__ + __ARMCC_VERSION >= 6000000，不在此列 */
+enum 
+{
+    COMPAT_MAGIC_TABLE(COMPAT_MAGIC_ENUM)
+};
+
+#undef COMPAT_MAGIC_ENUM
+
+#define COMPAT_MAGIC(x) COMPAT_MAGIC_##x
 #if defined(__CC_ARM) && (!defined(__ARMCC_VERSION) || (__ARMCC_VERSION < 6000000))
 #define COMPAT_ARM_COMPILER_5 1
 #endif
@@ -91,6 +111,29 @@
 #endif
 #endif
 
+#if COMPAT_GNU_EXT_OK
+#undef unlikely
+#undef likely
+#define unlikely(x) __builtin_expect(!!(x),0)
+#define likely(x)   __builtin_expect(!!(x),1)
+#define unreachable()  __builtin_unreachable()
+/*高级用法把点火程序直接使用这个*/
+#define pre_execution(x) __attribute__((constructor(x+100)))
+#ifdef AUTO_FREE_PTR
+#include <stdlib.h>
+static inline void auto_free_ptr(void *ptr)
+{
+    void **real_ptr = (void **)ptr;
+    if (*real_ptr != NULL)
+    {
+        free(*real_ptr);
+        *real_ptr = NULL;
+    }
+}
+#define AUTO_FREE __attribute__((cleanup(auto_free_ptr)))
+#endif
+#endif
+
 /* ── RAM_EXEC: 将函数置于 RAM 执行 ──
  *
  * 将高频中断或控制环函数放入 .ram_code 段, 在启动时由用户 linker script
@@ -113,4 +156,35 @@
  */
 #define RAM_EXEC  __attribute__((section(".ram_code")))
 
+/*伪随机数生成器*/
+/*================================================================================================*/
+static uint32_t xorshift_state = 2463532242UL;
+#include <stdlib.h>
+
+static inline uint32_t COMPAT_RAND(uint32_t a, uint32_t b, uint32_t c, uint32_t d)
+{
+    a ^= xorshift_state;
+
+    // ChaCha20
+    a += b; d ^= a; d = (d << 16) | (d >> 16);
+    c += d; b ^= c; b = (b << 12) | (b >> 20);
+    a += b; d ^= a; d = (d << 8)  | (d >> 24);
+    c += d; b ^= c; b = (b << 7)  | (b >> 25);
+
+    // ChaCha20 交替给 Xorshift
+    uint32_t x = a ^ b ^ c ^ d;
+
+    // Xorshift 核心变换
+    x ^= x << 13;
+    x ^= x >> 17;
+    x ^= x << 5;
+
+    //  Xorshift 的结果再与 ChaCha20 的非线性项异或后输
+    xorshift_state = x ^ (c + d);
+
+    return xorshift_state;
+}
+
+/*================================================================================================= */
 #endif /* COMPILER_COMPAT_H */
+

@@ -1,6 +1,6 @@
-# mini_tree 设备树说明
+# mini_tree 设备树说明 (STM32F407)
 
-编译期由 `tools/dtc-lite.py` 解析 `board/dts/*.dts` 与 `board/dtsi/*.dtsi`，生成 `board_nodes.h`、`board_devtable.c`、`board_probe.c` 等。
+编译期由 `tools/dtc-lite.py`（**PLY 词法分析** + 递归下降语法分析）解析 `board/dts/*.dts` 与 `board/dtsi/*.dtsi`，生成 `board_nodes.h`、`board_devtable.c`、`board_probe.c`、`dt_config_gen.h` 等。
 
 ## 文件布局（Linux 写法；dts / dtsi 分目录）
 
@@ -9,6 +9,9 @@ board/dts/stm32f407zgt6.dts        板级入口 (/dts-v1/, includes, / { }, &lab
 board/dtsi/stm32f407.dtsi          SoC 根 / { compatible, cpus, soc: soc { ... } }
 board/dtsi/stm32f407-spi.dtsi      IP: #include soc.dtsi + &soc { spi@0 { ... } }
 board/dt-bindings/                 #include <dt-bindings/...> 常量
+tools/dtc-lite.py                  CLI 入口（CMake 调用）
+tools/dtc_lite/                    PLY 编译器实现
+tools/vendor/ply/                  vendored PLY 3.x（构建无需 pip install）
 ```
 
 | Linux 内核 | mini_tree (STM32) |
@@ -17,6 +20,13 @@ board/dt-bindings/                 #include <dt-bindings/...> 常量
 | `stm32f407-dk.dts` | `board/dts/stm32f407zgt6.dts` |
 | `&soc { ... };` | 同左 |
 | `#include <dt-bindings/...>` | 同左（dtc-lite 从 `board/dt-bindings/` 解析） |
+
+## dtc-lite 编译流水线
+
+```
+board/dts/*.dts → ① #include 预处理 → ② PLY lexer → ③ parser → AST
+    → ④ compiler（overlay 合并 / 驱动校验）→ ⑤ generator → board_*.c/h
+```
 
 ## dtc-lite 解析规则（无序全解耦版）
 

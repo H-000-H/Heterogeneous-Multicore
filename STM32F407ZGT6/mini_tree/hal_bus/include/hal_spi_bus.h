@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* SPI 总线配置 */
@@ -50,3 +51,4 @@ void hal_spi_force_stop(void);
 #endif
 
 #endif /* HAL_SPI_BUS_H */
+

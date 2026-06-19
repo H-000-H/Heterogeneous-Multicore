@@ -4,7 +4,8 @@
 #include "hal_usb_bus.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 兼容别名: 旧代码中的 hal_usb_dev 即 USB 控制器 */
@@ -17,3 +18,4 @@ typedef struct hal_usb_bus hal_usb_dev;
 #endif
 
 #endif /* HAL_USB_H */
+

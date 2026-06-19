@@ -338,7 +338,8 @@ int osal_sem_create_binary(struct osal_sem** out)
         return -1;
 
     struct osal_sem* sem = &s_sem_pool[idx];
-    if (osal_sem_init_binary(sem) != 0) {
+    if (osal_sem_init_binary(sem) != 0)
+    {
         osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, idx);
         return -1;
     }
@@ -370,9 +371,12 @@ void osal_sem_destroy(struct osal_sem* sem)
     vSemaphoreDelete(sem->handle);
     sem->handle = NULL;
 
-    if (sem->from_pool) {
-        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++) {
-            if (&s_sem_pool[i] == sem) {
+    if (sem->from_pool)
+    {
+        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++)
+        {
+            if (&s_sem_pool[i] == sem)
+            {
                 osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
                 break;
             }

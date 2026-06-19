@@ -3,7 +3,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 裸机移植辅助接口 ──
@@ -38,3 +39,4 @@ void osal_null_systick_handler(void);
 #ifdef __cplusplus
 }
 #endif
+

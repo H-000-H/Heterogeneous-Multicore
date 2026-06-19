@@ -42,7 +42,8 @@
 #endif /* RT_USING_FINSH */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #ifdef __GNUC__
@@ -940,3 +941,4 @@ rt_inline rt_bool_t rt_sched_thread_is_binding(rt_thread_t thread)
 #endif
 
 #endif /* __RT_THREAD_H__ */
+

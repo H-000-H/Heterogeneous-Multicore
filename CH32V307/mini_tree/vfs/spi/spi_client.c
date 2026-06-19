@@ -20,7 +20,8 @@
 
 #define SPI_CLIENT_COUNT DTC_GEN_COUNT_CH32_SPI_DEVICE
 
-struct spi_client {
+struct spi_client
+{
     struct file_operations ops;
     struct hal_spi_ctx     ctx;
     struct osal_mutex*     io_mutex;
@@ -33,18 +34,36 @@ static uint8_t           s_spi_mutex_storage[SPI_CLIENT_COUNT][OSAL_MUTEX_STORAG
 
 static const char* const kTag = "spi_client";
 
-struct hal_spi_bus* device_get_spi_bus(struct device* pdev)
+static int spi_xfer_session_end(struct hal_spi_ctx* ctx, int xfer_begun, int io_ret)
+{
+    int end_ret;
+
+    if (!xfer_begun)
+        return io_ret;
+
+    end_ret = hal_spi_xfer_end(ctx);
+    if (end_ret != VFS_OK && io_ret == VFS_OK)
+        return VFS_ERR_IO;
+    return io_ret;
+}
+
+int device_get_spi_bus(struct device* pdev, struct hal_spi_bus** out)
 {
     struct spi_client* priv;
 
+    if (!out)
+        return VFS_ERR_INVAL;
+    *out = NULL;
+
     if (!pdev || !pdev->ops)
-        return NULL;
+        return VFS_ERR_INVAL;
 
     priv = container_of(pdev->ops, struct spi_client, ops);
-    if (!priv->ctx.pool_idx)
-        return NULL;
+    if (!priv->ctx.host)
+        return VFS_ERR_NODEV;
 
-    return &priv->ctx.host->bus;
+    *out = &priv->ctx.host->bus;
+    return VFS_OK;
 }
 
 static int spi_open(struct device* pdev, void* arg)
@@ -68,7 +87,8 @@ static int spi_open(struct device* pdev, void* arg)
         return first;
 
     ret = VFS_OK;
-    if (first == 1) {
+    if (first == 1)
+    {
         ret = hal_spi_interface_attach(priv->ctx.host, &priv->ctx.cfg);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
@@ -100,7 +120,8 @@ static int spi_close(struct device* pdev)
     if (last < 0)
         return last;
 
-    if (last && priv->ctx.attached) {
+    if (last && priv->ctx.attached)
+    {
         COMPAT_IGNORE_RESULT(hal_spi_interface_detach(priv->ctx.host));
         priv->ctx.attached = 0;
     }
@@ -127,17 +148,20 @@ static int spi_write(struct device* pdev, const void* buffer, size_t len, uint32
     if (ret != VFS_OK)
         return ret;
 
-    if (len == 0) {
+    if (len == 0)
+    {
         dev_lc_io_end(lc);
-        return 0;
+        return VFS_OK;
     }
-    if (!buffer) {
+    if (!buffer)
+    {
         dev_lc_io_end(lc);
         return VFS_ERR_INVAL;
     }
 
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-    if (ret == VFS_OK) {
+    if (ret == VFS_OK)
+    {
         int write_bytes = priv->ctx.host->bus.write(&priv->ctx.host->bus,
                                                     (const uint8_t*)buffer, len);
         if (write_bytes > 0)
@@ -145,7 +169,7 @@ static int spi_write(struct device* pdev, const void* buffer, size_t len, uint32
         else
             ret = VFS_ERR_IO;
 
-        COMPAT_IGNORE_RESULT(hal_spi_xfer_end(&priv->ctx));
+        ret = spi_xfer_session_end(&priv->ctx, 1, ret);
     }
 
     dev_lc_io_end(lc);
@@ -170,20 +194,23 @@ static int spi_read(struct device* pdev, void* buffer, size_t len, uint32_t time
     if (ret != VFS_OK)
         return ret;
 
-    if (len == 0) {
+    if (len == 0)
+    {
         dev_lc_io_end(lc);
         return VFS_OK;
     }
-    if (!buffer) {
+    if (!buffer)
+    {
         dev_lc_io_end(lc);
         return VFS_ERR_INVAL;
     }
 
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
     if (ret == VFS_OK)
+    {
         ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, (uint8_t*)buffer, len);
-
-    COMPAT_IGNORE_RESULT(hal_spi_xfer_end(&priv->ctx));
+        ret = spi_xfer_session_end(&priv->ctx, 1, ret);
+    }
     dev_lc_io_end(lc);
     return ret;
 }
@@ -206,35 +233,45 @@ static int spi_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uin
     if (ret != VFS_OK)
         return ret;
 
-    switch (cmd) {
-    case SPI_CMD_READ: {
+    switch (cmd)
+    {
+    case SPI_CMD_READ:
+    {
         const struct spi_read_arg* ra = (const struct spi_read_arg*)arg;
         if (!ra || arg_len != sizeof(*ra) || !ra->data || ra->len == 0)
             ret = VFS_ERR_INVAL;
-        else {
+        else
+        {
             ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
             if (ret == VFS_OK)
+            {
                 ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, ra->data, ra->len);
-            COMPAT_IGNORE_RESULT(hal_spi_xfer_end(&priv->ctx));
+                ret = spi_xfer_session_end(&priv->ctx, 1, ret);
+            }
         }
         break;
     }
-    case SPI_CMD_QUEUE_TX: {
+    case SPI_CMD_QUEUE_TX:
+    {
         const struct spi_queue_arg* qa = (const struct spi_queue_arg*)arg;
         if (!qa || arg_len != sizeof(*qa) || !qa->data || qa->len == 0)
             ret = VFS_ERR_INVAL;
         else if (!priv->ctx.host->bus.write_top_half)
             ret = VFS_ERR_IO;
-        else {
+        else
+        {
             ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-            if (ret == VFS_OK)
+            if (ret == VFS_OK) 
+            {
                 ret = priv->ctx.host->bus.write_top_half(&priv->ctx.host->bus,
                                                          qa->data, qa->len);
-            COMPAT_IGNORE_RESULT(hal_spi_xfer_end(&priv->ctx));
+                ret = spi_xfer_session_end(&priv->ctx, 1, ret);
+            }
         }
         break;
     }
-    case SPI_CMD_GET_TRANS_RESULT: {
+    case SPI_CMD_GET_TRANS_RESULT:
+    {
         struct spi_trans_result_arg* tra = (struct spi_trans_result_arg*)arg;
         if (!tra || arg_len != sizeof(*tra))
             ret = VFS_ERR_INVAL;
@@ -244,7 +281,8 @@ static int spi_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uin
         break;
     }
     case SPI_CMD_DEINIT:
-        if (priv->ctx.attached) {
+        if (priv->ctx.attached)
+        {
             COMPAT_IGNORE_RESULT(hal_spi_interface_detach(priv->ctx.host));
             priv->ctx.attached = 0;
         }
@@ -259,7 +297,8 @@ static int spi_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uin
     return ret;
 }
 
-static const struct file_operations spi_operations_template = {
+static const struct file_operations spi_operations_template =
+{
     .open  = spi_open,
     .close = spi_close,
     .write = spi_write,
@@ -275,11 +314,13 @@ int spi_client_probe(struct device* dev)
     struct hal_spi_device_config dev_cfg;
     struct hal_spi_bus_host* bus_host;
     int pool_idx;
+    int ret;
 
-    ctrl = bus_controller_of(dev);
-    if (!ctrl || !ctrl->hw_priv) {
+    ret = bus_controller_of(dev, &ctrl);
+    if (ret != VFS_OK || !ctrl->hw_priv)
+    {
         SYS_LOGE(kTag, "parent bus controller not ready: %s", device_get_name(dev));
-        return VFS_ERR_IO;
+        return ret != VFS_OK ? ret : VFS_ERR_IO;
     }
 
     bus_host = (struct hal_spi_bus_host*)ctrl->hw_priv;
@@ -292,7 +333,8 @@ int spi_client_probe(struct device* dev)
     COMPAT_IGNORE_RESULT(device_get_prop_int(dev, "cs-pin", &cs));
 
     pool_idx = osal_pool_claim(s_spi_client_used, SPI_CLIENT_COUNT);
-    if (pool_idx < 0) {
+    if (pool_idx < 0)
+    {
         SYS_LOGE(kTag, "Failed to claim SPI client pool");
         return VFS_ERR_NOMEM;
     }
@@ -317,7 +359,7 @@ int spi_client_probe(struct device* dev)
     priv->ops = spi_operations_template;
     dev->ops  = &priv->ops;
 
-    if (device_set_priv(dev, priv) != 0)
+    if (device_set_priv(dev, priv) != VFS_OK)
         goto err_pool;
 
     COMPAT_IGNORE_RESULT(bus_client_bind(dev, ctrl->dev, priv));
@@ -358,12 +400,14 @@ int spi_client_remove(struct device* dev)
     device_ops_unregister(dev);
     bus_client_unbind(dev);
 
-    if (dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER) != VFS_OK) {
+    if (dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER) != VFS_OK)
+    {
         SYS_LOGE(kTag, "remove drain failed");
         return VFS_ERR_IO;
     }
 
-    if (priv->ctx.attached) {
+    if (priv->ctx.attached)
+    {
         COMPAT_IGNORE_RESULT(hal_spi_interface_detach(priv->ctx.host));
         priv->ctx.attached = 0;
     }
@@ -387,3 +431,4 @@ static int ch32_spi_device_remove(struct device* dev)
 }
 
 DRIVER_REGISTER(spi_client, "ch32,spi-device", ch32_spi_device_probe, ch32_spi_device_remove)
+

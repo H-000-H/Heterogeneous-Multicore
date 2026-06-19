@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ADC 转换精度 */
@@ -19,7 +20,8 @@ typedef enum
 } hal_adc_width_t;
 
 /* ADC 通道配置 */
-struct hal_adc_config
+struct hal_adc_config
+
 {
     int             channel;    /* ADC 通道号 */
     hal_adc_width_t width;      /* 转换精度 */
@@ -42,7 +44,8 @@ void hal_adc_force_stop(void);
 #define ADC_CMD_READ_RAW 0x70
 #define ADC_CMD_STOP     0x71
 
-struct adc_read_arg
+struct adc_read_arg
+
 {
     int channel;
     int atten;          /* (已弃用) 参考电压衰减, 新代码请使用 vref_mv */
@@ -55,3 +58,4 @@ struct adc_read_arg
 #endif
 
 #endif /* HAL_ADC_H */
+

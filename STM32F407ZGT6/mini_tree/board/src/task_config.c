@@ -12,7 +12,8 @@
  *      Scrubber:      FreeRTOS=1,  RT-Thread=30
  *
  *  用途示例 (用户工程 main.c):
- *     const struct board_task_config my_app_task = {
+ *     const struct board_task_config my_app_task =
+ {
  *         .name       = "my_app",
  *         .stack_size = 4096,
  *         .priority   = 15,   // 中等优先级
@@ -24,3 +25,4 @@
  * ═══════════════════════════════════════════════════════════════════ */
 
 #include "task_config.h"
+

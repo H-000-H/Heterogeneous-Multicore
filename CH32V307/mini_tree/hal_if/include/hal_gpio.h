@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 跨平台引脚抽象 ──
@@ -50,7 +51,8 @@ typedef enum
 } hal_gpio_intr_t;
 
 /* GPIO 配置 */
-struct hal_gpio_config
+struct hal_gpio_config
+
 {
     hal_pin_t pin;
     hal_gpio_mode_t mode;
@@ -69,14 +71,16 @@ typedef void (*hal_gpio_isr_t)(void* arg);
 #define GPIO_CMD_SET_LEVEL    0x15
 #define GPIO_CMD_GET_LEVEL    0x16
 
-struct gpio_isr_arg
+struct gpio_isr_arg
+
 {
     hal_pin_t pin;
     hal_gpio_isr_t handler;
     void* arg;
 };
 
-struct gpio_level_arg
+struct gpio_level_arg
+
 {
     hal_pin_t pin;
     int level;
@@ -91,3 +95,4 @@ int hal_gpio_get_level(hal_pin_t pin);
 #endif
 
 #endif /* HAL_GPIO_H */
+

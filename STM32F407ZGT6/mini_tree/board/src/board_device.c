@@ -95,7 +95,7 @@ int device_tree_init(void)
                board_dev_count(), OSAL_MUTEX_POOL_SIZE);
     }
 
-    return board_dev_count() > 0 ? 0 : -1;
+    return board_dev_count() > 0 ? VFS_OK : VFS_ERR_IO;
 }
 
 
@@ -125,7 +125,7 @@ struct device* device_find_by_label(const char* label)
 struct device* device_get_phandle_dev(const struct device* dev, const char* key)
 {
     const char* val;
-    if (device_get_prop_str(dev, key, &val) != 0) return NULL;
+    if (device_get_prop_str(dev, key, &val) != VFS_OK) return NULL;
     /* dtc-lite 将 phandle 引用存为 label 名字符串 */
     return device_find_by_label(val);
 }
@@ -222,7 +222,11 @@ int device_get_prop_int(const struct device* dev, const char* key, int* val)
     for (int i = 0; i < node->prop_count; i++)
     {
         if (strcmp(node->props[i].key, key) == 0)
-            return safe_parse_int32(node->props[i].value, val);
+        {
+            if (safe_parse_int32(node->props[i].value, val) != 0)
+                return VFS_ERR_INVAL;
+            return VFS_OK;
+        }
     }
     return VFS_ERR_INVAL;
 }
@@ -277,7 +281,7 @@ int device_get_prop_str(const struct device* dev, const char* key, const char** 
         if (strcmp(node->props[i].key, key) == 0)
         {
             *val = node->props[i].value;
-            return 0;
+            return VFS_OK;
         }
     }
     return VFS_ERR_INVAL;
@@ -294,7 +298,7 @@ int device_get_reg(const struct device* dev, int idx, const struct device_reg** 
     if (idx < 0 || idx >= (int)dev->node->reg_count) return VFS_ERR_INVAL;
     if (!dev->node->regs) return VFS_ERR_INVAL;
     *out = &dev->node->regs[idx];
-    return 0;
+    return VFS_OK;
 }
 
 int device_get_irq(const struct device* dev, int idx, const struct device_irq** out)
@@ -303,7 +307,7 @@ int device_get_irq(const struct device* dev, int idx, const struct device_irq** 
     if (idx < 0 || idx >= (int)dev->node->irq_count) return VFS_ERR_INVAL;
     if (!dev->node->irqs) return VFS_ERR_INVAL;
     *out = &dev->node->irqs[idx];
-    return 0;
+    return VFS_OK;
 }
 
 const char* device_get_name(const struct device* dev)
@@ -329,23 +333,23 @@ enum device_criticality device_get_criticality(const struct device* dev)
 
 int device_set_status(struct device* dev, enum device_status status)
 {
-    if (!dev) return -1;
+    if (!dev) return VFS_ERR_INVAL;
     osal_spinlock_lock(s_status_lock);
     if (!device_status_can_transit(dev->status, status))
     {
         osal_spinlock_unlock(s_status_lock);
-        return -1;
+        return VFS_ERR_INVAL;
     }
     dev->status = status;
     osal_spinlock_unlock(s_status_lock);
-    return 0;
+    return VFS_OK;
 }
 
 int device_set_priv(struct device* dev, void* priv)
 {
-    if (!dev) return -1;
+    if (!dev) return VFS_ERR_INVAL;
     dev->priv_data = priv;
-    return 0;
+    return VFS_OK;
 }
 
 void* device_get_priv(const struct device* dev)
@@ -395,7 +399,7 @@ int device_open(struct device* dev, void* arg)
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
 
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (!dev->ops || (!dev->ops->open && !dev->ops->init))
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
@@ -408,7 +412,7 @@ int device_open(struct device* dev, void* arg)
     }
 
     int ret = dev->ops->open ? dev->ops->open(dev, arg) : dev->ops->init(dev);
-    if (ret == 0)
+    if (ret == VFS_OK)
     {
         dev->status = DEVICE_STATUS_RUNNING;
     }
@@ -420,7 +424,7 @@ int device_close(struct device* dev)
 {
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (!dev->ops || !dev->ops->close)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
@@ -433,7 +437,7 @@ int device_close(struct device* dev)
     }
 
     int ret = dev->ops->close(dev);
-    if (ret == 0)
+    if (ret == VFS_OK)
     {
         dev->status = DEVICE_STATUS_PROBED;
     }
@@ -445,7 +449,7 @@ int device_write(struct device* dev, const void* buf, size_t len, uint32_t timeo
 {
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (!dev->ops || !dev->ops->write || dev->status != DEVICE_STATUS_RUNNING)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
@@ -460,7 +464,7 @@ int device_read(struct device* dev, void* buf, size_t len, uint32_t timeout_ms)
 {
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (!dev->ops || !dev->ops->read || dev->status != DEVICE_STATUS_RUNNING)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
@@ -475,7 +479,7 @@ int device_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uint32_
 {
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (!dev->ops || !dev->ops->ioctl || dev->status != DEVICE_STATUS_RUNNING)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
@@ -491,18 +495,18 @@ int device_suspend(struct device* dev)
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
 
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (dev->status != DEVICE_STATUS_RUNNING)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
         return VFS_ERR_IO;
     }
 
-    int ret = 0;
+    int ret = VFS_OK;
     if (dev->ops && dev->ops->suspend)
     {
         ret = dev->ops->suspend(dev);
-        if (ret != 0)
+        if (ret != VFS_OK)
         {
             COMPAT_IGNORE_RESULT(device_unlock(dev));
             return ret;
@@ -510,7 +514,7 @@ int device_suspend(struct device* dev)
     }
     dev->status = DEVICE_STATUS_SUSPENDED;
     COMPAT_IGNORE_RESULT(device_unlock(dev));
-    return 0;
+    return VFS_OK;
 }
 
 int device_resume(struct device* dev)
@@ -518,18 +522,18 @@ int device_resume(struct device* dev)
     if (!dev) return VFS_ERR_INVAL;
     HAL_ASSERT_NOT_ISR();
 
-    if (device_lock(dev) != 0) return VFS_ERR_BUSY;
+    if (device_lock(dev) != VFS_OK) return VFS_ERR_BUSY;
     if (dev->status != DEVICE_STATUS_SUSPENDED)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
         return VFS_ERR_IO;
     }
 
-    int ret = 0;
+    int ret = VFS_OK;
     if (dev->ops && dev->ops->resume)
     {
         ret = dev->ops->resume(dev);
-        if (ret != 0)
+        if (ret != VFS_OK)
         {
             COMPAT_IGNORE_RESULT(device_unlock(dev));
             return ret;
@@ -537,20 +541,20 @@ int device_resume(struct device* dev)
     }
     dev->status = DEVICE_STATUS_RUNNING;
     COMPAT_IGNORE_RESULT(device_unlock(dev));
-    return 0;
+    return VFS_OK;
 }
 
 /* ── 设备锁（启动期静态创建，运行期仅有限时加锁） ── */
 int device_lock(struct device* dev)
 {
-    if (!dev) return -1;
+    if (!dev) return VFS_ERR_INVAL;
     if (!dev->lock) return VFS_ERR_BUSY;
     return osal_mutex_lock(dev->lock, OSAL_LOCK_TIMEOUT_DEFAULT_MS) == 0 ? VFS_OK : VFS_ERR_BUSY;
 }
 
 int device_unlock(struct device* dev)
 {
-    if (!dev || !dev->lock) return -1;
+    if (!dev || !dev->lock) return VFS_ERR_INVAL;
     return osal_mutex_unlock(dev->lock) == 0 ? VFS_OK : VFS_ERR_IO;
 }
 
@@ -569,7 +573,7 @@ void device_ops_unregister(struct device* dev)
 {
     if (!dev) return;
 
-    if (device_lock(dev) != 0) return;
+    if (device_lock(dev) != VFS_OK) return;
 
     dev->status = DEVICE_STATUS_REMOVED;
 
@@ -577,7 +581,7 @@ void device_ops_unregister(struct device* dev)
 
     COMPAT_IGNORE_RESULT(event_bus_post(EVENT_SYS_DEVICE_REMOVED, (uintptr_t)dev));
 
-    if (device_lock(dev) != 0) return;
+    if (device_lock(dev) != VFS_OK) return;
 
     COMPAT_IGNORE_RESULT(device_set_priv(dev, NULL));
     dev->ops = NULL;

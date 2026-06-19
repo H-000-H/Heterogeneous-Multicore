@@ -6,7 +6,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 持久化存储抽象接口: 用于配置存储双槽 A/B 方案

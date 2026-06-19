@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── GPIO Fast Path ──
@@ -79,3 +80,4 @@ static inline uint32_t hal_gpio_fast_read(uint32_t gpio_base)
 #endif
 
 #endif /* HAL_GPIO_FAST_H */
+

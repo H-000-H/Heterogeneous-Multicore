@@ -11,6 +11,7 @@
 #include "event_bus.h"
 #include "device.h"
 #include "driver.h"
+#include "VFS.h"
 
 /* ── 启动期全局中断控制 (平台抽象) ──
  * 在 Pre_OS_Init 入口关全局中断, 阻断 ISR 抢跑访问未就绪的框架状态.
@@ -64,9 +65,9 @@ void MiniTree::System_Pre_OS_Init(void)
 #endif
 
     /* 设备树初始化 (编译时生成的节点表) */
-    if (device_tree_init() != 0)
+    if (device_tree_init() != VFS_OK)
     {
-        SYS_LOGW(kTag, "device_tree_init returned non-zero (non-fatal)");
+        SYS_LOGW(kTag, "device_tree_init failed (non-fatal)");
     }
 
     /* 事件总线两阶段初始化 (SIOF 防御) */

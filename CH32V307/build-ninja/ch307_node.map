@@ -158,7 +158,9 @@ Discarded input sections
  .text.freertos_risc_v_trap_handler
                 0x00000000      0x300 mini_tree/libmini_tree.a(portASM.S.obj)
  .data          0x00000000        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .sdata         0x00000000        0x4 mini_tree/libmini_tree.a(safe_state.c.obj)
  .data          0x00000000        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .sdata         0x00000000        0x4 mini_tree/libmini_tree.a(osal_freertos.c.obj)
  .data          0x00000000        0x0 mini_tree/libmini_tree.a(queue.c.obj)
  .bss           0x00000000        0x0 mini_tree/libmini_tree.a(queue.c.obj)
  .data          0x00000000        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
@@ -349,6 +351,8 @@ RAM              0x20000000         0x00008000         xrw
 
 Linker script and memory map
 
+LOAD D:/Heterogeneous-Multicore-project/CH32V307/mini_tree/error_symbols.ld
+                [!provide]                        PROVIDE (ERR_SECTION_BASE = 0xfffff000)
 LOAD CMakeFiles/ch307_node.dir/SRC/Core/core_riscv.c.obj
 LOAD CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
 LOAD CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
@@ -983,7 +987,7 @@ END GROUP
                 0x20008000                        PROVIDE (__freertos_irq_stack_top = _eusrstack)
 OUTPUT(ch307_node elf32-littleriscv)
 
-.debug_info     0x00000000     0x6d07
+.debug_info     0x00000000     0x6d30
  .debug_info    0x00000000      0x2f2 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_info    0x000002f2       0x23 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_info    0x00000315       0xa0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
@@ -994,17 +998,17 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_info    0x00002a1e      0x4d5 mini_tree/libmini_tree.a(heap_4.c.obj)
  .debug_info    0x00002ef3      0x221 mini_tree/libmini_tree.a(port.c.obj)
  .debug_info    0x00003114       0x23 mini_tree/libmini_tree.a(portASM.S.obj)
- .debug_info    0x00003137      0x13d mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_info    0x00003274     0x157b mini_tree/libmini_tree.a(osal_freertos.c.obj)
- .debug_info    0x000047ef     0x1430 mini_tree/libmini_tree.a(queue.c.obj)
- .debug_info    0x00005c1f       0x9e mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
- .debug_info    0x00005cbd       0xf7 mini_tree/libmini_tree.a(printf_output.c.obj)
- .debug_info    0x00005db4      0x4a9 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_info    0x0000625d      0x168 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_info    0x000063c5      0x850 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_info    0x00006c15       0xf2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_info    0x00003137      0x14f mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_info    0x00003286     0x1592 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_info    0x00004818     0x1430 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_info    0x00005c48       0x9e mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_info    0x00005ce6       0xf7 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_info    0x00005ddd      0x4a9 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_info    0x00006286      0x168 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_info    0x000063ee      0x850 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_info    0x00006c3e       0xf2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_abbrev   0x00000000     0x181e
+.debug_abbrev   0x00000000     0x181d
  .debug_abbrev  0x00000000      0x19b CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_abbrev  0x0000019b       0x12 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_abbrev  0x000001ad       0x4b CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
@@ -1016,14 +1020,14 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_abbrev  0x0000094a       0xe3 mini_tree/libmini_tree.a(port.c.obj)
  .debug_abbrev  0x00000a2d       0x12 mini_tree/libmini_tree.a(portASM.S.obj)
  .debug_abbrev  0x00000a3f       0xf7 mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_abbrev  0x00000b36      0x3f2 mini_tree/libmini_tree.a(osal_freertos.c.obj)
- .debug_abbrev  0x00000f28      0x2d0 mini_tree/libmini_tree.a(queue.c.obj)
- .debug_abbrev  0x000011f8       0x75 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
- .debug_abbrev  0x0000126d       0xbe mini_tree/libmini_tree.a(printf_output.c.obj)
- .debug_abbrev  0x0000132b      0x1f7 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_abbrev  0x00001522       0xd9 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_abbrev  0x000015fb      0x1ad D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_abbrev  0x000017a8       0x76 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_abbrev  0x00000b36      0x3f1 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_abbrev  0x00000f27      0x2d0 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_abbrev  0x000011f7       0x75 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_abbrev  0x0000126c       0xbe mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_abbrev  0x0000132a      0x1f7 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_abbrev  0x00001521       0xd9 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x000015fa      0x1ad D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x000017a7       0x76 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
 .debug_loclists
                 0x00000000      0xd87
@@ -1076,7 +1080,7 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_aranges
                 0x00000270       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_line     0x00000000     0x7eec
+.debug_line     0x00000000     0x7efa
  .debug_line    0x00000000      0x528 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_line    0x00000528      0x11a CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_line    0x00000642       0x70 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
@@ -1087,114 +1091,114 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_line    0x00003603      0x83a mini_tree/libmini_tree.a(heap_4.c.obj)
  .debug_line    0x00003e3d       0xb3 mini_tree/libmini_tree.a(port.c.obj)
  .debug_line    0x00003ef0      0x2e7 mini_tree/libmini_tree.a(portASM.S.obj)
- .debug_line    0x000041d7       0xfc mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_line    0x000042d3     0x1001 mini_tree/libmini_tree.a(osal_freertos.c.obj)
- .debug_line    0x000052d4     0x1bb5 mini_tree/libmini_tree.a(queue.c.obj)
- .debug_line    0x00006e89       0x6f mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
- .debug_line    0x00006ef8       0x72 mini_tree/libmini_tree.a(printf_output.c.obj)
- .debug_line    0x00006f6a      0x323 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_line    0x0000728d       0xef D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_line    0x0000737c      0xb27 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_line    0x00007ea3       0x49 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_line    0x000041d7      0x105 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_line    0x000042dc     0x1006 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_line    0x000052e2     0x1bb5 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_line    0x00006e97       0x6f mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_line    0x00006f06       0x72 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_line    0x00006f78      0x323 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_line    0x0000729b       0xef D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_line    0x0000738a      0xb27 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_line    0x00007eb1       0x49 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_str      0x00000000     0x2c29
- .debug_str     0x00000000     0x2c29 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+.debug_str      0x00000000     0x2c38
+ .debug_str     0x00000000     0x2c38 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
                                 0x29e (size before relaxing)
- .debug_str     0x00002c29        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_str     0x00002c38        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
                                  0x93 (size before relaxing)
- .debug_str     0x00002c29        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_str     0x00002c38        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
                                 0x153 (size before relaxing)
- .debug_str     0x00002c29        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_str     0x00002c38        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
                                 0x1eb (size before relaxing)
- .debug_str     0x00002c29        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_str     0x00002c38        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
                                  0xf1 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
                                0x1257 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(list.c.obj)
                                 0x251 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
                                 0x4a0 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(port.c.obj)
                                 0x289 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
                                  0xa5 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
-                                0x1fc (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
-                                0xc69 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+                                0x20b (size before relaxing)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                                0xc78 (size before relaxing)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(queue.c.obj)
                                 0xb20 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
                                 0x149 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
                                 0x145 (size before relaxing)
- .debug_str     0x00002c29        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_str     0x00002c38        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
                                 0x355 (size before relaxing)
- .debug_str     0x00002c29        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_str     0x00002c38        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
                                 0x21b (size before relaxing)
- .debug_str     0x00002c29        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_str     0x00002c38        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
                                 0x2b1 (size before relaxing)
- .debug_str     0x00002c29        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_str     0x00002c38        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
                                 0x1fe (size before relaxing)
 
 .debug_line_str
-                0x00000000      0xc8e
+                0x00000000      0xca0
  .debug_line_str
-                0x00000000      0xc8e CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x00000000      0xca0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
                                 0x24a (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x00000ca0        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
                                  0x87 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+                0x00000ca0        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
                                  0xbe (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                0x00000ca0        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
                                 0x15c (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                0x00000ca0        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
                                  0xf3 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
                                 0x41b (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(list.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(list.c.obj)
                                 0x2db (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
                                 0x423 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(port.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(port.c.obj)
                                 0x2ec (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
                                  0x99 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
-                                0x2e1 (size before relaxing)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+                                0x336 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
-                                0x4e4 (size before relaxing)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                                0x4f6 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(queue.c.obj)
                                 0x418 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(hal_platform_safety.c.obj)
                                 0x183 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
                                 0x232 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                0x00000ca0        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
                                 0x3f3 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                0x00000ca0        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
                                  0x97 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                0x00000ca0        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
                                  0x97 (size before relaxing)
  .debug_line_str
-                0x00000c8e        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                0x00000ca0        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
                                  0x97 (size before relaxing)
 
 .comment        0x00000000       0x1f

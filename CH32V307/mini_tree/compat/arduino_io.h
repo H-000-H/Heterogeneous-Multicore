@@ -6,7 +6,8 @@
 #include "osal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── Arduino 兼容 API ──
@@ -87,3 +88,4 @@ static inline void delay(uint32_t ms)
 #endif
 
 #endif /* COMPAT_ARDUINO_IO_H */
+

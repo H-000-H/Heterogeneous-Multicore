@@ -6,7 +6,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define PROD_LOG_SLOT_COUNT 32
@@ -20,7 +21,8 @@ typedef enum
     PROD_LOG_INFO  = 2,
 } prod_log_level_t;
 
-struct prod_log_entry
+struct prod_log_entry
+
 {
     uint32_t seq;
     uint32_t timestamp;

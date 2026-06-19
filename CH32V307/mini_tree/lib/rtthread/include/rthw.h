@@ -27,7 +27,8 @@
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /*
@@ -171,7 +172,8 @@ void rt_hw_context_switch_interrupt(rt_ubase_t from, rt_ubase_t to, rt_thread_t 
 /**
  * Hardware Layer Backtrace Service
  */
-struct rt_hw_backtrace_frame {
+struct rt_hw_backtrace_frame
+{
     rt_uintptr_t fp;
     rt_uintptr_t pc;
 };
@@ -249,3 +251,4 @@ void rt_hw_secondary_cpu_idle_exec(void);
 #endif
 
 #endif
+

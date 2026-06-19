@@ -72,7 +72,8 @@
 #include "klibc/kerrno.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /**
@@ -372,7 +373,8 @@ struct rt_object_information
 /**
  * @brief Add hook point in the routines
  * @note Usage:
- * void foo() {
+ * void foo()
+ {
  *     do_something();
  *
  *     RT_OBJECT_HOOK_CALL(foo);
@@ -474,7 +476,8 @@ struct rt_object_information
  *        be called one by one starting from head node.
  *
  * @note Usage:
- * void foo() {
+ * void foo()
+ {
  *     do_something();
  *
  *     RT_OBJECT_HOOKLIST_CALL(foo);
@@ -788,7 +791,8 @@ typedef struct {
 #define lwp_sigset_init(mask)   ((lwp_sigset_t){.sig = {[0] = (long)(mask)}})
 #endif /* _LWP_NSIG <= 64 */
 
-struct lwp_sigaction {
+struct lwp_sigaction
+{
     union {
         void (*_sa_handler)(int);
         void (*_sa_sigaction)(int, siginfo_t *, void *);
@@ -829,7 +833,8 @@ typedef struct lwp_sigqueue {
     lwp_sigset_t sigset_pending;
 } *lwp_sigqueue_t;
 
-struct lwp_thread_signal {
+struct lwp_thread_signal
+{
     lwp_sigset_t sigset_mask;
     struct lwp_sigqueue sig_queue;
 };
@@ -1454,7 +1459,8 @@ typedef struct rt_channel *rt_channel_t;
 /* RT-Thread definitions for C++ */
 namespace rtthread {
 
-enum TICK_WAIT {
+enum TICK_WAIT
+{
     WAIT_NONE = 0,
     WAIT_FOREVER = -1,
 };
@@ -1464,3 +1470,4 @@ enum TICK_WAIT {
 #endif /* __cplusplus */
 
 #endif /* __RT_DEF_H__ */
+

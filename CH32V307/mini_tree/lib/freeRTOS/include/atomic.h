@@ -55,7 +55,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -425,3 +426,4 @@ static portFORCE_INLINE uint32_t Atomic_XOR_u32( uint32_t volatile * pulDestinat
 /* *INDENT-ON* */
 
 #endif /* ATOMIC_H */
+

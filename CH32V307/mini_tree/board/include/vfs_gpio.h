@@ -5,7 +5,8 @@
 #include "hal_gpio.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── GPIO 模式/上下拉/中断类型 ──
@@ -34,7 +35,8 @@ typedef enum
     HAL_GPIO_INTR_ANY_EDGE,
 } hal_gpio_intr_t;
 
-struct hal_gpio_config
+struct hal_gpio_config
+
 {
     int pin;
     hal_gpio_mode_t mode;
@@ -53,14 +55,16 @@ typedef void (*hal_gpio_isr_t)(void* arg);
 #define GPIO_CMD_SET_LEVEL    0x15
 #define GPIO_CMD_GET_LEVEL    0x16
 
-struct gpio_isr_arg
+struct gpio_isr_arg
+
 {
     int pin;
     hal_gpio_isr_t handler;
     void* arg;
 };
 
-struct gpio_level_arg
+struct gpio_level_arg
+
 {
     int pin;
     int level;
@@ -84,3 +88,4 @@ static inline int vfs_gpio_get_level(int pin)
 #endif
 
 #endif /* VFS_GPIO_H */
+

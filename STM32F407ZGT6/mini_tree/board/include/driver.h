@@ -6,7 +6,8 @@
 #include "dev_lifecycle.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── Driver 核心 API ── */
@@ -57,3 +58,4 @@ void board_safety_register_shutdown(safety_shutdown_fn_t fn);
 #endif
 
 #endif /* BOARD_DRIVER_H */
+

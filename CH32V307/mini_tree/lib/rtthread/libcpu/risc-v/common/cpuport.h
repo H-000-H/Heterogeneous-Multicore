@@ -20,7 +20,8 @@
 #ifdef RT_USING_SMP
 typedef union {
     unsigned long slock;
-    struct __arch_tickets {
+    struct __arch_tickets
+    {
         unsigned short owner;
         unsigned short next;
     } tickets;
@@ -67,3 +68,4 @@ typedef union {
 #endif
 
 #endif
+

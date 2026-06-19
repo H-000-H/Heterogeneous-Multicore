@@ -96,7 +96,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -509,3 +510,4 @@ UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTIO
 /* *INDENT-ON* */
 
 #endif /* ifndef LIST_H */
+

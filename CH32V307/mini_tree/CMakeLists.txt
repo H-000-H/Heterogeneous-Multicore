@@ -117,6 +117,12 @@ add_custom_command(
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
     DEPENDS
         "${DTC_LITE}"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/ast.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/lexer.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/parser.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/compiler.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/generator.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/main.py"
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/ch32v307.dtsi"
         "${BOARD_DTSI_DIR}/ch32v307-spi.dtsi"

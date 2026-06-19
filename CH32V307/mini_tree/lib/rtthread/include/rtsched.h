@@ -15,7 +15,8 @@
 #include "rtcompiler.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 struct rt_thread;
@@ -145,3 +146,4 @@ struct rt_thread *rt_sched_thread_self(void);
 #endif
 
 #endif /* __RT_SCHED_H__ */
+

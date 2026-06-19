@@ -25,7 +25,8 @@
 #endif /* RT_USING_NANO */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /**
@@ -263,3 +264,4 @@ typedef struct rt_spinlock rt_spinlock_t;
 #endif
 
 #endif /* __RT_TYPES_H__ */
+

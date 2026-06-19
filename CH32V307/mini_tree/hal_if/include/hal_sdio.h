@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 总线宽度 */
@@ -24,7 +25,8 @@ typedef enum
 } hal_sdio_speed_t;
 
 /* SDIO 控制器配置 */
-struct hal_sdio_config
+struct hal_sdio_config
+
 {
     int                 sdio_id;        /* SDIO 控制器编号, 0 = SDIO1 */
     hal_sdio_bus_width_t bus_width;     /* 总线宽度 */
@@ -38,7 +40,8 @@ struct hal_sdio_config
 };
 
 /* 卡信息 */
-struct hal_sdio_info
+struct hal_sdio_info
+
 {
     uint32_t    sector_size;    /* 扇区大小(字节), 通常 512 */
     uint32_t    sector_count;   /* 总扇区数 */
@@ -63,3 +66,4 @@ void hal_sdio_force_stop(void);
 #endif
 
 #endif /* HAL_SDIO_H */
+

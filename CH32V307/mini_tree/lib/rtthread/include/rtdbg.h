@@ -33,7 +33,8 @@
 #include <rtconfig.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* the debug log will force enable when RT_USING_DEBUG macro is defined */
@@ -164,3 +165,4 @@ extern "C" {
 #endif
 
 #endif /* RT_DBG_H__ */
+

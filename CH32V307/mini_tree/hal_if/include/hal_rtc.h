@@ -5,11 +5,13 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* RTC 时间结构体 */
-struct hal_rtc_time
+struct hal_rtc_time
+
 {
     uint16_t year;      /* 年, 如 2026 */
     uint8_t  month;     /* 月, 1-12 */
@@ -21,7 +23,8 @@ struct hal_rtc_time
 };
 
 /* RTC 配置 */
-struct hal_rtc_config
+struct hal_rtc_config
+
 {
     int     rtc_id;         /* RTC 编号 */
     int     format_24h;     /* 时制: 0 = 12小时, 1 = 24小时 */
@@ -51,3 +54,4 @@ void hal_rtc_force_stop(void);
 #endif
 
 #endif /* HAL_RTC_H */
+

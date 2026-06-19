@@ -6,7 +6,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* Flash 抽象接口: 用于巡检/CRC 校验 */
@@ -19,3 +20,4 @@ uint32_t hal_flash_get_app_size(void);  /* 应用程序大小(字节) */
 #endif
 
 #endif /* HAL_FLASH_H */
+

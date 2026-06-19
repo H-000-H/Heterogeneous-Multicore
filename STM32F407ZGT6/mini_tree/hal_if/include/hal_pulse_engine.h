@@ -12,7 +12,8 @@
 
 #define HAL_PULSE_ENGINE_MAX  4
 
-struct hal_pulse_ws2812_hw
+struct hal_pulse_ws2812_hw
+
 {
     int gpio;
     uint32_t rmt_resolution_hz;
@@ -26,7 +27,8 @@ struct hal_pulse_ws2812_hw
 };
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 int  hal_pulse_ws2812_open(int engine_id, const struct hal_pulse_ws2812_hw* hw);
@@ -37,3 +39,4 @@ void hal_pulse_ws2812_close(int engine_id);
 #ifdef __cplusplus
 }
 #endif
+

@@ -9,12 +9,14 @@
 #include "osal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 typedef void (*bh_fn_t)(void* arg);
 
-struct bh_work {
+struct bh_work
+{
     bh_fn_t     fn;
     void*       arg;
     atomic_bool pending;    /* 已在队列或正在执行 */
@@ -33,7 +35,8 @@ struct bh_work {
 _Static_assert((BH_QUEUE_DEPTH >= 2U) && ((BH_QUEUE_DEPTH & (BH_QUEUE_DEPTH - 1U)) == 0U),
                "BH_QUEUE_DEPTH must be a power of two >= 2");
 
-struct bh_queue {
+struct bh_queue
+{
     struct bh_work*  ring[BH_QUEUE_DEPTH];
     atomic_uint head; /* ISR / 生产者写 */
     atomic_uint tail; /* 消费者写 (仅线程/主循环) */
@@ -115,7 +118,8 @@ static inline bool bh_schedule_from_isr(struct bh_queue* q, struct bh_work* w)
         return true;
     }
 
-    if (!bh_queue_try_push(q, w)) {
+    if (!bh_queue_try_push(q, w))
+    {
         atomic_store_explicit(&w->pending, false, memory_order_release);
         return false;
     }
@@ -133,7 +137,8 @@ static inline void bh_drain(struct bh_queue* q)
         return;
 
     unsigned t = atomic_load_explicit(&q->tail, memory_order_relaxed);
-    for (;;) {
+    for (;;)
+    {
         unsigned h = atomic_load_explicit(&q->head, memory_order_acquire);
         if (t == h)
             break;
@@ -148,7 +153,8 @@ static inline void bh_drain(struct bh_queue* q)
         atomic_store_explicit(&w->pending, false, memory_order_release);
         t++;
 
-        while (atomic_exchange_explicit(&w->rerun, false, memory_order_acq_rel)) {
+        while (atomic_exchange_explicit(&w->rerun, false, memory_order_acq_rel))
+        {
             if (bh_schedule_rerun(q, w))
                 break;
             atomic_store_explicit(&w->executing, true, memory_order_release);
@@ -163,3 +169,4 @@ static inline void bh_drain(struct bh_queue* q)
 #endif
 
 #endif /* BH_H */
+

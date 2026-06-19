@@ -15,7 +15,8 @@
 #include <stdarg.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 int rt_vsprintf(char *dest, const char *format, va_list arg_ptr);
@@ -30,3 +31,4 @@ int rt_sscanf(const char *str, const char *format, ...);
 #endif
 
 #endif
+

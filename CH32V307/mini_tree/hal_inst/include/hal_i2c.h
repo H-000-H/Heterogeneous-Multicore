@@ -6,7 +6,8 @@
 struct device;
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 从 struct device 获取 I2C 总线实例 (实现位于 i2c_vfs) */
@@ -42,3 +43,4 @@ struct i2c_wr_arg
 #endif
 
 #endif /* HAL_I2C_H */
+

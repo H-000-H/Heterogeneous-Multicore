@@ -4,6 +4,7 @@
 #include "event_bus.h"
 #include "device.h"
 #include "driver.h"
+#include "VFS.h"
 #include "safe_state.h"
 #include "system_wdt.h"
 #include "system_scrubber.h"
@@ -43,9 +44,9 @@ void mini_tree_pre_os_init(void)
     system_wdt_init_rtc(8000);
 #endif
 
-    if (device_tree_init() != 0)
+    if (device_tree_init() != VFS_OK)
     {
-        SYS_LOGW(kTag, "device_tree_init returned non-zero (non-fatal)");
+        SYS_LOGW(kTag, "device_tree_init failed (non-fatal)");
     }
 
     if (!event_bus_init())

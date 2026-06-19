@@ -7,7 +7,8 @@
 #include "compiler_compat.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 struct osal_mutex;
@@ -27,14 +28,16 @@ struct osal_mutex;
  *            dev_lc_remove_finish()    (释放 io_lock)
  */
 
-typedef enum dev_lc_state {
+typedef enum dev_lc_state
+{
     DEV_LC_UNINITIALIZED = 0,
     DEV_LC_LIVE,       /* probe 完成, 接受 open / I/O */
     DEV_LC_REMOVING,   /* remove 已开始, 拒绝新 open / I/O */
     DEV_LC_DEAD,
 } dev_lc_state_t;
 
-struct dev_lifecycle {
+struct dev_lifecycle
+{
     struct osal_mutex* io_lock;  /* 普通互斥锁 (osal_mutex_create_static) */
     int                opens;
     int                io_active;
@@ -115,3 +118,4 @@ void dev_lc_remove_finish(struct dev_lifecycle* lc);
 #endif
 
 #endif /* DEV_LIFECYCLE_H */
+

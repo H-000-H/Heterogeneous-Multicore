@@ -11,7 +11,8 @@
 #include "osal_tick.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define OSAL_WAIT_FOREVER UINT32_MAX

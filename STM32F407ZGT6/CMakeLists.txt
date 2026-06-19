@@ -72,6 +72,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32f407_hal
 )
 
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    -T "${CMAKE_CURRENT_SOURCE_DIR}/mini_tree/error_symbols.ld"
+)
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/mini_tree/cmake/disasm.cmake")
 mini_tree_add_disasm_postbuild(
     "${CMAKE_CURRENT_SOURCE_DIR}/mini_tree/.config"

@@ -9,27 +9,31 @@
 #include "compiler_compat.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 设备树常量 ── */
 #define MAX_DEVICES   DEV_ID_COUNT
 
 /* ── 编译期属性: dtc-lite 在构建期展开, runtime 只读静态表 ── */
-struct device_property {
+struct device_property
+{
     const char* key;
     const char* value;
 };
 
 /* ── 设备关键性等级 ── */
-enum device_criticality {
+enum device_criticality
+{
     DEVICE_CRIT_IGNORE = 0,   /* 可无声忽略 */
     DEVICE_CRIT_WARNING,      /* 失败时记录告警 (默认) */
     DEVICE_CRIT_FATAL,        /* 失败时触发 OSAL_PANIC 安全停机 */
 };
 
 /* ── 设备状态 ── */
-enum device_status {
+enum device_status
+{
     DEVICE_STATUS_DISABLED = 0,
     DEVICE_STATUS_UNINIT,
     DEVICE_STATUS_READY,
@@ -41,7 +45,8 @@ enum device_status {
 };
 
 /* ── reg 条目（由 dtc-lite 按 #address-cells / #size-cells 分组） ── */
-struct device_reg {
+struct device_reg
+{
     const uint32_t* addr;       /* 地址值数组 [#address-cells 个] */
     const uint32_t* size;       /* 长度值数组 [#size-cells 个] (NULL 若 size-cells == 0) */
     uint8_t         addr_cells;
@@ -49,7 +54,8 @@ struct device_reg {
 };
 
 /* ── interrupt 条目（由 dtc-lite 按 #interrupt-cells 分组） ── */
-struct device_irq {
+struct device_irq
+{
     int             irq;        /* 中断号（供 hal_irq_enable 使用） */
     int             type;       /* 中断类型（GIC SPI=0, PPI=1, 或直接填 flags） */
     int             flags;      /* 中断标志（IRQ_TYPE_LEVEL_HIGH 等） */
@@ -60,7 +66,8 @@ struct device;
 /* 子系统操作表由驱动通过 priv_data 魔术头注入, 不在 struct device 中硬编码 */
 
 /* ── 编译期只读设备树节点 ── */
-struct device_node {
+struct device_node
+{
     const char*         name;
     const char*         label;          /* DTS label (如 pwm_backlight) */
     const char*         compatible;
@@ -85,7 +92,8 @@ struct device_node {
 
 
 /* ── VFS 操作表 ── */
-struct file_operations {
+struct file_operations
+{
     int (*init) (struct device* dev);
     int (*open) (struct device* dev, void* arg);
     int (*close)(struct device* dev);
@@ -97,7 +105,8 @@ struct file_operations {
 };
 
 /* ── 运行时设备实例 ── */
-struct device {
+struct device
+{
     const struct device_node* node;       /* 指向编译期节点 */
     enum device_status        status;     /* 运行时状态 */
     void*                     priv_data;  /* 驱动私有数据 (VFS 层) */
@@ -188,3 +197,4 @@ int device_resume(struct device* dev) COMPAT_WARN_UNUSED_RESULT;
 #endif
 
 #endif /* BOARD_DEVICE_H */
+

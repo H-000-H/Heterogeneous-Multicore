@@ -5,11 +5,13 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* UART 配置 */
-struct hal_uart_config
+struct hal_uart_config
+
 {
     int     uart_id;    /* UART 控制器编号, 0 = UART0 */
     int     tx_pin;
@@ -43,7 +45,8 @@ void hal_uart_force_stop(void);
 #define UART_CMD_DEINIT     0x31
 #define UART_CMD_SET_BAUD   0x32
 
-struct uart_read_arg
+struct uart_read_arg
+
 {
     uint8_t* data;
     size_t len;
@@ -55,3 +58,4 @@ struct uart_read_arg
 #endif
 
 #endif /* HAL_UART_H */
+

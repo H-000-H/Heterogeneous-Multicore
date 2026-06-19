@@ -72,7 +72,8 @@
 
 /* *INDENT-OFF* */
 #if defined( __cplusplus )
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -965,3 +966,4 @@ typedef StreamBufferHandle_t MessageBufferHandle_t;
 /* *INDENT-ON* */
 
 #endif /* !defined( FREERTOS_MESSAGE_BUFFER_H ) */
+

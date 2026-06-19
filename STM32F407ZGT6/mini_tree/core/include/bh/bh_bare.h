@@ -6,10 +6,12 @@
 #include "bh.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
-struct bh_bare {
+struct bh_bare
+{
     struct bh_queue    q;
     volatile bool pending_drain; /* ISR 写, 主循环读 */
 };
@@ -55,3 +57,4 @@ static inline void bh_bare_poll(struct bh_bare* b)
 #endif
 
 #endif /* BH_BARE_H */
+

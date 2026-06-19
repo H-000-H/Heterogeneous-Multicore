@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 定时器工作模式 */
@@ -25,7 +26,8 @@ typedef enum
 } hal_timer_ch_mode_t;
 
 /* 定时器配置 */
-struct hal_timer_config
+struct hal_timer_config
+
 {
     int             timer_id;       /* 定时器编号, 如 0 = TIM1 */
     uint32_t        freq_hz;        /* 定时器基础时钟(Hz), 用于计算分频 */
@@ -35,7 +37,8 @@ struct hal_timer_config
 };
 
 /* 通道配置 */
-struct hal_timer_channel_config
+struct hal_timer_channel_config
+
 {
     int channel;                    /* 通道号, 如 0 = CH1 */
     hal_timer_ch_mode_t mode;       /* 通道工作模式 */
@@ -67,3 +70,4 @@ void hal_timer_force_stop(void);
 #endif
 
 #endif /* HAL_TIMER_H */
+

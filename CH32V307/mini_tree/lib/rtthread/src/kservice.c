@@ -529,7 +529,8 @@ rt_weak rt_err_t rt_backtrace_to_buffer(rt_thread_t thread,
     }
 
     /* discard frames as required. The inner most is always threw. */
-    do {
+    do
+    {
         rt_hw_backtrace_frame_unwind(thread, frame);
     } while (skip-- > 0);
 
@@ -1555,3 +1556,4 @@ RTM_EXPORT(rt_assert_handler);
 #endif /* RT_DEBUGING_ASSERT */
 
 /**@}*/
+

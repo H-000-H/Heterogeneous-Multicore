@@ -39,7 +39,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -1432,3 +1433,4 @@ void vTimerResetState( void ) PRIVILEGED_FUNCTION;
 #endif
 /* *INDENT-ON* */
 #endif /* TIMERS_H */
+

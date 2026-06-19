@@ -14,7 +14,8 @@
 #include <rttypes.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 void *rt_memset(void *s, int c, size_t n);
@@ -37,3 +38,4 @@ size_t rt_strlen(const char *src);
 #endif
 
 #endif
+

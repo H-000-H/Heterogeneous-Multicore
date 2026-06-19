@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 #define PWM_CMD_SET_DUTY      0x01
@@ -17,3 +18,4 @@ extern "C" {
 #endif
 
 #endif /* VFS_PWM_H */
+

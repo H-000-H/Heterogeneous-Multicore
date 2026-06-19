@@ -4,11 +4,13 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* PWM 通道配置 */
-struct hal_pwm_config
+struct hal_pwm_config
+
 {
     int pin;                /* 输出引脚 */
     int freq_hz;            /* PWM 频率(Hz) */
@@ -38,3 +40,4 @@ void hal_pwm_force_stop_all(void);
 #endif
 
 #endif /* HAL_PWM_H */
+

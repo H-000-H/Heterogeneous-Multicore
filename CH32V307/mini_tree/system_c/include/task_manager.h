@@ -4,7 +4,8 @@
 #include "osal.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 osal_task_handle_t task_manager_create(const struct board_task_config* config,
@@ -17,3 +18,4 @@ osal_task_handle_t task_manager_create_task(const char* name, uint32_t stack_siz
 #ifdef __cplusplus
 }
 #endif
+

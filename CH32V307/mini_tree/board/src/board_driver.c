@@ -66,13 +66,13 @@ static int board_safety_hw_probe(struct device* dev)
     {
         snprintf(pin_prop, sizeof(pin_prop), "pin_%d", idx);
         snprintf(level_prop, sizeof(level_prop), "safe_level_%d", idx);
-        if (device_get_prop_int(dev, pin_prop, &pin) != 0) break;
+        if (device_get_prop_int(dev, pin_prop, &pin) != VFS_OK) break;
         device_get_prop_int(dev, level_prop, &safe_level);
         board_safety_add_pin(pin, safe_level);
         idx++;
     }
     DRV_LOGI(kTag, "safety-hw: %d shutdown pins registered", g_safety_pin_count);
-    return 0;
+    return VFS_OK;
 }
 
 static int board_safety_hw_remove(struct device* dev)
@@ -80,7 +80,7 @@ static int board_safety_hw_remove(struct device* dev)
     (void)dev;
     g_safety_pin_count = 0;
     g_safety_cb_count  = 0;
-    return 0;
+    return VFS_OK;
 }
 
 DRIVER_REGISTER(board_safety_hw, "board,safety-hw",
@@ -288,13 +288,13 @@ int board_driver_probe_all(void)
             DRV_LOGI(kTag, "probing '%s' (%s) ...",
                      device_get_name(dev), device_get_compatible(dev));
             int ret = probe(dev);
-            if (ret == 0)
+            if (ret == VFS_OK)
             {
                 COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_PROBED));
-                int open_ret = 0;
+                int open_ret = VFS_OK;
                 if (dev->ops && (dev->ops->open || dev->ops->init))
                     open_ret = device_open(dev, NULL);
-                if (open_ret != 0)
+                if (open_ret != VFS_OK)
                 {
                     COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_ERROR));
                     DRV_LOGE(kTag, "device_open FAILED: %s (ret=%d)", device_get_name(dev), open_ret);
@@ -377,7 +377,7 @@ int board_driver_remove_all(void)
         if (remove_fn)
         {
             int ret = remove_fn(dev);
-            if (ret != 0)
+            if (ret != VFS_OK)
             {
                 DRV_LOGE(kTag, "remove FAILED: %s (ret=%d) — keeping ERROR state",
                          device_get_name(dev), ret);
@@ -387,5 +387,5 @@ int board_driver_remove_all(void)
         }
         COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_READY));
     }
-    return 0;
+    return VFS_OK;
 }

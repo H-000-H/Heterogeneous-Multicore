@@ -2,7 +2,8 @@
 #define HAL_CPU_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* CPU 紧急停止 (IEC 61508 §7.4.3.4 / ISO 26262 第6部分)
@@ -58,3 +59,4 @@ int hal_cpu_get_id(void);
 #endif
 
 #endif /* HAL_CPU_H */
+

@@ -32,7 +32,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -151,3 +152,4 @@ extern uint32_t ulPortGetRunTime( void );
 /* *INDENT-ON* */
 
 #endif /* PORTMACRO_H */
+

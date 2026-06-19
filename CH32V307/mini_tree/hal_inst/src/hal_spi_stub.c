@@ -67,11 +67,17 @@ int hal_spi_bus_host_deinit(int host_id)
     return VFS_OK;
 }
 
-struct hal_spi_bus_host* hal_spi_bus_host_get(int host_id)
+int hal_spi_bus_host_get(int host_id, struct hal_spi_bus_host** out)
 {
+    if (!out)
+        return VFS_ERR_INVAL;
+    *out = NULL;
+
     if (host_id < 0 || host_id >= SPI_HOST_MAX || !s_host_ready[host_id])
-        return NULL;
-    return &s_spi_hosts[host_id];
+        return VFS_ERR_NODEV;
+
+    *out = &s_spi_hosts[host_id];
+    return VFS_OK;
 }
 
 int hal_spi_interface_attach(struct hal_spi_bus_host* host,

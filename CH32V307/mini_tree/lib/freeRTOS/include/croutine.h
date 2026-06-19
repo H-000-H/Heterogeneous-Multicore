@@ -37,7 +37,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -763,3 +764,4 @@ void vCoRoutineResetState( void ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* CO_ROUTINE_H */
+

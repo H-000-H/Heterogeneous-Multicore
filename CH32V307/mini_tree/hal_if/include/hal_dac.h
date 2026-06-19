@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* 数据对齐模式 */
@@ -17,7 +18,8 @@ typedef enum
 } hal_dac_align_t;
 
 /* DAC 通道配置 */
-struct hal_dac_config
+struct hal_dac_config
+
 {
     int         channel;        /* 通道号, 0 = DAC1 */
     hal_dac_align_t align;      /* 数据对齐模式 */
@@ -43,3 +45,4 @@ void hal_dac_force_stop(void);
 #endif
 
 #endif /* HAL_DAC_H */
+

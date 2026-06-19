@@ -124,7 +124,8 @@ static uint32_t bitmap_alloc(volatile uint32_t* mask)
     uint32_t old, new_mask;
     int bit;
 
-    do {
+    do
+    {
         old = *mask;
         if (old == 0) return BP_MAX_BUFS;
         bit = COMPAT_CTZ(old);  /* 找最低位 1 → 第一个空闲 */
@@ -206,7 +207,8 @@ void* bp_alloc(struct bp_pool* pool)
     uint32_t u = BP_ADD_FETCH(&pool->used, 1);
     /* 更新峰值 (无锁 CAS) */
     uint32_t p;
-    do {
+    do
+    {
         p = pool->peak;
         if (u <= p) break;
     } while (!BP_CAS(&pool->peak, &p, u));
@@ -268,3 +270,4 @@ void bp_destroy(struct bp_pool* pool)
     }
     osal_free(pool);
 }
+

@@ -307,6 +307,11 @@ int spi_master_client_probe(struct device* pdev)
     }
 
     bus_host = (struct hal_spi_bus_host*)ctrl->hw_priv;
+    if (bus_host->cfg.bus_role != HAL_SPI_BUS_ROLE_MASTER)
+    {
+        SYS_LOGE(kTag, "SPI master client requires SPI master bus");
+        return VFS_ERR_INVAL;
+    }
 
     if (device_get_prop_int(pdev, "cs-pin", &cs) ||
         device_get_prop_int(pdev, "spi-mode", &mode) ||

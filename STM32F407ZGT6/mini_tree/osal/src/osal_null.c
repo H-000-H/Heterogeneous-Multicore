@@ -120,7 +120,8 @@ int osal_in_isr(void)
 /*
  * 以下两个函数由移植层在中断入口/出口调用.
  * 典型用法 (startup_xxx.s 或 C 中断处理):
- *   void SysTick_Handler(void) {
+ *   void SysTick_Handler(void)
+ {
  *       osal_null_isr_enter();
  *       // ... 中断处理 ...
  *       osal_null_isr_exit();
@@ -432,9 +433,12 @@ void osal_sem_destroy(struct osal_sem* sem)
         return;
 
     sem->signaled = 0U;
-    if (sem->from_pool) {
-        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++) {
-            if (&s_sem_pool[i] == sem) {
+    if (sem->from_pool)
+    {
+        for (size_t i = 0; i < OSAL_SEM_POOL_SIZE; i++)
+        {
+            if (&s_sem_pool[i] == sem)
+            {
                 pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
                 break;
             }
@@ -447,15 +451,24 @@ int osal_sem_wait(struct osal_sem* sem, uint32_t timeout_ms)
     if (!sem)
         return -1;
 
-    if (timeout_ms == OSAL_WAIT_FOREVER) {
-        while (!sem->signaled) { /* 裸机忙等 */ }
-    } else if (timeout_ms > 0U) {
+    if (timeout_ms == OSAL_WAIT_FOREVER)
+    {
+        while (!sem->signaled)
+        {
+            /* 裸机忙等 */
+        }
+    }
+    else if (timeout_ms > 0U)
+    {
         uint32_t start = osal_time_ms();
-        while (!sem->signaled) {
+        while (!sem->signaled)
+        {
             if ((osal_time_ms() - start) >= timeout_ms)
                 return -1;
         }
-    } else if (!sem->signaled) {
+    }
+    else if (!sem->signaled)
+    {
         return -1;
     }
 

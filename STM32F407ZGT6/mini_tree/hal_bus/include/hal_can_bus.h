@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* CAN 波特率 */
@@ -72,3 +73,4 @@ void hal_can_force_stop(void);
 #endif
 
 #endif /* HAL_CAN_BUS_H */
+

@@ -5,7 +5,8 @@
 #include "hal_spi_bus_host.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 struct hal_spi_ctx
@@ -31,3 +32,4 @@ int hal_spi_get_trans_result(struct hal_spi_ctx* ctx, uint8_t* rx_data, size_t r
 #endif
 
 #endif /* HAL_SPI_H */
+

@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── 通用块存储 IOCTL 规范 ──
@@ -17,18 +18,21 @@ extern "C" {
 #define STORAGE_IOC_ERASE_SECTOR   0x21  /* 物理擦除指定扇区 */
 #define STORAGE_IOC_WRITE_PROTECT  0x22  /* 开启/关闭硬件写保护 */
 
-struct vfs_storage_geometry
+struct vfs_storage_geometry
+
 {
     uint32_t sector_size;       /* 扇区大小 (字节, 如 4096) */
     uint32_t sector_count;      /* 总扇区数 */
 };
 
-struct vfs_storage_erase_arg
+struct vfs_storage_erase_arg
+
 {
     uint32_t sector;            /* 目标扇区号 */
 };
 
-struct vfs_storage_wp_arg
+struct vfs_storage_wp_arg
+
 {
     bool enable;                /* true = 开启写保护, false = 关闭 */
 };
@@ -38,3 +42,4 @@ struct vfs_storage_wp_arg
 #endif
 
 #endif /* VFS_STORAGE_H */
+

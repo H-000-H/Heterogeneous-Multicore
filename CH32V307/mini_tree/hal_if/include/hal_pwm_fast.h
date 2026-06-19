@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* ── PWM Fast Path 运行时占空比直写 ──
@@ -66,3 +67,4 @@ static inline void hal_pwm_fast_set_period(uint32_t tim_base, uint32_t period)
 #endif
 
 #endif /* HAL_PWM_FAST_H */
+

@@ -5,7 +5,8 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
 #endif
 
 /* PCIe 链路宽度 */
@@ -42,3 +43,4 @@ void hal_pcie_force_stop(void);
 #endif
 
 #endif /* HAL_PCIE_BUS_H */
+

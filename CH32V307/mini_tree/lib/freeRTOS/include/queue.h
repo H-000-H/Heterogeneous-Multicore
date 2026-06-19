@@ -38,7 +38,8 @@
 
 /* *INDENT-OFF* */
 #ifdef __cplusplus
-    extern "C" {
+    extern "C" 
+    {
 #endif
 /* *INDENT-ON* */
 
@@ -1880,3 +1881,4 @@ UBaseType_t uxQueueGetQueueLength( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
 /* *INDENT-ON* */
 
 #endif /* QUEUE_H */
+
