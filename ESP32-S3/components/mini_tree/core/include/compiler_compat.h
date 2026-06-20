@@ -110,7 +110,7 @@ enum
 #undef container_of
 #define container_of(ptr, type, member) ({                         \
     const TYPEOF(((type *)0)->member) *__mptr = (ptr);             \
-    (type *)((char *)__mptr - offsetof(type, member));             \
+    (type *)((char *)__mptr - __builtin_offsetof(type, member));             \
 })
 #else
 #ifndef container_of
@@ -125,7 +125,7 @@ enum
 #define unlikely(x) __builtin_expect(!!(x),0)
 #define likely(x)   __builtin_expect(!!(x),1)
 #define unreachable()  __builtin_unreachable()
-/*高级用法把点火程序直接使用这个*/
+/* 高级用法: 静态池在 main 之前自动执行 — pre_execution(150) → constructor(250) */
 #define pre_execution(x) __attribute__((constructor(x+100)))
 #ifdef AUTO_FREE_PTR
 #include <stdlib.h>

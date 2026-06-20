@@ -5,6 +5,7 @@
 #include "safe_state.h"
 #include "system_cfg.h"
 #include "system_wdt.h"
+#include "compiler_compat_poison.h"
 
 static const char* kTag = "Scrubber";
 static const uint32_t kScrubberPrio =

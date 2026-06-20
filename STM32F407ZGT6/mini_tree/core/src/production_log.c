@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include "compiler_compat_poison.h"
 
 /* ═══════════════════════════════════════════════════════════════════
  * CONFIG_PRODUCTION_LOG — 启用时通过 hal_storage 持久化
@@ -16,7 +17,8 @@
 /* 持久化快照: 将环形缓冲区 + 元数据打包为单个 blob */
 #define PROD_LOG_STORAGE_SLOT  0
 
-struct prod_log_persist
+struct prod_log_persist
+
 {
     uint16_t head;
     uint32_t seq;

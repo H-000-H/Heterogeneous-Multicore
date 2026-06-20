@@ -11,6 +11,7 @@
 #include "hal_cpu.h"
 #include "compiler_compat.h"
 #include "config.h"
+#include "compiler_compat_poison.h"
 
 /* ── 启动期全局中断控制 ── */
 #if defined(__ARM_ARCH_7EM__) || defined(__CORTEX_M) || defined(__ARM_ARCH_6M__) || defined(__ARM_ARCH_8M_BASE__)

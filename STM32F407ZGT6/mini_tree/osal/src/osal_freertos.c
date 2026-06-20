@@ -1,5 +1,8 @@
 #ifdef  CONFIG_OSAL_FREERTOS
 
+#define ALLOW_HEAP_ALLOC
+#define ALLOW_STDIO_OUTPUT
+
 #include "config.h"
 #include "osal.h"
 #include "board_config.h"
@@ -17,6 +20,7 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
+#include "compiler_compat_poison.h"
 
 /* ── 队列 / 信号量内部存储 ── */
 struct osal_mutex
@@ -606,6 +610,30 @@ void osal_log(osal_log_level_t level, const char* tag, const char* fmt, ...)
     my_printf_output("[%s] ", tag ? tag : "drv");
     vprintf(fmt, args);
     my_printf_output("\n");
+    va_end(args);
+}
+
+void osal_log_fatal(const char* fmt, ...)
+{
+    if (!fmt) fmt = "(null)";
+
+    va_list args;
+    va_start(args, fmt);
+    my_printf_output("\r\n[FATAL ERROR] ");
+    vprintf(fmt, args);
+    my_printf_output("\r\n");
+    va_end(args);
+}
+
+void osal_log_critical_assert(const char* file, int line, const char* fmt, ...)
+{
+    if (!fmt) fmt = "(null)";
+
+    va_list args;
+    va_start(args, fmt);
+    my_printf_output("\r\n[CRITICAL_ASSERT FAILED] %s:%d: ", file ? file : "?", line);
+    vprintf(fmt, args);
+    my_printf_output("\r\n");
     va_end(args);
 }
 

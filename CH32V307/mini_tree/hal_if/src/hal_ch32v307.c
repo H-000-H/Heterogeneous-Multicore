@@ -15,6 +15,7 @@
 
 #include <stddef.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 #ifndef CH32V307_APP_FLASH_BASE
 #define CH32V307_APP_FLASH_BASE 0x00000000U

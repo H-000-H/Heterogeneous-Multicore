@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "compiler_compat_poison.h"
 
 /*
  * 配置源缓冲区基地址与大小.

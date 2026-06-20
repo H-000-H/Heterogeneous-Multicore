@@ -13,6 +13,7 @@
 #include "system_log.h"
 #include "compiler_compat.h"
 #include "config.h"
+#include "compiler_compat_poison.h"
 
 /* SIOF (Static Initialization Order Fiasco) 防御:
  *   在 System_Pre_OS_Init (Phase 1) 完成前, 禁止所有 EventBus 操作.

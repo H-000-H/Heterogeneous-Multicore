@@ -26,7 +26,7 @@ extern bool g_system_os_initialized;
 #define K_MAX_SUBSCRIBERS   CONFIG_EVENT_BUS_MAX_SUBSCRIBERS
 
 #if defined(CONFIG_OSAL_FREERTOS)
-#  define K_DISPATCH_PRIO   30   /* FreeRTOS: 0=最低, 31=最高 */
+#  define K_DISPATCH_PRIO   24   /* FreeRTOS: 0=最低, configMAX_PRIORITIES-1=最高 (ESP-IDF 默认 24) */
 #else
 #  define K_DISPATCH_PRIO   1    /* RT-Thread: 0=最高, 31=最低 */
 #endif

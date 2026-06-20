@@ -1,6 +1,7 @@
 #include "dev_lifecycle.h"
 
 #include "osal.h"
+#include "compiler_compat_poison.h"
 
 static int dev_lc_lock_live(struct dev_lifecycle* lc, uint32_t timeout_ms)
 {

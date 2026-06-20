@@ -2,6 +2,8 @@
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/etl.cmake")
+
 set(KCONFIG_DOT "${CMAKE_CURRENT_LIST_DIR}/.config")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${KCONFIG_DOT}")
 
@@ -204,6 +206,7 @@ if(CONFIG_OSAL_ENTRY STREQUAL "CONFIG_OSAL_RTTHREAD=y")
 endif()
 
 target_compile_definitions(mini_tree PRIVATE ${OSAL_DEFINE})
+mini_tree_link_etl(mini_tree)
 if(CONFIG_SYSTEM_ENTRY STREQUAL "CONFIG_SYSTEM_CPP=y")
     target_compile_definitions(mini_tree PRIVATE CONFIG_SYSTEM_CPP)
     target_compile_options(mini_tree PRIVATE

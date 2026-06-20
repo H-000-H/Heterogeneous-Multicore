@@ -1,0 +1,62 @@
+---
+description: 上层 C++ 默认使用 ETL 容器与工具，替代 std 动态库
+globs: components/app/**/*.{cpp,hpp},components/mini_tree/system_cpp/**/*.{cpp,hpp},components/mini_tree/core/**/*.{cpp,hpp}
+alwaysApply: false
+---
+
+# 上层默认使用 ETL
+
+适用于 `components/app/`、`components/mini_tree/system_cpp/`、`components/mini_tree/core/` 下的 C++ 代码。底层 C 驱动/OSAL/HAL 仍按 `mini-tree-driver-patterns.mdc` 等 C 规范，不在此规则范围。
+
+依赖：`marcel-cd/etlcpp`（`#include <etl/...>`）。括号风格遵循 `c-brace-style.mdc`。
+
+## 原则
+
+1. **默认 ETL**：需要字符串、容器、队列、optional 等 C++ 抽象时，优先 `#include <etl/...>`，不用 `std::string`、`std::vector`、`std::map` 等会隐式堆分配的 STL。
+2. **无堆分配**：与 `compiler_compat_poison.h` 一致，上层不引入 `new`/`delete` 或依赖堆的 STL。
+3. **定长优先**：ETL 容器必须显式给出容量（如 `etl::vector<uint8_t, 64>`）；容量来自协议/页大小/任务常量，避免裸 magic number。
+4. **C 互操作**：传给 ESP-IDF 等 C API 的字符串用 `etl::string<N>`，调用处传 `.c_str()` 或 `.data()`。
+
+## 类型对照
+
+| 需求 | ✅ 默认 | ❌ 避免 |
+|------|---------|---------|
+| 日志 tag | `static etl::string<N> kTag = "..."` | `static const char* kTag` |
+| 可变长度文本 | `etl::string<N>` | `std::string` |
+| 需 push/resize 的缓冲 | `etl::vector<T, N>` | `std::vector<T>` |
+| 编译期固定长度缓冲 | `T buf[N]` 或 `etl::array<T, N>` | 为定长而强行用 `std::vector` |
+| 小集合 / 映射 | `etl::set<T, N>`、`etl::flat_map<K,V,N>` | `std::set` / `std::map` |
+| 队列 | `etl::queue<T, N>` | `std::deque` |
+| 可选值 | `etl::optional<T>` | `std::optional` |
+| 块比较 / 拷贝 | `__builtin_memcmp` / `__builtin_memcpy` | `<string.h>` 的 `memcmp` / `memcpy`（除非第三方 API 强制） |
+
+只读字面量仅作函数实参、不存储时可直接写 `"..."`；一旦赋给变量或重复用于日志，用 `etl::string<N>`。
+
+## 示例
+
+```cpp
+#include <etl/string.h>
+
+static etl::string<16> kTag = "FlashTask";
+
+uint8_t buf[kTestPatternLen];
+if (__builtin_memcmp(tx, rx, kTestPatternLen) != 0)
+{
+    ESP_LOGE(kTag.c_str(), "data mismatch");
+}
+```
+
+```cpp
+/* ❌ 上层不要 */
+#include <string>
+#include <vector>
+#include <string.h>
+static const char* kTag = "FlashTask";
+std::vector<uint8_t> buf(64);
+memcmp(a, b, len);
+```
+
+## 例外
+
+- 与 ESP-IDF / 第三方 C API 交互时，仅在参数/返回值边界使用其 C 类型；内部存储仍用 ETL。
+- ETL 无合适类型且必须堆分配时，在 PR/注释中说明理由。

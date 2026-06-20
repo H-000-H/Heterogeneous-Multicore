@@ -1,6 +1,7 @@
 #include "buffer_pool.h"
 #include "osal.h"
 #include "compiler_compat.h"
+#include "compiler_compat_poison.h"
 
 #include <string.h>
 

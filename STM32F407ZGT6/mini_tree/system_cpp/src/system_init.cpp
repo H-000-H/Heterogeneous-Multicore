@@ -7,6 +7,7 @@
 #include "safe_state.h"
 #include "hal_cpu.h"
 #include "compiler_compat.h"
+#include "compiler_compat_poison.h"
 
 #include "event_bus.h"
 #include "device.h"

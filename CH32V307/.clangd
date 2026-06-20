@@ -20,6 +20,7 @@ CompileFlags:
   CompilationDatabase: build/Debug
   Add:
     - --target=riscv32-unknown-elf
+    - -I../../../ESP32-S3/managed_components/marcel-cd__etlcpp/etl/include
     - -isystem
     - D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/riscv32-wch-elf/include
     - -isystem
@@ -122,6 +123,10 @@ CompileFlags:
 
 ---
 If:
-  PathMatch: .*[/\\]User[/\\].*\.(c|cpp|S)$
+  PathMatch: .*[/\\]app[/\\].*\.(c|cpp|S)$
 CompileFlags:
   CompilationDatabase: build/Debug
+  Add:
+    - -I../../../ESP32-S3/managed_components/marcel-cd__etlcpp/etl/include
+
+---

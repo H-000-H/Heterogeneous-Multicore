@@ -2,6 +2,8 @@
 
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/etl.cmake")
+
 set(KCONFIG_DOT "${CMAKE_CURRENT_LIST_DIR}/.config")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${KCONFIG_DOT}")
 
@@ -154,5 +156,6 @@ target_include_directories(mini_tree
 )
 
 target_compile_definitions(mini_tree PRIVATE ${OSAL_DEFINE})
+mini_tree_link_etl(mini_tree)
 add_custom_target(mini_tree_gen DEPENDS "${KCONFIG_OUT}" ${GEN_SRCS} ${GEN_HDRS} "${SCRUBBER_CRC_HDR}")
 add_dependencies(mini_tree mini_tree_gen)

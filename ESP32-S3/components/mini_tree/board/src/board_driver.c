@@ -229,6 +229,7 @@ void system_safety_hardware_shutdown(const char* reason)
 
 void board_register_all_drivers(void)
 {
+    board_driver_force_link();
 }
 
 int board_driver_probe_all(void)

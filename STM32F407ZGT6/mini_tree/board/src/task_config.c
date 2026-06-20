@@ -25,4 +25,5 @@
  * ═══════════════════════════════════════════════════════════════════ */
 
 #include "task_config.h"
+#include "compiler_compat_poison.h"
 

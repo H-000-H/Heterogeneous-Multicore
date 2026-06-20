@@ -4,6 +4,7 @@
 #include "osal.h"
 
 #include <stdint.h>
+#include "compiler_compat_poison.h"
 
 /* Bootloop 退避阈值: 连续 Panic/软件复位 ≥ BOOTLOOP_THRESHOLD 次 → 永久安全锁死 */
 #define BOOTLOOP_THRESHOLD  5

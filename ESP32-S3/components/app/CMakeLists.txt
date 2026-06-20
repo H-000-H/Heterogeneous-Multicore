@@ -25,7 +25,7 @@ idf_component_register(
 
     REQUIRES
 
-        mini_tree hal driver nvs_flash
+        mini_tree hal driver nvs_flash etlcpp
 
 )
 

@@ -1,5 +1,6 @@
 #include "hal_platform_safety.h"
 #include "hal_pwm.h"
+#include "compiler_compat_poison.h"
 
 void hal_platform_critical_hardware_lock(void)
 {

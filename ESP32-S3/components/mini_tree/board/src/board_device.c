@@ -442,6 +442,11 @@ int device_open(struct device* dev, void* arg)
         COMPAT_IGNORE_RESULT(device_unlock(dev));
         return VFS_ERR_IO;
     }
+    if (dev->status == DEVICE_STATUS_RUNNING)
+    {
+        COMPAT_IGNORE_RESULT(device_unlock(dev));
+        return VFS_OK;
+    }
     if (dev->status != DEVICE_STATUS_PROBED)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));

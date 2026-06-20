@@ -2,6 +2,7 @@
 
 #include "system_cfg.h"
 #include "system_wdt.h"
+#include "compiler_compat_poison.h"
 
 static const char* kTag = "TaskManager";
 

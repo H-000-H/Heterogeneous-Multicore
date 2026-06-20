@@ -12,6 +12,7 @@
  */
 
 #include "hal_cpu.h"
+#include "compiler_compat_poison.h"
 
 /*
  * 副核心裸机入口 — 默认死循环

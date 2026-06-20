@@ -14,6 +14,7 @@
 #include "hal_cpu_fast.h"
 #include "event_bus.h"
 #include "safe_state.h"
+#include "compiler_compat_poison.h"
 
 /* 编译期断言: 互斥锁池必须能覆盖最大设备数 */
 _Static_assert(OSAL_MUTEX_POOL_SIZE >= DEV_ID_COUNT,
@@ -91,8 +92,9 @@ int device_tree_init(void)
     /* 池水位线预警 */
     if (board_dev_count() >= OSAL_MUTEX_POOL_SIZE * 9 / 10)
     {
-        printf("[WARN] device_tree_init: mutex pool >90%% used (%d/%d)\n",
-               board_dev_count(), OSAL_MUTEX_POOL_SIZE);
+        osal_log(OSAL_LOG_WARN, "board",
+                 "device_tree_init: mutex pool >90%% used (%d/%d)\n",
+                 board_dev_count(), OSAL_MUTEX_POOL_SIZE);
     }
 
     return board_dev_count() > 0 ? VFS_OK : VFS_ERR_IO;

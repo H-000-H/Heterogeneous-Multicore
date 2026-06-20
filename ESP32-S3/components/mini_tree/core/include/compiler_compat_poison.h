@@ -23,7 +23,9 @@
 #if !defined(ALLOW_HEAP_ALLOC)
 #pragma GCC poison malloc calloc realloc free
 #ifdef __cplusplus
-#pragma GCC poison new delete
+#pragma GCC poison new delete\
+         typeid dynamic_cast \
+         try catch throw
 #endif
 #endif
 

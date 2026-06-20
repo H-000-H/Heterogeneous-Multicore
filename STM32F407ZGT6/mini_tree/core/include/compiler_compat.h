@@ -97,6 +97,14 @@ enum
 #define COMPAT_IGNORE_RESULT(expr) ((void)(expr))
 #endif
 
+/* format 属性用 __printf__，避免 poison printf 后属性里的 printf 标识符报错 */
+#if defined(__GNUC__)
+#define COMPAT_FMT_PRINTF(fmt_arg, first_var) \
+    __attribute__((format(__printf__, (fmt_arg), (first_var))))
+#else
+#define COMPAT_FMT_PRINTF(fmt_arg, first_var)
+#endif
+
 /* Linux 风格 container_of */
 #if COMPAT_GNU_EXT_OK
 #undef container_of

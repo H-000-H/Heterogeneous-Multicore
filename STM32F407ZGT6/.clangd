@@ -14,6 +14,7 @@ CompileFlags:
   Add:
     - --target=arm-none-eabi
     - -mcpu=cortex-m4
+    - -I../../../ESP32-S3/managed_components/marcel-cd__etlcpp/etl/include
     - -isystem
     - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
     - -isystem
@@ -126,6 +127,8 @@ If:
   PathMatch: .*[/\\]app[/\\].*\.(c|cpp|S)$
 CompileFlags:
   CompilationDatabase: build/Debug
+  Add:
+    - -I../../../ESP32-S3/managed_components/marcel-cd__etlcpp/etl/include
 
 ---
 If:

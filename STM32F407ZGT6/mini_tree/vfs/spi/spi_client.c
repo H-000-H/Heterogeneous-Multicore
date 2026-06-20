@@ -17,6 +17,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "compiler_compat_poison.h"
 
 #define SPI_CLIENT_COUNT DTC_GEN_COUNT_STM32_SPI_DEVICE
 

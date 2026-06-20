@@ -3,6 +3,7 @@
 #include "VFS.h"
 
 #include <stddef.h>
+#include "compiler_compat_poison.h"
 
 // 控制器数组：每个控制器对应一个设备
 static struct bus_controller s_controllers[DEV_ID_COUNT];

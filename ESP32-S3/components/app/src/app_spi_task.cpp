@@ -8,31 +8,39 @@
 
 #include "esp_log.h"
 
-static const char* kTag = "SpiTask";
+#include <etl/string.h>
+
+static etl::string<16> kTag = "SpiTask";
+static etl::string<16> kTaskName = "spi_test";
 
 static void spi_task_entry(void* arg)
 {
     (void)arg;
 
     struct device* dev = device_find_by_label("fft_slave");
-    if (!dev)
+    if (IS_ERR(dev))
     {
-        ESP_LOGE(kTag, "fft_slave not found");
+        ESP_LOGE(kTag.c_str(), "fft_slave not found (err=%d)", PTR_ERR(dev));
         osal_task_self_delete();
         return;
     }
 
     enum device_status st = device_get_status(dev);
-    ESP_LOGI(kTag, "fft_slave status=%d (expect PROBED=%d)", (int)st, (int)DEVICE_STATUS_PROBED);
-
-    if (device_open(dev, NULL) != VFS_OK)
+    if (st != DEVICE_STATUS_RUNNING && st != DEVICE_STATUS_PROBED)
     {
-        ESP_LOGE(kTag, "device_open failed");
+        ESP_LOGE(kTag.c_str(), "fft_slave not ready (status=%d)", (int)st);
         osal_task_self_delete();
         return;
     }
 
-    ESP_LOGI(kTag, "SPI slave open OK — ready for master on CS=10");
+    if (st == DEVICE_STATUS_PROBED && device_open(dev, NULL) != VFS_OK)
+    {
+        ESP_LOGE(kTag.c_str(), "device_open failed");
+        osal_task_self_delete();
+        return;
+    }
+
+    ESP_LOGI(kTag.c_str(), "SPI slave open OK — ready for master on CS=10");
 
     for (;;)
     {
@@ -43,5 +51,5 @@ static void spi_task_entry(void* arg)
 
 void app_spi_task_start(void)
 {
-    task_manager_create_task("spi_test", 3072, 9, spi_task_entry, NULL, 0);
+    task_manager_create_task(kTaskName.c_str(), 3072, 9, spi_task_entry, NULL, 0);
 }

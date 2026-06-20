@@ -6,11 +6,9 @@
 #include "system_init.h"
 #include "driver.h"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "nvs_flash.h"
 #include "esp_err.h"
-
+#include <etl/vector.h>
 extern "C" int app_rtos_start(void)
 {
     esp_err_t ret = nvs_flash_init();
@@ -28,7 +26,6 @@ extern "C" int app_rtos_start(void)
     app_spi_task_start();
     app_flash_task_start();
     system_init_complete();
-    vTaskStartScheduler();
 
     return 0;
 }

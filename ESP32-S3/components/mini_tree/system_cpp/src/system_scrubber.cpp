@@ -15,7 +15,7 @@ static constexpr uint32_t kScrubberPrio =
 #else
     30;  /* RT-Thread: 0=最高, 31=最低 — 后台巡检, 最低优先级 */
 #endif
-static constexpr uint32_t kScrubberStack = 2048;
+static constexpr uint32_t kScrubberStack = 4096;
 
 static osal_task_handle_t s_handle = nullptr;
 static volatile bool s_running = false;
@@ -155,6 +155,12 @@ bool system_scrubber_init(void)
 bool system_scrubber_start(void)
 {
     if (s_running) return true;
+
+    if (hal_flash_get_app_addr() == 0 || hal_flash_get_app_size() == 0)
+    {
+        SYS_LOGW(kTag, "app partition unavailable — scrubber not started");
+        return true;
+    }
 
     s_running = true;
     int ret = osal_task_create_handle("scrubber", kScrubberStack, kScrubberPrio,

@@ -147,6 +147,9 @@ class CGenerator:
             'const device_id_t* board_cascade_get(device_id_t id, int* count);',
             'const device_id_t* board_children_get(device_id_t id, int* count);',
             '',
+            '/* 强制链接驱动 .o, 避免静态库 weak probe 符号未拉入导致 probe 表项为 NULL */',
+            'void board_driver_force_link(void);',
+            '',
             '#ifdef __cplusplus',
             '}',
             '#endif',
@@ -480,10 +483,10 @@ class CGenerator:
                     p_fn, r_fn = self.compiler.driver_map[compat]
                     if p_fn not in probe_extern_seen:
                         probe_extern_seen.add(p_fn)
-                        probe_externs.append(f'extern int __attribute__((weak)) {p_fn}(struct device* dev);')
+                        probe_externs.append(f'extern int {p_fn}(struct device* dev);')
                     if r_fn not in remove_extern_seen:
                         remove_extern_seen.add(r_fn)
-                        remove_externs.append(f'extern int __attribute__((weak)) {r_fn}(struct device* dev);')
+                        remove_externs.append(f'extern int {r_fn}(struct device* dev);')
                     probe_array.append(f'    [DEV_ID_{snake}] = {p_fn},')
                     remove_array.append(f'    [DEV_ID_{snake}] = {r_fn},')
                 elif compat in PLATFORM:
@@ -555,6 +558,16 @@ class CGenerator:
             '}',
             '',
         ]
+
+        if probe_extern_seen or remove_extern_seen:
+            lines += ['void board_driver_force_link(void) {']
+            for p_fn in sorted(probe_extern_seen):
+                lines.append(f'    (void)&{p_fn};')
+            for r_fn in sorted(remove_extern_seen):
+                lines.append(f'    (void)&{r_fn};')
+            lines += ['}', '']
+        else:
+            lines += ['void board_driver_force_link(void) {}', '']
 
         cascade: Dict[int, List[int]] = self.compiler.compute_cascade_tables()
         children: Dict[int, List[int]] = self.compiler.compute_direct_children_tables()

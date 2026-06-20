@@ -14,6 +14,7 @@
 
 #include "driver/gpio.h"
 #include "esp_attr.h"
+#include "esp_err.h"
 #include "esp_task_wdt.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -99,11 +100,10 @@ bool hal_wdt_init_twdt(uint32_t timeout_ms)
         .idle_core_mask = 0,
         .trigger_panic  = true,
     };
-    esp_err_t err = esp_task_wdt_init(&cfg);
+    esp_err_t err = esp_task_wdt_reconfigure(&cfg);
     if (err == ESP_ERR_INVALID_STATE)
     {
-        s_twdt_inited = true;
-        return true;
+        err = esp_task_wdt_init(&cfg);
     }
     if (err != ESP_OK) return false;
 
@@ -120,12 +120,14 @@ bool hal_wdt_subscribe(void* task_handle)
 bool hal_wdt_unsubscribe(void* task_handle)
 {
     if (!s_twdt_inited) return false;
-    return esp_task_wdt_delete((TaskHandle_t)task_handle) == ESP_OK;
+    esp_err_t err = esp_task_wdt_delete((TaskHandle_t)task_handle);
+    return (err == ESP_OK || err == ESP_ERR_NOT_FOUND);
 }
 
 void hal_wdt_feed_twdt(void)
 {
     if (!s_twdt_inited) return;
+    if (esp_task_wdt_status(NULL) != ESP_OK) return;
     esp_task_wdt_reset();
 }
 

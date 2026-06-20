@@ -4,6 +4,7 @@
 #include "VFS.h"
 #include "dt_config_gen.h"
 #include "board_config.h"
+#include "compiler_compat.h"
 #include "hal_pulse_engine.h"
 #include "osal.h"
 #include "system_log.h"

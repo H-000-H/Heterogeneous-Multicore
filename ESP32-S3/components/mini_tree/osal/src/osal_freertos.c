@@ -12,6 +12,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "esp_task_wdt.h"
 #else
 #include "FreeRTOS.h"
 #include "semphr.h"
@@ -580,6 +581,13 @@ int osal_task_create_handle(const char* name, uint32_t stack_size,
 
 void osal_task_self_delete(void)
 {
+#ifdef ESP_PLATFORM
+    TaskHandle_t self = xTaskGetCurrentTaskHandle();
+    if (self != NULL && esp_task_wdt_status(self) == ESP_OK)
+    {
+        esp_task_wdt_delete(self);
+    }
+#endif
     vTaskDelete(NULL);
 }
 

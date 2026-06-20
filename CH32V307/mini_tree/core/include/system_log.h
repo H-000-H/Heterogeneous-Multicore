@@ -1,8 +1,6 @@
 #ifndef SYSTEM_LOG_H
 #define SYSTEM_LOG_H
 
-#include <stdio.h>
-
 /* Kconfig 生成的配置 — 见 tools/genconfig.py */
 #include "config.h"
 
@@ -19,9 +17,10 @@
   #define SYS_LOGE  ESP_LOGE
 
 #elif defined(CONFIG_SYS_LOG_USE_PRINTF)
-  #define SYS_LOGI(tag, fmt, ...)  printf("[I][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
-  #define SYS_LOGW(tag, fmt, ...)  printf("[W][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
-  #define SYS_LOGE(tag, fmt, ...)  printf("[E][%s] " fmt "\r\n", tag, ##__VA_ARGS__)
+#include "osal.h"
+  #define SYS_LOGI(tag, fmt, ...)  osal_log(OSAL_LOG_INFO,  tag, fmt, ##__VA_ARGS__)
+  #define SYS_LOGW(tag, fmt, ...)  osal_log(OSAL_LOG_WARN,  tag, fmt, ##__VA_ARGS__)
+  #define SYS_LOGE(tag, fmt, ...)  osal_log(OSAL_LOG_ERROR, tag, fmt, ##__VA_ARGS__)
 
 #else
   #error "SYS_LOG backend not configured — choose one in Kconfig"

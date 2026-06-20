@@ -9,24 +9,35 @@
 
 #include "esp_log.h"
 
-static const char* kTag = "LedTask";
+#include <etl/array.h>
+#include <etl/string.h>
+
+static etl::string<16> kTag = "LedTask";
+static etl::string<16> kTaskName = "led";
 static constexpr uint32_t kLedTimeoutMs = 100;
 
-static const struct ws2812_color kColors[] = {
-    {255, 0,   0  },
-    {0,   255, 0  },
-    {0,   0,   255},
-    {255, 255, 255},
-};
+static constexpr etl::array<ws2812_color, 4> kColors = {{
+    ws2812_color{255, 0,   0  },
+    ws2812_color{0,   255, 0  },
+    ws2812_color{0,   0,   255},
+    ws2812_color{255, 255, 255},
+}};
 
 static void led_task_entry(void* arg)
 {
     (void)arg;
 
-    struct device* dev = device_find("ws2812");
-    if (!dev)
+    struct device* dev = device_find_by_label("ws2812");
+    if (IS_ERR(dev))
     {
-        ESP_LOGE(kTag, "ws2812 device not found");
+        ESP_LOGE(kTag.c_str(), "ws2812 device not found (err=%d)", PTR_ERR(dev));
+        osal_task_self_delete();
+        return;
+    }
+
+    if (device_open(dev, NULL) != VFS_OK)
+    {
+        ESP_LOGE(kTag.c_str(), "device_open failed");
         osal_task_self_delete();
         return;
     }
@@ -40,15 +51,15 @@ static void led_task_entry(void* arg)
         if (device_ioctl(dev, WS2812_CMD_SET_COLOR, &color, sizeof(color),
                          kLedTimeoutMs) != VFS_OK)
         {
-            ESP_LOGW(kTag, "set color failed");
+            ESP_LOGW(kTag.c_str(), "set color failed");
         }
 
-        color_idx = (color_idx + 1) % (sizeof(kColors) / sizeof(kColors[0]));
+        color_idx = (color_idx + 1) % kColors.size();
         osal_delay_ms(500);
     }
 }
 
 void app_led_task_start(void)
 {
-    task_manager_create_task("led", 2048, 10, led_task_entry, NULL, 0);
+    task_manager_create_task(kTaskName.c_str(), 2048, 10, led_task_entry, NULL, 0);
 }

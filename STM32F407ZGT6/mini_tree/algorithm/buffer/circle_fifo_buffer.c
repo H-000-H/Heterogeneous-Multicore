@@ -3,6 +3,7 @@
  * 禁止在没有外部互斥锁的情况下向同一个 struct fifo_spsc 添加第二个生产者或消费者。
  */
 #include "m_buffer.h"
+#include "compiler_compat_poison.h"
 
 #define FIFO_LOAD_ACQ(ptr)   __atomic_load_n(&(ptr), __ATOMIC_ACQUIRE)
 #define FIFO_LOAD_RELAX(ptr) __atomic_load_n(&(ptr), __ATOMIC_RELAXED)

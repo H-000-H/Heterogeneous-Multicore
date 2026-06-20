@@ -19,6 +19,10 @@ CompileFlags:
     - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include
     - -isystem
     - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/14.2.0/include-fixed
+    - -isystem
+    - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include/c++/14.2.0
+    - -isystem
+    - D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/xtensa-esp-elf/include/c++/14.2.0/xtensa-esp-elf/esp32s3
     - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/esp32s3/include
     - -ID:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/xtensa/include
   CompilationDatabase: build
@@ -97,6 +101,7 @@ Diagnostics:
 If:
   PathMatch: .*[/\\]components[/\\]app[/\\].*
 CompileFlags:
+  Compiler: D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/bin/xtensa-esp32s3-elf-g++.exe
   Add:
     - --target=xtensa-esp32s3-elf
     - -D__XTENSA__
@@ -104,6 +109,7 @@ CompileFlags:
     - -std=gnu++2b
     - -DESP_PLATFORM
     - -Icomponents/app/inc
+    - -Imanaged_components/marcel-cd__etlcpp/etl/include
     - -Icomponents/mini_tree/board/include
     - -Icomponents/mini_tree/core/include
     - -Icomponents/mini_tree/osal/include

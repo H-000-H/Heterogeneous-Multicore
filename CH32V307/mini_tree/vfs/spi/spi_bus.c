@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <string.h>
 #include "system_log.h"
+#include "compiler_compat_poison.h"
 
 static const char* const kTag = "spi_bus";
 
