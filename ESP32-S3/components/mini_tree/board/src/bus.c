@@ -1,17 +1,18 @@
 #include "bus.h"
 #include "device.h"
 #include "VFS.h"
+#include "compiler_compat.h"
 
 #include <stddef.h>
 #include "compiler_compat_poison.h"
 
 // 控制器数组：每个控制器对应一个设备
-static struct bus_controller s_controllers[DEV_ID_COUNT];
+static struct bus_controller s_controllers[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 // 客户端数组：每个子设备对应一个客户端
-static struct bus_client     s_clients[DEV_ID_COUNT];
+static struct bus_client     s_clients[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 // 两个位图表：标记哪些槽位已用
-static uint8_t               s_controller_used[DEV_ID_COUNT];
-static uint8_t               s_client_used[DEV_ID_COUNT];
+static uint8_t               s_controller_used[DEV_ID_COUNT] COMPAT_ALIGNED(4);
+static uint8_t               s_client_used[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 
 static device_id_t device_to_id(const struct device* dev)
 {

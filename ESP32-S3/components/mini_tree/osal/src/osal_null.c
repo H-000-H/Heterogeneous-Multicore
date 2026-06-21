@@ -225,9 +225,9 @@ struct osal_queue_obj
 };
 
 /* ── 队列控制块池 ── */
-static struct osal_queue_obj s_queues[OSAL_NULL_MAX_QUEUES];
-static uint8_t s_queue_used[OSAL_NULL_MAX_QUEUES];
-static osal_pool_t s_queue_pool_ctrl;
+static struct osal_queue_obj s_queues[OSAL_NULL_MAX_QUEUES] COMPAT_ALIGNED(4);
+static uint8_t s_queue_used[OSAL_NULL_MAX_QUEUES] COMPAT_ALIGNED(4);
+static osal_pool_t s_queue_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(152)
 static void osal_null_queue_pool_boot_init(void)
@@ -280,9 +280,9 @@ static int osal_mutex_init(struct osal_mutex* m, osal_mutex_type_t type)
     return 0;
 }
 
-static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE];
-static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE];
-static osal_pool_t       s_mutex_pool_ctrl;
+static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(150)
 static void osal_null_mutex_pool_boot_init(void)
@@ -712,9 +712,9 @@ struct osal_sem
 _Static_assert(sizeof(struct osal_sem) <= OSAL_SEM_STORAGE_SIZE,
                "OSAL_SEM_STORAGE_SIZE too small");
 
-static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE];
-static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE];
-static osal_pool_t   s_sem_pool_ctrl;
+static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(151)
 static void osal_null_sem_pool_boot_init(void)

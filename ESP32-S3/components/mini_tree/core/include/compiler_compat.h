@@ -40,6 +40,7 @@
     (COMPAT_CFG_ENABLED(COMPILER_WARN_UNUSED_RESULT) && COMPAT_GNU_EXT_OK)
 
 #define COMPAT_ALIGNED(n) __attribute__((aligned(n)))
+/* 静态内存池、DMA buffer、OSAL backing storage 统一使用 COMPAT_ALIGNED(4)，见 static-pool-alignment.mdc */
 #define COMPAT_WEAK __attribute__((weak))
 #define COMPAT_TRAP()     __builtin_trap()
 #define COMPAT_CTZ(x)     __builtin_ctz(x)
@@ -55,7 +56,8 @@
     X(CAN,   0x05) \
     X(ETH,   0x06) \
     X(GPIO,  0x07) \
-    X(SDIO,  0x08)
+    X(SDIO,  0x08) \
+    X(W25Q64,0X09) 
 #define COMPAT_MAGIC_ENUM(name, slot) \
     COMPAT_MAGIC_##name = (uint32_t)((slot) * COMPAT_MAGIC_SLOT_STRIDE),
 

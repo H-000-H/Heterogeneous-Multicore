@@ -21,7 +21,6 @@
 #define SPI_DEVICE_COUNT        (SPI_SLAVE_DEVICE_COUNT + SPI_MASTER_DEVICE_COUNT)
 #define SPI_SLAVE_MAX_TRANSFER_BYTES  2048
 #define SPI_HOST_MAX           3
-#define DMA_SPI_ALIGNMENT      COMPAT_ALIGNED(4)
 
 struct hal_spi_hw
 {
@@ -40,14 +39,14 @@ struct hal_spi_hw
     int is_master;
 };
 
-static struct hal_spi_hw s_spi_hw[SPI_DEVICE_COUNT];
-static uint8_t s_spi_rx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] DMA_SPI_ALIGNMENT = {0};
-static uint8_t s_spi_tx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] DMA_SPI_ALIGNMENT = {0};
-static uint8_t s_spi_dummy_rx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] DMA_SPI_ALIGNMENT = {0};
+static struct hal_spi_hw s_spi_hw[SPI_DEVICE_COUNT] COMPAT_ALIGNED(4);
+static uint8_t s_spi_rx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] COMPAT_ALIGNED(4) = {0};
+static uint8_t s_spi_tx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] COMPAT_ALIGNED(4) = {0};
+static uint8_t s_spi_dummy_rx_buf[SPI_DEVICE_COUNT][SPI_SLAVE_MAX_TRANSFER_BYTES] COMPAT_ALIGNED(4) = {0};
 
-static struct hal_spi_ctx* s_active_ctx[SPI_DEVICE_COUNT];
-static struct hal_spi_bus_host s_spi_hosts[SPI_HOST_MAX];
-static uint8_t s_host_mutex_storage[SPI_HOST_MAX][OSAL_MUTEX_STORAGE_SIZE] = {0};
+static struct hal_spi_ctx* s_active_ctx[SPI_DEVICE_COUNT] COMPAT_ALIGNED(4);
+static struct hal_spi_bus_host s_spi_hosts[SPI_HOST_MAX] COMPAT_ALIGNED(4);
+static uint8_t s_host_mutex_storage[SPI_HOST_MAX][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4) = {0};
 
 static const char* const kTag = "hal_spi";
 
@@ -215,6 +214,7 @@ static int spi_slave_setup_trans(struct hal_spi_ctx* ctx, struct hal_spi_hw* hw,
     return VFS_OK;
 }
 
+/* 主机初始化 */
 static int spi_master_bus_init(struct hal_spi_bus_host* host)
 {
     if (!host || host->hw_inited)
@@ -247,6 +247,7 @@ static int spi_master_bus_init(struct hal_spi_bus_host* host)
     return VFS_OK;
 }
 
+/*主机反初始化*/
 static int spi_master_bus_deinit(struct hal_spi_bus_host* host)
 {
     if (!host || !host->hw_inited)
@@ -266,6 +267,7 @@ static int spi_master_bus_deinit(struct hal_spi_bus_host* host)
     return VFS_OK;
 }
 
+/*添加主设备*/
 static int spi_master_device_add(struct hal_spi_ctx* ctx, struct hal_spi_hw* hw,
                                  const struct hal_spi_device_config* dev_cfg)
 {
@@ -318,6 +320,7 @@ static int spi_master_hw_deinit(struct hal_spi_bus_host* host, struct hal_spi_hw
     return spi_master_bus_deinit(host);
 }
 
+/*主机传输*/
 static int spi_master_transmit(struct hal_spi_ctx* ctx, struct hal_spi_hw* hw,
                                const uint8_t* tx, uint8_t* rx, size_t len)
 {
@@ -423,6 +426,7 @@ static int spi_bus_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t len)
     return (int)len;
 }
 
+/*主设备写*/
 static int spi_master_write_impl(struct hal_spi_bus* bus, const uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
@@ -441,6 +445,7 @@ static int spi_master_write_impl(struct hal_spi_bus* bus, const uint8_t* data, s
     return spi_master_transmit(ctx, hw, s_spi_tx_buf[hw_idx], NULL, len);
 }
 
+/*主设备读*/
 static int spi_master_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
@@ -464,6 +469,7 @@ static int spi_master_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t l
     return (int)len;
 }
 
+/*总线初始化*/
 void hal_spi_bus_init_struct(struct hal_spi_bus* bus, int bus_role)
 {
     if (!bus)
@@ -537,6 +543,7 @@ int hal_spi_bus_host_deinit(int host_id)
     return VFS_OK;
 }
 
+/*获取总线*/
 int hal_spi_bus_host_get(int host_id, struct hal_spi_bus_host** out)
 {
     struct hal_spi_bus_host* host;
@@ -599,6 +606,7 @@ int hal_spi_interface_attach(struct hal_spi_ctx* ctx)
     return VFS_OK;
 }
 
+/*生命周期解绑*/
 int hal_spi_interface_detach(struct hal_spi_ctx* ctx)
 {
     struct hal_spi_bus_host* host;
@@ -678,6 +686,7 @@ int hal_spi_xfer_end(struct hal_spi_ctx* ctx)
     return osal_mutex_unlock(host->bus_mutex) == 0 ? VFS_OK : VFS_ERR_IO;
 }
 
+/*提供给上层spi传输*/
 int hal_spi_transfer(struct hal_spi_ctx* ctx, const uint8_t* tx, uint8_t* rx,
                      size_t len, uint32_t timeout_ms)
 {
@@ -847,8 +856,11 @@ int hal_spi_unlock_bus(int bus_id)
 /*拉低 CS*/
 int hal_spi_assert_cs(int bus_id, int cs_line)
 {
-    SYS_LOGW(kTag, "hardware CS enabled, skip manual cs assert"); COMPAT_IGNORE_RESULT(bus_id); COMPAT_IGNORE_RESULT(cs_line);
+    SYS_LOGW(kTag, "hardware CS enabled, skip manual cs assert"); 
+    COMPAT_IGNORE_RESULT(bus_id); 
+    COMPAT_IGNORE_RESULT(cs_line);
     return VFS_OK;
+
 }
 
 /*拉高 CS*/

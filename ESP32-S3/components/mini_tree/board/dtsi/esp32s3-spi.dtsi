@@ -7,7 +7,7 @@
  *   esp32,spi                        — vfs/spi/spi_bus.c (Slave 总线)
  *   esp32,spi-master                 — vfs/spi/spi_bus.c (Master 总线)
  *   heterogeneous,fft-spi-slave      — drivers/fft/fft_spi_drv.c → spi_slave_client
- *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c
+ *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c → spi_master_client
  */
 
 #include "esp32s3.dtsi"

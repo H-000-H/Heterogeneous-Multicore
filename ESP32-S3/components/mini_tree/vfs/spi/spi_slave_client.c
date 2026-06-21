@@ -27,10 +27,10 @@ struct spi_slave_client
     int                    pool_idx;
 };
 
-static struct spi_slave_client s_spi_slave_pool[SPI_SLAVE_CLIENT_COUNT];
-static uint8_t                 s_spi_slave_used[SPI_SLAVE_CLIENT_COUNT];
-static osal_pool_t             s_spi_slave_pool_ctrl;
-static uint8_t s_spi_slave_mutex_storage[SPI_SLAVE_CLIENT_COUNT][OSAL_MUTEX_STORAGE_SIZE];
+static struct spi_slave_client s_spi_slave_pool[SPI_SLAVE_CLIENT_COUNT] COMPAT_ALIGNED(4);
+static uint8_t                 s_spi_slave_used[SPI_SLAVE_CLIENT_COUNT] COMPAT_ALIGNED(4);
+static osal_pool_t             s_spi_slave_pool_ctrl COMPAT_ALIGNED(4);
+static uint8_t s_spi_slave_mutex_storage[SPI_SLAVE_CLIENT_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
 pre_execution(160)
 static void spi_slave_client_pool_boot_init(void)

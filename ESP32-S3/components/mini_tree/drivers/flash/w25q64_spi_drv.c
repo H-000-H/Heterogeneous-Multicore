@@ -1,7 +1,5 @@
 #include "w25q64_drv.h"
-#include "bus.h"
-#include "hal_spi.h"
-#include "hal_spi_bus_host.h"
+#include "spi_master_client.h"
 #include "device.h"
 #include "driver.h"
 #include "dev_lifecycle.h"
@@ -14,13 +12,13 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 #include "compiler_compat_poison.h"
 
 #define W25Q64_COUNT           DTC_GEN_COUNT_HETEROGENEOUS_W25Q64_MASTER
 #define W25Q64_XFER_BUF_SIZE   512U
 #define W25Q64_CMD_ADDR_SIZE   3U
 #define W25Q64_CMD_HDR_SIZE    (1U + W25Q64_CMD_ADDR_SIZE)
+#define W25Q64_XFER_FRAME_SIZE (W25Q64_CMD_HDR_SIZE + W25Q64_XFER_BUF_SIZE)
 
 #define W25Q64_SPI_OP_WRITE_ENABLE       0x06U
 #define W25Q64_SPI_OP_READ_STATUS1       0x05U
@@ -32,20 +30,19 @@
 
 struct w25q64_device
 {
-    struct file_operations ops;
-    struct hal_spi_ctx     ctx;
-    struct osal_mutex*     io_mutex;
-    int                    pool_idx;
-    size_t                 max_xfer;
-    uint32_t               f_pos;
-    uint8_t                jedec_id[W25Q64_JEDEC_ID_LEN];
+    struct file_operations   ops;
+    struct spi_master_client spi;
+    size_t                   max_xfer;
+    uint32_t                 f_pos;/*当前读写位置*/
+    uint8_t                  jedec_id[W25Q64_JEDEC_ID_LEN];
 };
 
-static struct w25q64_device s_w25q64_pool[W25Q64_COUNT];
-static uint8_t              s_w25q64_used[W25Q64_COUNT];
-static osal_pool_t          s_w25q64_pool_ctrl;
-static uint8_t s_w25q64_mutex_storage[W25Q64_COUNT][OSAL_MUTEX_STORAGE_SIZE];
-static uint8_t s_w25q64_xfer_buf[W25Q64_COUNT][W25Q64_CMD_HDR_SIZE + W25Q64_XFER_BUF_SIZE];
+static struct w25q64_device s_w25q64_pool[W25Q64_COUNT] COMPAT_ALIGNED(4);
+static uint8_t              s_w25q64_used[W25Q64_COUNT] COMPAT_ALIGNED(4);
+static osal_pool_t          s_w25q64_pool_ctrl COMPAT_ALIGNED(4);
+static uint8_t s_w25q64_mutex_storage[W25Q64_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
+static uint8_t s_w25q64_tx_buf[W25Q64_COUNT][W25Q64_XFER_FRAME_SIZE] COMPAT_ALIGNED(4);
+static uint8_t s_w25q64_rx_buf[W25Q64_COUNT][W25Q64_XFER_FRAME_SIZE] COMPAT_ALIGNED(4);
 
 static const char* const kTag = "w25q64";
 
@@ -69,7 +66,7 @@ static int w25q64_wait_ready(struct w25q64_device* flash, uint32_t timeout_ms)
 
     while (elapsed <= timeout_ms)
     {
-        if (hal_spi_transfer(&flash->ctx, tx, rx, sizeof(tx), timeout_ms) != VFS_OK)
+        if (spi_master_client_transfer(&flash->spi, tx, rx, sizeof(tx), 10U) != VFS_OK)
             return VFS_ERR_IO;
 
         if ((rx[1] & W25Q64_STATUS_WIP) == 0U)
@@ -85,7 +82,7 @@ static int w25q64_wait_ready(struct w25q64_device* flash, uint32_t timeout_ms)
 static int w25q64_write_enable(struct w25q64_device* flash, uint32_t timeout_ms)
 {
     uint8_t cmd = W25Q64_SPI_OP_WRITE_ENABLE;
-    return hal_spi_transfer(&flash->ctx, &cmd, NULL, 1U, timeout_ms);
+    return spi_master_client_transfer(&flash->spi, &cmd, NULL, 1U, timeout_ms);
 }
 
 static int w25q64_hw_read_jedec(struct w25q64_device* flash, uint8_t id[W25Q64_JEDEC_ID_LEN],
@@ -94,7 +91,7 @@ static int w25q64_hw_read_jedec(struct w25q64_device* flash, uint8_t id[W25Q64_J
     uint8_t tx[4] = { W25Q64_SPI_OP_JEDEC_ID, 0x00, 0x00, 0x00 };
     uint8_t rx[4] = { 0, 0, 0, 0 };
 
-    if (hal_spi_transfer(&flash->ctx, tx, rx, sizeof(tx), timeout_ms) != VFS_OK)
+    if (spi_master_client_transfer(&flash->spi, tx, rx, sizeof(tx), timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     id[0] = rx[1];
@@ -106,16 +103,19 @@ static int w25q64_hw_read_jedec(struct w25q64_device* flash, uint8_t id[W25Q64_J
 static int w25q64_hw_read_data(struct w25q64_device* flash, uint32_t addr,
                             uint8_t* data, size_t len, uint32_t timeout_ms)
 {
-    uint8_t* frame;
+    uint8_t* tx;
+    uint8_t* rx;
     size_t chunk;
     size_t offset = 0U;
+    int pool_idx = flash->spi.pool_idx;
 
     if (!data || len == 0U)
         return VFS_ERR_INVAL;
     if ((uint64_t)addr + (uint64_t)len > W25Q64_FLASH_SIZE)
         return VFS_ERR_INVAL;
 
-    frame = s_w25q64_xfer_buf[flash->pool_idx];
+    tx = s_w25q64_tx_buf[pool_idx];
+    rx = s_w25q64_rx_buf[pool_idx];
     chunk = flash->max_xfer;
     if (chunk == 0U || chunk > W25Q64_XFER_BUF_SIZE)
         chunk = W25Q64_XFER_BUF_SIZE;
@@ -128,27 +128,29 @@ static int w25q64_hw_read_data(struct w25q64_device* flash, uint32_t addr,
         if (n > chunk)
             n = chunk;
 
-        frame[0] = W25Q64_SPI_OP_READ_DATA;
-        frame[1] = (uint8_t)((cur_addr >> 16) & 0xFFU);
-        frame[2] = (uint8_t)((cur_addr >> 8) & 0xFFU);
-        frame[3] = (uint8_t)(cur_addr & 0xFFU);
-        __builtin_memset(frame + W25Q64_CMD_HDR_SIZE, 0, n);
+        tx[0] = W25Q64_SPI_OP_READ_DATA;
+        tx[1] = (uint8_t)((cur_addr >> 16) & 0xFFU);
+        tx[2] = (uint8_t)((cur_addr >> 8) & 0xFFU);
+        tx[3] = (uint8_t)(cur_addr & 0xFFU);
+        __builtin_memset(tx + W25Q64_CMD_HDR_SIZE, 0, n);
 
-        if (hal_spi_transfer(&flash->ctx, frame, frame, W25Q64_CMD_HDR_SIZE + n,
-                             timeout_ms) != VFS_OK)
+        if (spi_master_client_transfer(&flash->spi, tx, rx, W25Q64_CMD_HDR_SIZE + n,
+                                       timeout_ms) != VFS_OK)
             return VFS_ERR_IO;
 
-        __builtin_memcpy(data + offset, frame + W25Q64_CMD_HDR_SIZE, n);
+        __builtin_memcpy(data + offset, rx + W25Q64_CMD_HDR_SIZE, n);
         offset += n;
     }
 
     return VFS_OK;
 }
 
+/*页编程*/
 static int w25q64_hw_page_program(struct w25q64_device* flash, uint32_t addr,
                                const uint8_t* data, size_t len, uint32_t timeout_ms)
 {
-    uint8_t* frame;
+    uint8_t* tx;
+    int pool_idx = flash->spi.pool_idx;
 
     if (!data || len == 0U || len > W25Q64_PAGE_SIZE)
         return VFS_ERR_INVAL;
@@ -157,18 +159,18 @@ static int w25q64_hw_page_program(struct w25q64_device* flash, uint32_t addr,
     if ((uint64_t)addr + (uint64_t)len > W25Q64_FLASH_SIZE)
         return VFS_ERR_INVAL;
 
-    frame = s_w25q64_xfer_buf[flash->pool_idx];
-    frame[0] = W25Q64_SPI_OP_PAGE_PROGRAM;
-    frame[1] = (uint8_t)((addr >> 16) & 0xFFU);
-    frame[2] = (uint8_t)((addr >> 8) & 0xFFU);
-    frame[3] = (uint8_t)(addr & 0xFFU);
-    __builtin_memcpy(frame + W25Q64_CMD_HDR_SIZE, data, len);
+    tx = s_w25q64_tx_buf[pool_idx];
+    tx[0] = W25Q64_SPI_OP_PAGE_PROGRAM;
+    tx[1] = (uint8_t)((addr >> 16) & 0xFFU);
+    tx[2] = (uint8_t)((addr >> 8) & 0xFFU);
+    tx[3] = (uint8_t)(addr & 0xFFU);
+    __builtin_memcpy(tx + W25Q64_CMD_HDR_SIZE, data, len);
 
     if (w25q64_write_enable(flash, timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
-    if (hal_spi_transfer(&flash->ctx, frame, NULL, W25Q64_CMD_HDR_SIZE + len,
-                         timeout_ms) != VFS_OK)
+    if (spi_master_client_transfer(&flash->spi, tx, NULL, W25Q64_CMD_HDR_SIZE + len,
+                                   timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     return w25q64_wait_ready(flash, timeout_ms);
@@ -206,6 +208,7 @@ static int w25q64_hw_sector_erase(struct w25q64_device* flash, uint32_t addr, ui
 {
     uint8_t cmd[4];
 
+    /*4kb对其*/
     if ((addr & (W25Q64_SECTOR_SIZE - 1U)) != 0U)
         return VFS_ERR_INVAL;
     if (addr >= W25Q64_FLASH_SIZE)
@@ -219,7 +222,7 @@ static int w25q64_hw_sector_erase(struct w25q64_device* flash, uint32_t addr, ui
     if (w25q64_write_enable(flash, timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
-    if (hal_spi_transfer(&flash->ctx, cmd, NULL, sizeof(cmd), timeout_ms) != VFS_OK)
+    if (spi_master_client_transfer(&flash->spi, cmd, NULL, sizeof(cmd), timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     return w25q64_wait_ready(flash, timeout_ms);
@@ -252,11 +255,9 @@ static int w25q64_open(struct device* dev, void* arg)
     if (first == 1)
     {
         flash->f_pos = 0U;
-        ret = hal_spi_interface_attach(&flash->ctx);
+        ret = spi_master_client_interface_attach(&flash->spi);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
-        else
-            flash->ctx.attached = 1;
     }
 
     if (ret == VFS_OK)
@@ -298,11 +299,8 @@ static int w25q64_close(struct device* dev)
     if (last < 0)
         return last;
 
-    if (last && flash->ctx.attached)
-    {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&flash->ctx));
-        flash->ctx.attached = 0;
-    }
+    if (last)
+        spi_master_client_interface_detach(&flash->spi);
 
     dev_lc_close_end(lc);
     return VFS_OK;
@@ -478,35 +476,9 @@ static const struct file_operations w25q64_fops =
 static int w25q64_spi_probe(struct device* dev)
 {
     struct w25q64_device* flash;
-    struct bus_controller* ctrl;
-    struct hal_spi_bus_host* bus_host;
-    struct hal_spi_device_config dev_cfg;
-    int cs = -1, mode = -1, clock_speed_hz = -1, queue_size = -1;
     int max_trans = -1;
     int pool_idx;
     int ret;
-
-    ret = bus_controller_of(dev, &ctrl);
-    if (ret != VFS_OK || !ctrl->hw_priv)
-    {
-        SYS_LOGE(kTag, "parent bus not ready: %s", device_get_name(dev));
-        return ret != VFS_OK ? ret : VFS_ERR_IO;
-    }
-
-    bus_host = (struct hal_spi_bus_host*)ctrl->hw_priv;
-    if (bus_host->cfg.bus_role != HAL_SPI_BUS_ROLE_MASTER)
-    {
-        SYS_LOGE(kTag, "w25q64 requires SPI master bus");
-        return VFS_ERR_INVAL;
-    }
-
-    if (device_get_prop_int(dev, "cs-pin", &cs) ||
-        device_get_prop_int(dev, "spi-mode", &mode) ||
-        device_get_prop_int(dev, "spi-max-frequency", &clock_speed_hz) ||
-        device_get_prop_int(dev, "queue-size", &queue_size))
-        goto err_prop;
-
-    COMPAT_IGNORE_RESULT(device_get_prop_int(dev, "max-trans-buffer", &max_trans));
 
     pool_idx = osal_pool_claim(&s_w25q64_pool_ctrl);
     if (pool_idx < 0)
@@ -514,51 +486,40 @@ static int w25q64_spi_probe(struct device* dev)
 
     flash = &s_w25q64_pool[pool_idx];
     __builtin_memset(flash, 0, sizeof(*flash));
-    flash->pool_idx = pool_idx;
+
+    COMPAT_IGNORE_RESULT(device_get_prop_int(dev, "max-trans-buffer", &max_trans));
     flash->max_xfer = (max_trans > 0) ? (size_t)max_trans : W25Q64_XFER_BUF_SIZE;
     if (flash->max_xfer > W25Q64_XFER_BUF_SIZE)
         flash->max_xfer = W25Q64_XFER_BUF_SIZE;
 
-    dev_cfg.mode           = mode;
-    dev_cfg.clock_speed_hz = clock_speed_hz;
-    dev_cfg.cs_pin         = cs;
-    dev_cfg.queue_size     = queue_size;
+    ret = spi_master_client_bind(dev, &flash->spi, s_w25q64_mutex_storage[pool_idx],
+                                 sizeof(s_w25q64_mutex_storage[pool_idx]), pool_idx);
+    if (ret != VFS_OK)
+    {
+        __builtin_memset(flash, 0, sizeof(*flash));
+        osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
+        return ret;
+    }
 
-    hal_spi_ctx_init(&flash->ctx, pool_idx, bus_host, &dev_cfg);
-    hal_spi_ctx_attach(&flash->ctx);
-
-    if (osal_mutex_create_static(&flash->io_mutex, s_w25q64_mutex_storage[pool_idx],
-                                 sizeof(s_w25q64_mutex_storage[pool_idx])) != 0)
-        goto err_pool;
-
-    device_lc_bind(dev, flash->io_mutex);
     flash->ops = w25q64_fops;
     dev->ops   = &flash->ops;
 
     if (device_set_priv(dev, flash) != VFS_OK)
-        goto err_pool;
+    {
+        spi_master_client_unbind(dev, &flash->spi);
+        __builtin_memset(flash, 0, sizeof(*flash));
+        osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
+        return VFS_ERR_IO;
+    }
 
-    COMPAT_IGNORE_RESULT(bus_client_bind(dev, ctrl->dev, flash));
-
-    SYS_LOGI(kTag, "probe OK: cs=%d mode=%d freq=%d", cs, mode, clock_speed_hz);
+    SYS_LOGI(kTag, "probe OK: pool=%d max_xfer=%u", pool_idx, (unsigned)flash->max_xfer);
     return VFS_OK;
-err_pool:
-    hal_spi_ctx_detach(&flash->ctx);
-    osal_mutex_destroy(flash->io_mutex);
-    __builtin_memset(flash, 0, sizeof(*flash));
-    osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
-    return VFS_ERR_IO;
-
-err_prop:
-    SYS_LOGE(kTag, "property error: %s", device_get_name(dev));
-    return VFS_ERR_INVAL;
 }
 
 static int w25q64_spi_remove(struct device* dev)
 {
     struct w25q64_device* flash;
     struct dev_lifecycle* lc;
-    struct osal_mutex* io_mutex;
     int pool_idx;
 
     if (!dev)
@@ -572,24 +533,15 @@ static int w25q64_spi_remove(struct device* dev)
     if (IS_ERR(lc))
         return PTR_ERR(lc);
 
-    io_mutex = flash->io_mutex;
-    pool_idx = flash->pool_idx;
+    pool_idx = flash->spi.pool_idx;
 
     dev_lc_remove_start(lc);
     device_ops_unregister(dev);
-    bus_client_unbind(dev);
 
     if (dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER) != VFS_OK)
         return VFS_ERR_IO;
 
-    if (flash->ctx.attached)
-    {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&flash->ctx));
-        flash->ctx.attached = 0;
-    }
-
-    hal_spi_ctx_detach(&flash->ctx);
-    osal_mutex_destroy(io_mutex);
+    spi_master_client_unbind(dev, &flash->spi);
     __builtin_memset(flash, 0, sizeof(*flash));
     osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
     dev_lc_remove_finish(lc);

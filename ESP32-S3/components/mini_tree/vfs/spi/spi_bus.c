@@ -32,9 +32,9 @@ struct spi_controller_priv
     (DTC_GEN_COUNT_ESP32_SPI + DTC_GEN_COUNT_ESP32_SPI_MASTER)
 
 /*位图池*/
-static struct spi_controller_priv s_controller_pool[SPI_CONTROLLER_COUNT];
-static uint8_t                    s_controller_used[SPI_CONTROLLER_COUNT];
-static osal_pool_t                s_controller_pool_ctrl;
+static struct spi_controller_priv s_controller_pool[SPI_CONTROLLER_COUNT] COMPAT_ALIGNED(4);
+static uint8_t                    s_controller_used[SPI_CONTROLLER_COUNT] COMPAT_ALIGNED(4);
+static osal_pool_t                s_controller_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(160)
 static void spi_controller_pool_boot_init(void)

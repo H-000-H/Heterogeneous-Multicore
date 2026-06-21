@@ -18,6 +18,7 @@ struct hal_spi_bus;
 #define SPI_CMD_READ             SPI_CMD_BASE+0x02
 #define SPI_CMD_QUEUE_TX         SPI_CMD_BASE+0x03  /* write_top_half: 只入队, 等主机 */
 #define SPI_CMD_GET_TRANS_RESULT SPI_CMD_BASE+0x04  /* 下半部: 等待 queue 的事务完成 */
+#define SPI_CMD_TRANSFER         SPI_CMD_BASE+0x05  /* Master 全双工 (spi_sync) */
 
 /* 默认对外 poison SPI_CMD_DEINIT；vfs/spi 驱动通过 spi_vfs_drv.h 关闭 */
 #ifndef SPI_VFS_PUBLIC_POISON_DEINIT
@@ -48,6 +49,14 @@ struct spi_trans_result_arg
     uint8_t* data;
     size_t len;
     size_t* trans_len;
+};
+
+/* SPI_CMD_TRANSFER (rx 可与 tx 同址; tx/rx 均可为 NULL, 由 HAL 用内部缓冲) */
+struct spi_transfer_arg
+{
+    const uint8_t* tx;
+    uint8_t*       rx;
+    size_t         len;
 };
 
 int device_get_spi_bus(struct device* dev, struct hal_spi_bus** out) COMPAT_WARN_UNUSED_RESULT;

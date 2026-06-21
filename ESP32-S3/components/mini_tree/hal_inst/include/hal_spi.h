@@ -9,7 +9,7 @@ extern "C"
 {
 #endif
 
-/* SPI interface 实例 (由 spi_slave_client / w25q64 等持有) */
+/* SPI interface 实例 (由 spi_master_client / spi_slave_client 等持有) */
 struct hal_spi_ctx
 {
     struct hal_spi_bus_host*    host;

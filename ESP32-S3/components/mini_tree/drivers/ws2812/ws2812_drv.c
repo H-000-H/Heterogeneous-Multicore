@@ -39,11 +39,11 @@ _Static_assert(WS2812_COUNT <= HAL_PULSE_ENGINE_MAX,
 _Static_assert(WS2812_DRV_TX_BUF_MAX <= (size_t)INT_MAX,
                "WS2812_DRV_TX_BUF_MAX must fit in write() return type (int)");
 
-static struct ws2812_device s_ws2812_pool[WS2812_COUNT];
-static uint8_t s_ws2812_used[WS2812_COUNT];
-static osal_pool_t s_ws2812_pool_ctrl;
-static uint8_t s_ws2812_tx_buf[WS2812_COUNT][WS2812_DRV_TX_BUF_MAX];
-static uint8_t s_ws2812_mutex_storage[WS2812_COUNT][OSAL_MUTEX_STORAGE_SIZE];
+static struct ws2812_device s_ws2812_pool[WS2812_COUNT] COMPAT_ALIGNED(4);
+static uint8_t s_ws2812_used[WS2812_COUNT] COMPAT_ALIGNED(4);
+static osal_pool_t s_ws2812_pool_ctrl COMPAT_ALIGNED(4);
+static uint8_t s_ws2812_tx_buf[WS2812_COUNT][WS2812_DRV_TX_BUF_MAX] COMPAT_ALIGNED(4);
+static uint8_t s_ws2812_mutex_storage[WS2812_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
 pre_execution(160)
 static void ws2812_pool_boot_init(void)

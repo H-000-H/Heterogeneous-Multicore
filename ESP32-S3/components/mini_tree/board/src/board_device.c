@@ -21,7 +21,7 @@ _Static_assert(OSAL_MUTEX_POOL_SIZE >= DEV_ID_COUNT,
                "OSAL_MUTEX_POOL_SIZE too small for DEV_ID_COUNT devices");
 
 /* ── 运行时设备实例表 ── */
-static struct device s_devices[DEV_ID_COUNT];
+static struct device s_devices[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 static uint8_t s_device_lock_storage[DEV_ID_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
 /* ── device_set_status FSM 原子锁 (IEC 61508 2.7.1) ── */

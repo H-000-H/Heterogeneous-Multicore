@@ -6,6 +6,7 @@
  * timing parameters to ESP-IDF RMT resources.
  */
 #include "hal_pulse_engine.h"
+#include "compiler_compat.h"
 
 #include "driver/rmt_tx.h"
 #include "driver/rmt_encoder.h"
@@ -22,7 +23,7 @@ struct pulse_engine
     rmt_symbol_word_t    reset_code;
 };
 
-static struct pulse_engine s_engines[HAL_PULSE_ENGINE_MAX];
+static struct pulse_engine s_engines[HAL_PULSE_ENGINE_MAX] COMPAT_ALIGNED(4);
 
 static struct pulse_engine* pulse_engine_get(int id)
 {

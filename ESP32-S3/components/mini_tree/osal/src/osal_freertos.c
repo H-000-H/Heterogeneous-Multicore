@@ -217,9 +217,9 @@ void osal_pool_release(osal_pool_t* pool, int slot_index)
 
 /* ── 静态互斥锁池 (OSAL_MUTEX_POOL_SIZE 来自 board_config.h) ── */
 
-static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE];
-static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE];
-static osal_pool_t       s_mutex_pool_ctrl;
+static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(150)
 static void osal_mutex_pool_boot_init(void)
@@ -378,9 +378,9 @@ struct osal_sem
 _Static_assert(sizeof(struct osal_sem) <= OSAL_SEM_STORAGE_SIZE,
                "OSAL_SEM_STORAGE_SIZE too small");
 
-static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE];
-static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE];
-static osal_pool_t   s_sem_pool_ctrl;
+static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
 
 pre_execution(151)
 static void osal_sem_pool_boot_init(void)

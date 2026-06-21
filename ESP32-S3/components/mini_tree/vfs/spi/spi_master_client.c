@@ -1,16 +1,13 @@
 #include "spi_master_client.h"
 #include "spi_vfs_drv.h"
 #include "bus.h"
-#include "hal_spi.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
-#include "device.h"
 #include "VFS.h"
 #include "dt_config_gen.h"
 #include "board_config.h"
 #include "dev_lifecycle.h"
 #include "compiler_compat.h"
-#include "osal.h"
 #include "system_log.h"
 
 #include <stddef.h>
@@ -19,18 +16,10 @@
 
 #define SPI_MASTER_CLIENT_COUNT DTC_GEN_COUNT_HETEROGENEOUS_W25Q64_MASTER
 
-struct spi_master_client
-{
-    struct file_operations ops;
-    struct hal_spi_ctx     ctx;
-    struct osal_mutex*     io_mutex;
-    int                    pool_idx;
-};
-
-static struct spi_master_client s_spi_master_pool[SPI_MASTER_CLIENT_COUNT];
-static uint8_t                  s_spi_master_used[SPI_MASTER_CLIENT_COUNT];
-static osal_pool_t              s_spi_master_pool_ctrl;
-static uint8_t s_spi_master_mutex_storage[SPI_MASTER_CLIENT_COUNT][OSAL_MUTEX_STORAGE_SIZE];
+static struct spi_master_client s_spi_master_pool[SPI_MASTER_CLIENT_COUNT] COMPAT_ALIGNED(4);
+static uint8_t                  s_spi_master_used[SPI_MASTER_CLIENT_COUNT] COMPAT_ALIGNED(4);
+static osal_pool_t              s_spi_master_pool_ctrl COMPAT_ALIGNED(4);
+static uint8_t s_spi_master_mutex_storage[SPI_MASTER_CLIENT_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
 pre_execution(160)
 static void spi_master_client_pool_boot_init(void)
@@ -40,13 +29,129 @@ static void spi_master_client_pool_boot_init(void)
 
 static const char* const kTag = "spi_master_client";
 
-/* unlock 失败且 I/O 成功时上报 VFS_ERR_IO */
 static int spi_xfer_session_end(struct hal_spi_ctx* ctx, int io_ret)
 {
     int end_ret = hal_spi_xfer_end(ctx);
     if (end_ret != VFS_OK && io_ret == VFS_OK)
         return VFS_ERR_IO;
     return io_ret;
+}
+
+int spi_master_client_transfer(struct spi_master_client* client, const uint8_t* tx,
+                               uint8_t* rx, size_t len, uint32_t timeout_ms)
+{
+    if (!client)
+        return VFS_ERR_INVAL;
+
+    return hal_spi_transfer(&client->ctx, tx, rx, len, timeout_ms);
+}
+
+int spi_master_client_interface_attach(struct spi_master_client* client)
+{
+    int ret;
+
+    if (!client)
+        return VFS_ERR_INVAL;
+
+    ret = hal_spi_interface_attach(&client->ctx);
+    if (ret == VFS_OK)
+        client->ctx.attached = 1;
+
+    return ret;
+}
+
+void spi_master_client_interface_detach(struct spi_master_client* client)
+{
+    if (!client || !client->ctx.attached)
+        return;
+
+    COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&client->ctx));
+    client->ctx.attached = 0;
+}
+
+int spi_master_client_bind(struct device* pdev, struct spi_master_client* client,
+                           uint8_t* mutex_storage, size_t mutex_storage_size,
+                           int pool_idx)
+{
+    struct bus_controller* ctrl;
+    struct hal_spi_bus_host* bus_host;
+    struct hal_spi_device_config dev_cfg;
+    int cs = -1;
+    int mode = -1;
+    int clock_speed_hz = -1;
+    int queue_size = -1;
+    int ret;
+
+    if (!pdev || !client || !mutex_storage || pool_idx < 0 ||
+        pool_idx >= SPI_MASTER_CLIENT_COUNT)
+        return VFS_ERR_INVAL;
+
+    ret = bus_controller_of(pdev, &ctrl);
+    if (ret != VFS_OK || !ctrl->hw_priv)
+    {
+        SYS_LOGE(kTag, "parent bus controller not ready: %s", device_get_name(pdev));
+        return ret != VFS_OK ? ret : VFS_ERR_IO;
+    }
+
+    bus_host = (struct hal_spi_bus_host*)ctrl->hw_priv;
+    if (bus_host->cfg.bus_role != HAL_SPI_BUS_ROLE_MASTER)
+    {
+        SYS_LOGE(kTag, "SPI master client requires SPI master bus");
+        return VFS_ERR_INVAL;
+    }
+
+    if (device_get_prop_int(pdev, "cs-pin", &cs) ||
+        device_get_prop_int(pdev, "spi-mode", &mode) ||
+        device_get_prop_int(pdev, "spi-max-frequency", &clock_speed_hz) ||
+        device_get_prop_int(pdev, "queue-size", &queue_size))
+    {
+        SYS_LOGE(kTag, "Failed to get property: %s", device_get_name(pdev));
+        return VFS_ERR_INVAL;
+    }
+
+    __builtin_memset(client, 0, sizeof(*client));
+    client->pool_idx = pool_idx;
+
+    dev_cfg.mode           = mode;
+    dev_cfg.clock_speed_hz = clock_speed_hz;
+    dev_cfg.cs_pin         = cs;
+    dev_cfg.queue_size     = queue_size;
+
+    hal_spi_ctx_init(&client->ctx, pool_idx, bus_host, &dev_cfg);
+    hal_spi_ctx_attach(&client->ctx);
+
+    if (osal_mutex_create_static(&client->io_mutex, mutex_storage,
+                                 mutex_storage_size) != 0)
+    {
+        hal_spi_ctx_detach(&client->ctx);
+        __builtin_memset(client, 0, sizeof(*client));
+        return VFS_ERR_IO;
+    }
+
+    device_lc_bind(pdev, client->io_mutex);
+    COMPAT_IGNORE_RESULT(bus_client_bind(pdev, ctrl->dev, client));
+
+    SYS_LOGI(kTag, "bind OK: cs=%d mode=%d freq=%d", cs, mode, clock_speed_hz);
+    return VFS_OK;
+}
+
+void spi_master_client_unbind(struct device* pdev, struct spi_master_client* client)
+{
+    if (!client)
+        return;
+
+    if (client->ctx.attached)
+        spi_master_client_interface_detach(client);
+
+    hal_spi_ctx_detach(&client->ctx);
+
+    if (client->io_mutex)
+        osal_mutex_destroy(client->io_mutex);
+
+    if (pdev)
+        bus_client_unbind(pdev);
+
+    __builtin_memset(client, 0, sizeof(*client));
 }
 
 static int spi_master_open(struct device* pdev, void* arg)
@@ -72,11 +177,9 @@ static int spi_master_open(struct device* pdev, void* arg)
     ret = VFS_OK;
     if (first == 1)
     {
-        ret = hal_spi_interface_attach(&priv->ctx);
+        ret = spi_master_client_interface_attach(priv);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
-        else
-            priv->ctx.attached = 1;
     }
 
     if (ret == VFS_OK)
@@ -103,11 +206,8 @@ static int spi_master_close(struct device* pdev)
     if (last < 0)
         return last;
 
-    if (last && priv->ctx.attached)
-    {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-        priv->ctx.attached = 0;
-    }
+    if (last)
+        spi_master_client_interface_detach(priv);
 
     dev_lc_close_end(lc);
     return VFS_OK;
@@ -235,6 +335,15 @@ static int spi_master_ioctl(struct device* dev, int cmd, void* arg, size_t arg_l
         }
         break;
     }
+    case SPI_CMD_TRANSFER:
+    {
+        const struct spi_transfer_arg* ta = (const struct spi_transfer_arg*)arg;
+        if (!ta || arg_len != sizeof(*ta) || ta->len == 0)
+            ret = VFS_ERR_INVAL;
+        else
+            ret = spi_master_client_transfer(priv, ta->tx, ta->rx, ta->len, timeout_ms);
+        break;
+    }
     case SPI_CMD_QUEUE_TX:
     {
         const struct spi_queue_arg* qa = (const struct spi_queue_arg*)arg;
@@ -265,11 +374,7 @@ static int spi_master_ioctl(struct device* dev, int cmd, void* arg, size_t arg_l
         break;
     }
     case SPI_CMD_DEINIT:
-        if (priv->ctx.attached)
-        {
-            COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-            priv->ctx.attached = 0;
-        }
+        spi_master_client_interface_detach(priv);
         ret = VFS_OK;
         break;
     default:
@@ -293,32 +398,8 @@ static const struct file_operations spi_master_fops =
 int spi_master_client_probe(struct device* pdev)
 {
     struct spi_master_client* priv;
-    struct bus_controller* ctrl;
-    int cs = -1, mode = -1, clock_speed_hz = -1, queue_size = -1;
-    struct hal_spi_device_config dev_cfg;
-    struct hal_spi_bus_host* bus_host;
     int pool_idx;
     int ret;
-
-    ret = bus_controller_of(pdev, &ctrl);
-    if (ret != VFS_OK || !ctrl->hw_priv)
-    {
-        SYS_LOGE(kTag, "parent bus controller not ready: %s", device_get_name(pdev));
-        return ret != VFS_OK ? ret : VFS_ERR_IO;
-    }
-
-    bus_host = (struct hal_spi_bus_host*)ctrl->hw_priv;
-    if (bus_host->cfg.bus_role != HAL_SPI_BUS_ROLE_MASTER)
-    {
-        SYS_LOGE(kTag, "SPI master client requires SPI master bus");
-        return VFS_ERR_INVAL;
-    }
-
-    if (device_get_prop_int(pdev, "cs-pin", &cs) ||
-        device_get_prop_int(pdev, "spi-mode", &mode) ||
-        device_get_prop_int(pdev, "spi-max-frequency", &clock_speed_hz) ||
-        device_get_prop_int(pdev, "queue-size", &queue_size))
-        goto err_prop;
 
     pool_idx = osal_pool_claim(&s_spi_master_pool_ctrl);
     if (pool_idx < 0)
@@ -328,49 +409,31 @@ int spi_master_client_probe(struct device* pdev)
     }
 
     priv = &s_spi_master_pool[pool_idx];
-    __builtin_memset(priv, 0, sizeof(*priv));
-    priv->pool_idx = pool_idx;
+    ret = spi_master_client_bind(pdev, priv, s_spi_master_mutex_storage[pool_idx],
+                                 sizeof(s_spi_master_mutex_storage[pool_idx]), pool_idx);
+    if (ret != VFS_OK)
+    {
+        osal_pool_release(&s_spi_master_pool_ctrl, pool_idx);
+        return ret;
+    }
 
-    dev_cfg.mode           = mode;
-    dev_cfg.clock_speed_hz = clock_speed_hz;
-    dev_cfg.cs_pin         = cs;
-    dev_cfg.queue_size     = queue_size;
-
-    hal_spi_ctx_init(&priv->ctx, pool_idx, bus_host, &dev_cfg);
-    hal_spi_ctx_attach(&priv->ctx);
-
-    if (osal_mutex_create_static(&priv->io_mutex, s_spi_master_mutex_storage[pool_idx],
-                                 sizeof(s_spi_master_mutex_storage[pool_idx])) != 0)
-        goto err_pool;
-
-    device_lc_bind(pdev, priv->io_mutex);
     priv->ops = spi_master_fops;
-    pdev->ops  = &priv->ops;
+    pdev->ops = &priv->ops;
 
     if (device_set_priv(pdev, priv) != VFS_OK)
-        goto err_pool;
+    {
+        spi_master_client_unbind(pdev, priv);
+        osal_pool_release(&s_spi_master_pool_ctrl, pool_idx);
+        return VFS_ERR_IO;
+    }
 
-    COMPAT_IGNORE_RESULT(bus_client_bind(pdev, ctrl->dev, priv));
-
-    SYS_LOGI(kTag, "client probe OK: cs=%d mode=%d", cs, mode);
     return VFS_OK;
-
-err_pool:
-    hal_spi_ctx_detach(&priv->ctx);
-    __builtin_memset(priv, 0, sizeof(*priv));
-    osal_pool_release(&s_spi_master_pool_ctrl, pool_idx);
-    return VFS_ERR_IO;
-
-err_prop:
-    SYS_LOGE(kTag, "Failed to get property: %s", device_get_name(pdev));
-    return VFS_ERR_INVAL;
 }
 
 int spi_master_client_remove(struct device* pdev)
 {
     struct spi_master_client* priv;
     struct dev_lifecycle* lc;
-    struct osal_mutex* io_mutex;
     int pool_idx;
 
     if (!pdev || !pdev->ops)
@@ -381,12 +444,10 @@ int spi_master_client_remove(struct device* pdev)
     if (IS_ERR(lc))
         return PTR_ERR(lc);
 
-    io_mutex = priv->io_mutex;
     pool_idx = priv->pool_idx;
 
     dev_lc_remove_start(lc);
     device_ops_unregister(pdev);
-    bus_client_unbind(pdev);
 
     if (dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER) != VFS_OK)
     {
@@ -394,15 +455,7 @@ int spi_master_client_remove(struct device* pdev)
         return VFS_ERR_IO;
     }
 
-    if (priv->ctx.attached)
-    {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-        priv->ctx.attached = 0;
-    }
-
-    hal_spi_ctx_detach(&priv->ctx);
-    osal_mutex_destroy(io_mutex);
-    __builtin_memset(priv, 0, sizeof(*priv));
+    spi_master_client_unbind(pdev, priv);
     osal_pool_release(&s_spi_master_pool_ctrl, pool_idx);
     dev_lc_remove_finish(lc);
     return VFS_OK;
