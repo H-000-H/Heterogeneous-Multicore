@@ -4,6 +4,7 @@
 # 设备树布局 (Linux 写法; dts / dtsi 分目录):
 #   board/dts/esp32-s3-devkitc-1.dts  — 板级入口 (#include 头 + / { } + &label)
 #   board/dtsi/esp32s3.dtsi           — SoC 根 / { compatible, soc: soc { simple-bus } }
+#   board/dtsi/esp32s3-gpio.dtsi     — &soc { gpio@0 / gpio-pin@0 }
 #   board/dtsi/esp32s3-ws2812.dtsi    — &soc { led@0 { ... } }
 #   board/dtsi/esp32s3-spi.dtsi      — &soc { spi@0 { ... } }
 #   board/dt-bindings/                — #include <dt-bindings/...>
@@ -39,11 +40,14 @@ add_custom_command(
             "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft"
             "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/flash"
             "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/gpio"
     DEPENDS
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/esp32s3.dtsi"
+        "${BOARD_DTSI_DIR}/esp32s3-gpio.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-ws2812.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
+        "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft/fft_spi_drv.c"
@@ -51,6 +55,7 @@ add_custom_command(
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_bus.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_slave_client.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_master_client.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/gpio/vfs-gpio.c"
         "${DTC_LITE}"
     VERBATIM
 )

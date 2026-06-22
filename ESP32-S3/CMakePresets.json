@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 16,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "esp-idf",
+      "displayName": "ESP-IDF (esp32s3)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "environment": {
+        "IDF_PATH": "D:/Espressif_vscode/frameworks/esp-idf-v5.5.2",
+        "IDF_TOOLS_PATH": "D:/Espressif_vscode",
+        "IDF_PYTHON_ENV_PATH": "D:/Espressif_vscode/python_env/idf5.5_py3.11_env",
+        "PYTHON": "D:/Espressif_vscode/python_env/idf5.5_py3.11_env/Scripts/python.exe",
+        "PYTHON_DEPS_CHECKED": "1"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "esp-idf",
+      "configurePreset": "esp-idf"
+    }
+  ]
+}

@@ -4,7 +4,6 @@
  * 将 mini_tree 的 hal_if 接口映射到 ESP-IDF 驱动层.
  * 安全停机函数置于 IRAM 以确保在 cache 禁用后仍可执行.
  */
-#include "hal_gpio.h"
 #include "hal_pwm.h"
 #include "hal_cpu.h"
 #include "hal_storage.h"
@@ -12,7 +11,6 @@
 #include "hal_wdt.h"
 #include "hal_platform_safety.h"
 
-#include "driver/gpio.h"
 #include "esp_attr.h"
 #include "esp_err.h"
 #include "esp_task_wdt.h"
@@ -22,20 +20,6 @@
 #include <stddef.h>
 #include <string.h>
 #include "compiler_compat_poison.h"
-
-/* ── GPIO ── */
-int hal_gpio_set_level(hal_pin_t pin, int level)
-{
-    int num = HAL_PIN_NUM(pin);
-    gpio_set_level((gpio_num_t)num, level);
-    return 0;
-}
-
-int hal_gpio_get_level(hal_pin_t pin)
-{
-    int num = HAL_PIN_NUM(pin);
-    return gpio_get_level((gpio_num_t)num);
-}
 
 /* ── PWM 强制停止 (stub: 安全状态机占位) ── */
 void hal_pwm_force_stop_all(void)

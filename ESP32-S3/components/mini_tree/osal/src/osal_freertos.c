@@ -227,7 +227,7 @@ static void osal_mutex_pool_boot_init(void)
     osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
 }
 
-/* ── 时间 ── */
+/* ── 获取现在时间 ── */
 uint32_t osal_time_ms(void)
 {
     return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);

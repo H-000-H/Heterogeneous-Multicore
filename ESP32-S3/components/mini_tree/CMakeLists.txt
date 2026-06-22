@@ -42,6 +42,7 @@ set(HAL_INST_SRCS
     "hal_inst/src/hal_spi.c"
 )
 set(HAL_SRCS
+    "hal_if/src/hal_gpio.c"
     "hal_if/src/hal_esp32s3.c"
     "hal_if/src/hal_pulse_engine_esp32s3.c"
     "hal_if/src/hal_cpu_amp.c"    # AMP 弱符号 (CPU_CORES=1 时无影响)
@@ -120,6 +121,7 @@ set(DRIVER_SRCS
     "vfs/spi/spi_bus.c"
     "vfs/spi/spi_slave_client.c"
     "vfs/spi/spi_master_client.c"
+    "vfs/gpio/vfs-gpio.c"
 )
 
 # ── Algorithm ──
@@ -155,6 +157,7 @@ idf_component_register(
         "drivers/fft"
         "drivers/flash"
         "vfs/spi"
+        "vfs/gpio"
         "algorithm/buffer"
     REQUIRES
         esp_driver_rmt
@@ -207,11 +210,14 @@ add_custom_command(
             "${CMAKE_CURRENT_LIST_DIR}/drivers/fft"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
+            "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"
     DEPENDS
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/esp32s3.dtsi"
+        "${BOARD_DTSI_DIR}/esp32s3-gpio.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-ws2812.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
+        "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
@@ -219,6 +225,7 @@ add_custom_command(
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_bus.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_slave_client.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_master_client.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio/vfs-gpio.c"
         "${DTC_LITE}"
     COMMENT "Running dtc-lite on esp32-s3-devkitc-1.dts"
     VERBATIM

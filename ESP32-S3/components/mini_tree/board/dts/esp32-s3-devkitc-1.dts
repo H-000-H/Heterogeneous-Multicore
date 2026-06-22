@@ -14,6 +14,7 @@
 /dts-v1/;
 
 #include "esp32s3.dtsi"
+#include "esp32s3-gpio.dtsi"
 #include "esp32s3-ws2812.dtsi"
 #include "esp32s3-spi.dtsi"
 
@@ -59,4 +60,8 @@
 &w25q64_master{
 	status ="disabled";
 	cs-pin =<20>;
+};
+
+&gpios_pin {
+	status = "okay";
 };
