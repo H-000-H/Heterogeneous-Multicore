@@ -17,7 +17,7 @@ idf_component_get_property(_esp_lcd_lib esp_lcd COMPONENT_LIB)
 target_compile_options(${_esp_lcd_lib} PRIVATE -O2)
 
 include(${CMAKE_SOURCE_DIR}/components/mini_tree/cmake/disasm.cmake)
-mini_tree_add_disasm_postbuild(
+cmake_language(DEFER CALL mini_tree_add_disasm_postbuild
     "${CMAKE_SOURCE_DIR}/components/mini_tree/.config"
     "${CMAKE_PROJECT_NAME}.elf"
 )

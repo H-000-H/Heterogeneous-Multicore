@@ -1,20 +1,17 @@
 # ==============================================================================
-# hal_if — 普通外设 HAL (GPIO / UART / ADC / PWM / Flash 等, 非共享总线)
-# 总线实例见 hal_inst.
+# hal_if — 普通外设 HAL (按功能分子目录; 总线见 hal_bus)
+#   gpio/ cpu/ uart/ pwm/ pulse/ analog/ storage/ system/ soc/<chip>/
 # ESP-IDF 构建: 源文件在父 CMakeLists.txt 的 idf_component_register() 中指定。
 # ==============================================================================
 
+include("${CMAKE_CURRENT_LIST_DIR}/paths.cmake")
+
 add_library(hal_if STATIC
-    "src/hal_gpio.c"
-    "src/hal_pin_map.c"
-    "src/hal_if_dummy.c"
-    "src/hal_cpu_amp.c"
+    "gpio/hal_gpio_esp32.c"
+    "cpu/hal_cpu_amp.c"
+    "hal_if_dummy.c"
 )
 
-target_include_directories(hal_if
-    PUBLIC
-        "include"
-)
+target_include_directories(hal_if PUBLIC ${HAL_IF_INCLUDE_DIRS})
 
-target_link_libraries(hal_if driver
-)
+target_link_libraries(hal_if driver)

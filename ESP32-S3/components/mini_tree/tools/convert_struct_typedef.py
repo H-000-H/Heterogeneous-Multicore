@@ -151,7 +151,7 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct adc_read_arg\r\n{"),
         (r"\} adc_read_arg_t;", "};"),
     ],
-    "hal_bus/include/hal_spi_bus.h": [
+    "hal_bus/spi/hal_spi_bus.h": [
         (r"typedef struct hal_spi_bus hal_spi_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_spi_bus_config\r\n{", 1),
         (r"\} hal_spi_bus_config_t;", "};"),
@@ -160,22 +160,22 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct spi_read_arg\r\n{", 1),
         (r"\} spi_read_arg_t;", "};"),
     ],
-    "hal_bus/include/hal_i2c_bus.h": [
+    "hal_bus/i2c/hal_i2c_bus.h": [
         (r"typedef struct hal_i2c_bus hal_i2c_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_i2c_config\r\n{", 1),
         (r"\} hal_i2c_config_t;", "};"),
     ],
-    "hal_inst/include/hal_i2c.h": [
+    "hal_bus/i2c/hal_i2c.h": [
         (r"typedef struct\r?\n\{", "struct i2c_rw_arg\r\n{", 1),
         (r"\} i2c_rw_arg_t;", "};"),
         (r"typedef struct\r?\n\{", "struct i2c_wr_arg\r\n{", 1),
         (r"\} i2c_wr_arg_t;", "};"),
     ],
-    "hal_if/include/hal_pulse_engine.h": [
+    "hal_if/pulse/hal_pulse_engine.h": [
         (r"typedef struct\r?\n\{", "struct hal_pulse_ws2812_hw\r\n{"),
         (r"\} hal_pulse_ws2812_hw_t;", "};"),
     ],
-    "hal_if/include/hal_storage.h": [
+    "hal_if/storage/hal_storage.h": [
         (r"typedef struct\r?\n\{", "struct storage_geometry\r\n{", 1),
         (r"\} storage_geometry_t;", "};"),
         (r"typedef struct\r?\n\{", "struct storage_erase_arg\r\n{", 1),
@@ -183,19 +183,19 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct storage_wp_arg\r\n{", 1),
         (r"\} storage_wp_arg_t;", "};"),
     ],
-    "hal_if/include/hal_pwm.h": [
+    "hal_if/pwm/hal_pwm.h": [
         (r"typedef struct hal_pwm_channel hal_pwm_channel_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_pwm_config\r\n{"),
         (r"\} hal_pwm_config_t;", "};"),
     ],
-    "hal_if/include/hal_adc.h": [
+    "hal_if/analog/hal_adc.h": [
         (r"typedef struct hal_adc hal_adc_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_adc_config\r\n{", 1),
         (r"\} hal_adc_config_t;", "};"),
         (r"typedef struct\r?\n\{", "struct adc_read_arg\r\n{", 1),
         (r"\} adc_read_arg_t;", "};"),
     ],
-    "hal_bus/include/hal_usb_bus.h": [
+    "hal_bus/usb/hal_usb_bus.h": [
         (r"typedef struct hal_usb_bus hal_usb_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_usb_config\r\n{", 1),
         (r"\} hal_usb_config_t;", "};"),
@@ -204,35 +204,35 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct hal_usb_bus\r\n{", 1),
         (r"\};\r?\n\r?\nvoid hal_usb_bus_init_struct", "};\r\n\r\nvoid hal_usb_bus_init_struct"),
     ],
-    "hal_if/include/hal_uart.h": [
+    "hal_if/uart/hal_uart.h": [
         (r"typedef struct hal_uart hal_uart_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_uart_config\r\n{", 1),
         (r"\} hal_uart_config_t;", "};"),
         (r"typedef struct\r?\n\{", "struct uart_read_arg\r\n{", 1),
         (r"\} uart_read_arg_t;", "};"),
     ],
-    "hal_if/include/hal_timer.h": [
+    "hal_if/system/hal_timer.h": [
         (r"typedef struct hal_timer hal_timer_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_timer_config\r\n{", 1),
         (r"\} hal_timer_config_t;", "};"),
         (r"typedef struct\r?\n\{", "struct hal_timer_channel_config\r\n{", 1),
         (r"\} hal_timer_channel_config_t;", "};"),
     ],
-    "hal_if/include/hal_sdio.h": [
+    "hal_if/system/hal_sdio.h": [
         (r"typedef struct hal_sdio hal_sdio_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_sdio_config\r\n{", 1),
         (r"\} hal_sdio_config_t;", "};"),
         (r"typedef struct\r?\n\{", "struct hal_sdio_info\r\n{", 1),
         (r"\} hal_sdio_info_t;", "};"),
     ],
-    "hal_if/include/hal_rtc.h": [
+    "hal_if/system/hal_rtc.h": [
         (r"typedef struct hal_rtc hal_rtc_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_rtc_time\r\n{", 1),
         (r"\} hal_rtc_time_t;", "};"),
         (r"typedef struct\r?\n\{", "struct hal_rtc_config\r\n{", 1),
         (r"\} hal_rtc_config_t;", "};"),
     ],
-    "hal_if/include/hal_gpio.h": [
+    "hal_if/gpio/hal_gpio.h": [
         (r"typedef struct\r?\n\{", "struct hal_gpio_config\r\n{", 1),
         (r"\} hal_gpio_config_t;", "};"),
         (r"typedef struct\r?\n\{", "struct gpio_isr_arg\r\n{", 1),
@@ -240,26 +240,26 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct gpio_level_arg\r\n{", 1),
         (r"\} gpio_level_arg_t;", "};"),
     ],
-    "hal_bus/include/hal_i2s_bus.h": [
+    "hal_bus/i2s/hal_i2s_bus.h": [
         (r"typedef struct hal_i2s_bus hal_i2s_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_i2s_config\r\n{", 1),
         (r"\} hal_i2s_config_t;", "};"),
     ],
-    "hal_inst/include/hal_i2s.h": [
+    "hal_bus/i2s/hal_i2s.h": [
         (r"typedef struct\r?\n\{", "struct i2s_write_arg\r\n{", 1),
         (r"\} i2s_write_arg_t;", "};"),
     ],
-    "hal_if/include/hal_dma.h": [
+    "hal_if/system/hal_dma.h": [
         (r"typedef struct hal_dma_chan hal_dma_chan_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_dma_config\r\n{"),
         (r"\} hal_dma_config_t;", "};"),
     ],
-    "hal_if/include/hal_dac.h": [
+    "hal_if/analog/hal_dac.h": [
         (r"typedef struct hal_dac hal_dac_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_dac_config\r\n{"),
         (r"\} hal_dac_config_t;", "};"),
     ],
-    "hal_bus/include/hal_can_bus.h": [
+    "hal_bus/can/hal_can_bus.h": [
         (r"typedef struct hal_can_bus hal_can_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_can_msg\r\n{", 1),
         (r"\} hal_can_msg_t;", "};"),

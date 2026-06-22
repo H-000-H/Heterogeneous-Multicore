@@ -28,11 +28,10 @@ add_library(system STATIC
 target_include_directories(system
     PUBLIC
         "include"
-    PRIVATE
-        "${PROJECT_SOURCE_DIR}/hal_bus/include"
-        "${PROJECT_SOURCE_DIR}/hal_inst/include"
-        "${PROJECT_SOURCE_DIR}/hal_if/include"
 )
+include("${PROJECT_SOURCE_DIR}/hal_if/paths.cmake")
+include("${PROJECT_SOURCE_DIR}/hal_bus/paths.cmake")
+target_include_directories(system PRIVATE ${HAL_IF_INCLUDE_DIRS} ${HAL_BUS_INCLUDE_DIRS})
 
 target_link_libraries(system
     PUBLIC

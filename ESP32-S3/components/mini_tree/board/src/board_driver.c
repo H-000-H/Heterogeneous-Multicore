@@ -5,6 +5,7 @@
 #include "hal_pwm.h"
 #include "hal_cpu.h"
 #include "hal_gpio.h"
+#include "hal_pin.h"
 #include "system_log.h"
 #include "board_devtable.h"
 #include "compiler_compat.h"
@@ -69,7 +70,7 @@ static int board_safety_hw_probe(struct device* dev)
         snprintf(level_prop, sizeof(level_prop), "safe_level_%d", idx);
         if (device_get_prop_int(dev, pin_prop, &pin) != VFS_OK) break;
         device_get_prop_int(dev, level_prop, &safe_level);
-        board_safety_add_pin(pin, safe_level);
+        board_safety_add_pin(hal_pin_make(HAL_GPIO_PORT_DEFAULT, (uint16_t)pin), safe_level);
         idx++;
     }
     DRV_LOGI(kTag, "safety-hw: %d shutdown pins registered", g_safety_pin_count);

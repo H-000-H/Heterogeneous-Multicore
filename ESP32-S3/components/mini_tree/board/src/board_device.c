@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include "compiler_compat.h"
-#include "hal_cpu_fast.h"
+#include "hal_cpu.h"
 #include "event_bus.h"
 #include "safe_state.h"
 #include "compiler_compat_poison.h"
@@ -642,4 +642,33 @@ void device_lc_bind(struct device* dev, struct osal_mutex* io_lock)
 {
     if (dev)
         dev_lc_init(&dev->lc, io_lock);
+}
+
+static hal_pin_t pin_from_parts(int port, int pin)
+{
+    int p = (port >= 0) ? port : HAL_GPIO_PORT_DEFAULT;
+    return hal_pin_make(p, (uint16_t)pin);
+}
+
+int hal_pin_probe(const struct device* dev, const char* port_key, const char* pin_key,
+                  hal_pin_t* out)
+{
+    int port = 0;
+    int pin  = -1;
+
+    if (!dev || !pin_key || !out)
+        return VFS_ERR_INVAL;
+
+    if (device_get_prop_int(dev, pin_key, &pin))
+        return VFS_ERR_INVAL;
+
+#if COMPAT_CFG_ENABLED(HAL_GPIO_PORT_ENUM)
+    if (port_key)
+        COMPAT_IGNORE_RESULT(device_get_prop_int(dev, port_key, &port));
+#else
+    (void)port_key;
+#endif
+
+    *out = pin_from_parts(port, pin);
+    return VFS_OK;
 }

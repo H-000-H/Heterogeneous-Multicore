@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 
 from .ast import DtsNode, DtsProperty
 from .parser import parse_dts
+from .platform import is_platform_node
 
 class DTSCompiler:
     """DTS 编译器: 解析 → 解析 → 生成"""
@@ -343,12 +344,6 @@ class DTSCompiler:
                             pass
 
     def _validate_compatibles(self) -> None:
-        PLATFORM: Set[str] = {
-            'esp32,cpu', 'esp32,i2s-bus', 'esp32,uart', 'esp32,gpio',
-            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'esp32,spi', 'simple-bus',
-            'arm,gic-400', 'arm,cortex-a12', 'arm,cortex-a7', 'arm,cortex-m4',
-            'arm,cortex-m3', 'arm,cortex-m7', 'arm,cortex-m0', 'arm,armv7-timer',
-        }
         errors: List[str] = []
         for dev in self.device_list:
             if dev.parent is None:
@@ -356,7 +351,7 @@ class DTSCompiler:
             compat_prop: Optional[DtsProperty] = dev.get_prop('compatible')
             if compat_prop and compat_prop.strings:
                 compat: str = compat_prop.strings[0]
-                if compat in PLATFORM:
+                if is_platform_node(dev):
                     continue
                 if compat not in self.driver_map:
                     status_prop: Optional[DtsProperty] = dev.get_prop('status')

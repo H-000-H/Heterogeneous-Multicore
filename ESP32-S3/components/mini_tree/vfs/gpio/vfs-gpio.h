@@ -26,25 +26,25 @@ static int inline vfs_gpio_set_level(struct vfs_gpio_arg*vfs_arg)
 {
     if(IS_ERR(vfs_arg))
         return  PTR_ERR(vfs_arg);
-    if(!vfs_arg->pin)
+    if (!hal_pin_is_valid(vfs_arg->pin))
         return VFS_ERR_INVAL;
-    return hal_gpio_fast_set_level(vfs_arg->pin,vfs_arg->level);
+    return hal_gpio_fast_set_level(vfs_arg->pin, vfs_arg->level);
 }
 
 static int inline vfs_gpio_get_level(struct vfs_gpio_arg*vfs_arg)
 {
     if(IS_ERR(vfs_arg))
         return  PTR_ERR(vfs_arg);
-    if(!vfs_arg->pin)
+    if (!hal_pin_is_valid(vfs_arg->pin))
         return VFS_ERR_INVAL;
-    return hal_gpio_fast_get_level(vfs_arg->pin,&vfs_arg->level);
+    return hal_gpio_fast_get_level(vfs_arg->pin, &vfs_arg->level);
 }
 
 static int inline vfs_gpio_toggle(struct vfs_gpio_arg*vfs_arg)
 {
     if(IS_ERR(vfs_arg))
         return  PTR_ERR(vfs_arg);
-    if(!vfs_arg->pin)
+    if (!hal_pin_is_valid(vfs_arg->pin))
         return VFS_ERR_INVAL;
     return hal_gpio_fast_toggle(vfs_arg->pin);
 } 

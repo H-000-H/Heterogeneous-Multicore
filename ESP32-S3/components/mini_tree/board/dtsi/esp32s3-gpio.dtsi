@@ -10,9 +10,9 @@
  * 板级示例:
  *   &gpio_btn {
  *       gpio-pin = <0>;
- *       gpio-mode = <GPIO_MODE_INPUT>;
- *       gpio-pull = <GPIO_PULL_UP>;
- *       gpio-intr = <GPIO_INTR_FALLING>;
+ *       gpio-mode = <DTS_GPIO_MODE_INPUT>;
+ *       gpio-pull = <DTS_GPIO_PULL_UP>;
+ *       gpio-intr = <DTS_GPIO_INTR_FALLING>;
  *       status = "okay";
  *   };
  */
@@ -32,12 +32,12 @@
 	gpios_pin: gpios-pin@0 {
 		compatible = "heterogeneous,gpios";
 		reg = <0>;
-		gpio-port = <GPIO_PORT_0>;
+		gpio-port = <DTS_GPIOZERO>;
 		gpio-pin = <0>;
-		gpio-mode = <GPIO_DEFAULT_OUTPUT>;
-		gpio-pull = <GPIO_DEFAULT_OUTPUT_PULL>;
-		gpio-intr = <GPIO_DEFAULT_INTR>;
-		default-level = <GPIO_DEFAULT_LEVEL>;
+		gpio-mode = <DTS_GPIO_DEFAULT_OUTPUT>;
+		gpio-pull = <DTS_GPIO_DEFAULT_OUTPUT_PULL>;
+		gpio-intr = <DTS_GPIO_DEFAULT_INTR>;
+		default-level = <DTS_GPIO_DEFAULT_LEVEL>;
 		status = "disabled";
 	};
 };

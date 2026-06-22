@@ -63,7 +63,9 @@ def discover_sources(platform: str, toolchain: str, osal: str) -> Dict[str, List
 
     source_groups["core"] = scan_src("core/src", "*.c") + scan_src("core/src", "*.cpp")
     source_groups["board"] = scan_src("board/src", "*.c")
-    source_groups["hal_if"] = scan_src("hal_if/src", "*.c")
+    source_groups["hal_if"] = scan_src("hal_if", "*.c")
+    source_groups["hal_bus"] = scan_src("hal_bus", "*.c")
+    source_groups["vfs"] = scan_src("vfs", "*.c")
     source_groups["system"] = scan_src("system_cpp/src", "*.c") + scan_src("system_cpp/src", "*.cpp")
     source_groups["algorithm"] = scan_src("algorithm", "*.c") + scan_src("algorithm", "*.cpp")
 

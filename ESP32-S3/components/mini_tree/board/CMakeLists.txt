@@ -52,9 +52,9 @@ add_custom_command(
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft/fft_spi_drv.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/flash/w25q64_spi_drv.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_bus.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_slave_client.c"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_master_client.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/bus/spi_bus.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/slave/spi_slave_client.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/master/spi_master_client.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/gpio/vfs-gpio.c"
         "${DTC_LITE}"
     VERBATIM
@@ -71,7 +71,6 @@ add_library(board STATIC
     "src/board_device.c"
     "src/bus.c"
     "src/board_driver.c"
-    "src/hal_pin_probe.c"
     "src/config_store.c"
     ${GENERATED_BOARD_SRCS}
 )
@@ -89,7 +88,6 @@ target_link_libraries(board
         osal
         core
         hal_bus
-        hal_inst
         hal_if
 )
 

@@ -1,5 +1,4 @@
 #include "vfs-gpio.h"
-#include "hal_pin_probe.h"
 #include "VFS.h"
 #include "board_config.h"
 #include "compiler_compat.h"
@@ -18,10 +17,10 @@
 
 struct vfs_gpio_priv
 {
-    struct hal_gpio_config cfg;
     struct file_operations ops;
     struct osal_mutex*     io_mutex;
     hal_pin_t              pin;
+    struct hal_gpio_mode_cfg mode_cfg;
     int                    default_level;
     int                    pool_idx;
 };
@@ -61,7 +60,7 @@ static int vfs_gpio_open(struct device* pdev, void* arg)
     ret = VFS_OK;
     if (first == 1)
     {
-        ret = hal_gpio_init(&priv->cfg);
+        ret = hal_gpio_init(priv->pin, &priv->mode_cfg);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
         else if (priv->default_level != 0)
@@ -92,7 +91,7 @@ static int vfs_gpio_close(struct device* pdev)
         return last;
 
     if (last)
-        COMPAT_IGNORE_RESULT(hal_gpio_deinit(&priv->cfg));
+        COMPAT_IGNORE_RESULT(hal_gpio_deinit(priv->pin));
 
     dev_lc_close_end(lc);
     return VFS_OK;
@@ -185,20 +184,15 @@ static int vfs_gpio_probe(struct device* pdev)
     priv = &s_gpio_priv_pool[pool_idx];
     __builtin_memset(priv, 0, sizeof(*priv));
     priv->pool_idx = pool_idx;
-    priv->cfg      = (struct hal_gpio_config){
-        .port = 0,
-        .pin  = -1,
+    priv->mode_cfg = (struct hal_gpio_mode_cfg){
         .mode = HAL_GPIO_MODE_OUTPUT,
         .pull = HAL_GPIO_PULL_NONE,
     };
 
     if (hal_pin_probe(pdev, "gpio-port", "gpio-pin", &priv->pin) ||
-        device_get_prop_int(pdev, "gpio-mode", &priv->cfg.mode) ||
-        device_get_prop_int(pdev, "gpio-pull", &priv->cfg.pull))
+        device_get_prop_int(pdev, "gpio-mode", &priv->mode_cfg.mode) ||
+        device_get_prop_int(pdev, "gpio-pull", &priv->mode_cfg.pull))
         goto err_pool;
-
-    priv->cfg.port = HAL_PIN_PORT(priv->pin);
-    priv->cfg.pin  = HAL_PIN_NUM(priv->pin);
 
     COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "default-level", &default_level));
     priv->default_level = default_level;
@@ -214,7 +208,7 @@ static int vfs_gpio_probe(struct device* pdev)
     if (device_set_priv(pdev, priv) != VFS_OK)
         goto err_mutex;
 
-    SYS_LOGI(kTAG, "probe OK: pin=%d mode=%d", priv->cfg.pin, priv->cfg.mode);
+    SYS_LOGI(kTAG, "probe OK: pin=%u mode=%d", (unsigned)HAL_PIN_NUM(priv->pin), priv->mode_cfg.mode);
     return VFS_OK;
 
 err_mutex:

@@ -27,9 +27,10 @@ target_include_directories(core
         "${KCONFIG_GEN_DIR}"
     PRIVATE
         "${PROJECT_SOURCE_DIR}/system_cpp/include"
-        "${PROJECT_SOURCE_DIR}/hal_inst/include"
-        "${PROJECT_SOURCE_DIR}/hal_if/include"
 )
+include("${PROJECT_SOURCE_DIR}/hal_if/paths.cmake")
+include("${PROJECT_SOURCE_DIR}/hal_bus/paths.cmake")
+target_include_directories(core PRIVATE ${HAL_IF_INCLUDE_DIRS} ${HAL_BUS_INCLUDE_DIRS})
 
 # core ↔ system 存在循环符号依赖（event_bus ↔ safe_state/wdt），
 # CMake 自动为 STATIC 库循环使用 --start-group/--end-group

@@ -3,10 +3,10 @@
  * ESP32-S3 SPI — SoC default parameters (Linux-style bus + functional child)
  *
  * Board-specific pins / status in board *.dts &spi1 { } / &fft_slave { }.
- * 引脚: <signal>-port + <signal>-pin (见 hal_if/include/hal_pin.h, gpio-ctl.h).
+ * 引脚: <signal>-port + <signal>-pin (见 hal_if/gpio/hal_pin.h, gpio-ctl.h).
  * Bindings:
- *   esp32,spi                        — vfs/spi/spi_bus.c (Slave 总线)
- *   esp32,spi-master                 — vfs/spi/spi_bus.c (Master 总线)
+ *   esp32,spi                        — vfs/spi/bus/spi_bus.c (Slave 总线)
+ *   esp32,spi-master                 — vfs/spi/bus/spi_bus.c (Master 总线)
  *   heterogeneous,fft-spi-slave      — drivers/fft/fft_spi_drv.c → spi_slave_client
  *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c → spi_master_client
  */
@@ -20,16 +20,16 @@
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		host-id = <SPI_DEFAULT_HOST_ID>;
-		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
+		host-id = <DTS_SPI_DEFAULT_HOST_ID>;
+		dma-chan = <DTS_SPI_DEFAULT_DMA_CHAN>;
 		status = "disabled";
 
 		fft_slave: fft@0 {
 			compatible = "heterogeneous,fft-spi-slave";
 			reg = <0>;
-			spi-mode = <SPI_DEFAULT_MODE>;
-			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
-			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
+			spi-mode = <DTS_SPI_DEFAULT_MODE>;
+			spi-max-frequency = <DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+			queue-size = <DTS_SPI_DEFAULT_QUEUE_SIZE>;
 			status = "disabled";
 		};
 	};
@@ -39,16 +39,16 @@
 		reg = <1>;
 		#address-cells =<1>;
 		#size-cells    =<0>;
-		host-id	       =<SPI_FLASH_HOST_ID>;
-		dma-chan       =<SPI_DEFAULT_DMA_CHAN>;
+		host-id	       =<DTS_SPI_FLASH_HOST_ID>;
+		dma-chan       =<DTS_SPI_DEFAULT_DMA_CHAN>;
 		status 	       ="disabled";
 
 		w25q64_master: w25q64@0 {
 			compatible = "heterogeneous,w25q64-master";
 			reg	   		=<0>;
-			spi-mode   		=<SPI_DEFAULT_MODE>;
-			spi-max-frequency	=<SPI_DEFAULT_MAX_FREQUENCY_HZ>;
-			queue-size		=<SPI_DEFAULT_QUEUE_SIZE>;
+			spi-mode   		=<DTS_SPI_DEFAULT_MODE>;
+			spi-max-frequency	=<DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+			queue-size		=<DTS_SPI_DEFAULT_QUEUE_SIZE>;
 			status			="disabled";
 		};
 	};

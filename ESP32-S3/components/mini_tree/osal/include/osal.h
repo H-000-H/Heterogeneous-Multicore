@@ -251,7 +251,7 @@ void safety_hardware_shutdown(void);
 /* ── 板级硬件安全关断 (强符号, 板级必须实现) ──
  * IEC 61508 §7.4.3.4 / IEC 62304 Class C:
  * 链接器强制检查 — 若 board_driver.c 未实现此函数, 链接失败.
- * 职责: portDISABLE_INTERRUPTS + hal_gpio_set_level_fast 拉低执行器 + hal_pwm_force_stop_all
+ * 职责: portDISABLE_INTERRUPTS + hal_gpio_set_level 拉低执行器 + hal_pwm_force_stop_all
  */
 void system_safety_hardware_shutdown(const char* reason);
 

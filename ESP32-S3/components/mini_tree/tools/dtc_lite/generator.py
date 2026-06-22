@@ -8,6 +8,7 @@ from typing import Dict, List, Optional, Set, Tuple
 
 from .ast import DtsNode, DtsProperty
 from .compiler import DTSCompiler
+from .platform import is_platform_node
 
 class CGenerator:
     """从编译结果生成 C 代码"""
@@ -460,13 +461,6 @@ class CGenerator:
         order: List[int] = self.compiler.topological_sort()
         path: str = os.path.join(self.output_dir, 'board_probe.c')
 
-        PLATFORM: Set[str] = {
-            'esp32,cpu', 'esp32,i2s-bus', 'esp32,uart', 'esp32,gpio',
-            'esp32,i2c-bus', 'esp32,rmt-tx', 'esp32,adc', 'esp32,spi', 'simple-bus',
-            'arm,gic-400', 'arm,cortex-a12', 'arm,cortex-a7', 'arm,cortex-m4',
-            'arm,cortex-m3', 'arm,cortex-m7', 'arm,cortex-m0', 'arm,armv7-timer',
-        }
-
         has_platform: bool = False
         probe_externs: List[str] = []
         remove_externs: List[str] = []
@@ -489,7 +483,7 @@ class CGenerator:
                         remove_externs.append(f'extern int {r_fn}(struct device* dev);')
                     probe_array.append(f'    [DEV_ID_{snake}] = {p_fn},')
                     remove_array.append(f'    [DEV_ID_{snake}] = {r_fn},')
-                elif compat in PLATFORM:
+                elif is_platform_node(i):
                     has_platform = True
                     probe_array.append(f'    [DEV_ID_{snake}] = board_platform_probe,')
                     remove_array.append(f'    [DEV_ID_{snake}] = NULL,')
