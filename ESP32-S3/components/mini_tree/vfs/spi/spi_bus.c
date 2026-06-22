@@ -1,6 +1,7 @@
 #include "bus.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
+#include "hal_pin_probe.h"
 #include "device.h"
 #include "driver.h"
 #include "VFS.h"
@@ -47,17 +48,17 @@ static int spi_controller_probe_impl(struct device* dev, int bus_role)
     struct spi_controller_priv* priv;
     struct hal_spi_bus_config   bus_cfg;
     int                         host = -1;
-    int                         mosi = -1;
-    int                         miso = -1;
-    int                         sclk = -1;
+    hal_pin_t                   mosi = 0;
+    hal_pin_t                   miso = 0;
+    hal_pin_t                   sclk = 0;
     int                         dma_chan = -1;
     int                         max_trans = -1;
     int                         pool_idx;
 
     if (device_get_prop_int(dev, "host-id", &host) ||
-        device_get_prop_int(dev, "miso-pin", &miso) ||
-        device_get_prop_int(dev, "mosi-pin", &mosi) ||
-        device_get_prop_int(dev, "sclk-pin", &sclk) ||
+        hal_pin_probe(dev, "miso-port", "miso-pin", &miso) ||
+        hal_pin_probe(dev, "mosi-port", "mosi-pin", &mosi) ||
+        hal_pin_probe(dev, "sclk-port", "sclk-pin", &sclk) ||
         device_get_prop_int(dev, "dma-chan", &dma_chan))
         goto err_prop;
 
@@ -110,9 +111,12 @@ static int spi_controller_probe_impl(struct device* dev, int bus_role)
         return VFS_ERR_IO;
     }
 
-    SYS_LOGI(kTag, "controller probe OK: role=%s host=%d mosi=%d miso=%d sclk=%d",
+    SYS_LOGI(kTag, "controller probe OK: role=%s host=%d mosi=%d:%d miso=%d:%d sclk=%d:%d",
              bus_role == HAL_SPI_BUS_ROLE_MASTER ? "master" : "slave",
-             host, mosi, miso, sclk);
+             host,
+             HAL_PIN_PORT(mosi), HAL_PIN_NUM(mosi),
+             HAL_PIN_PORT(miso), HAL_PIN_NUM(miso),
+             HAL_PIN_PORT(sclk), HAL_PIN_NUM(sclk));
     return VFS_OK;
 
 err_prop:

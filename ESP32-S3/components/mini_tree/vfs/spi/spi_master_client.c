@@ -1,6 +1,7 @@
 #include "spi_master_client.h"
 #include "spi_vfs_drv.h"
 #include "bus.h"
+#include "hal_pin_probe.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
 #include "VFS.h"
@@ -76,7 +77,7 @@ int spi_master_client_bind(struct device* pdev, struct spi_master_client* client
     struct bus_controller* ctrl;
     struct hal_spi_bus_host* bus_host;
     struct hal_spi_device_config dev_cfg;
-    int cs = -1;
+    hal_pin_t cs = 0;
     int mode = -1;
     int clock_speed_hz = -1;
     int queue_size = -1;
@@ -100,7 +101,7 @@ int spi_master_client_bind(struct device* pdev, struct spi_master_client* client
         return VFS_ERR_INVAL;
     }
 
-    if (device_get_prop_int(pdev, "cs-pin", &cs) ||
+    if (hal_pin_probe(pdev, "cs-port", "cs-pin", &cs) ||
         device_get_prop_int(pdev, "spi-mode", &mode) ||
         device_get_prop_int(pdev, "spi-max-frequency", &clock_speed_hz) ||
         device_get_prop_int(pdev, "queue-size", &queue_size))

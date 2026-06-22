@@ -1,4 +1,5 @@
 #include "hal_gpio.h"
+#include "hal_pin_map.h"
 #include "VFS.h"
 #include "compiler_compat.h"
 #include "driver/gpio.h"
@@ -40,7 +41,7 @@ int hal_gpio_init(const struct hal_gpio_config *cfg)
         return VFS_ERR_INVAL;
 
     pin     = hal_gpio_config_pin(cfg);
-    pin_num = (gpio_num_t)HAL_PIN_NUM(pin);
+    pin_num = (gpio_num_t)hal_pin_map_hw_gpio(pin);
     gpio_reset_pin(pin_num);
     ret = gpio_config(&(gpio_config_t){
         .intr_type    = GPIO_INTR_DISABLE,
@@ -58,6 +59,6 @@ int hal_gpio_deinit(const struct hal_gpio_config *cfg)
 {
     if (!cfg || cfg->pin < 0)
         return VFS_ERR_INVAL;
-    gpio_reset_pin((gpio_num_t)HAL_PIN_NUM(hal_gpio_config_pin(cfg)));
+    gpio_reset_pin((gpio_num_t)hal_pin_map_hw_gpio(hal_gpio_config_pin(cfg)));
     return VFS_OK;
 }

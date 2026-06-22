@@ -1,6 +1,7 @@
 #include "hal_spi.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
+#include "hal_pin_map.h"
 #include "VFS.h"
 #include "dt_config_gen.h"
 #include "board_config.h"
@@ -139,9 +140,9 @@ static int spi_slave_hw_init(struct hal_spi_bus_host* host,
 
     spi_bus_config_t idf_bus_cfg =
     {
-        .mosi_io_num = bus_cfg->mosi,
-        .miso_io_num = bus_cfg->miso,
-        .sclk_io_num = bus_cfg->sclk,
+        .mosi_io_num = hal_pin_map_hw_gpio(bus_cfg->mosi),
+        .miso_io_num = hal_pin_map_hw_gpio(bus_cfg->miso),
+        .sclk_io_num = hal_pin_map_hw_gpio(bus_cfg->sclk),
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
         .max_transfer_sz = bus_cfg->max_transfer_sz > 0 ?
@@ -150,7 +151,7 @@ static int spi_slave_hw_init(struct hal_spi_bus_host* host,
 
     spi_slave_interface_config_t slave_cfg =
     {
-        .spics_io_num = dev_cfg->cs_pin,
+        .spics_io_num = hal_pin_map_hw_gpio(dev_cfg->cs_pin),
         .mode = (uint8_t)dev_cfg->mode,
         .queue_size = dev_cfg->queue_size > 0 ? dev_cfg->queue_size : 4,
         .post_setup_cb = NULL,
@@ -224,9 +225,9 @@ static int spi_master_bus_init(struct hal_spi_bus_host* host)
 
     spi_bus_config_t idf_bus_cfg =
     {
-        .mosi_io_num = bus_cfg->mosi,
-        .miso_io_num = bus_cfg->miso,
-        .sclk_io_num = bus_cfg->sclk,
+        .mosi_io_num = hal_pin_map_hw_gpio(bus_cfg->mosi),
+        .miso_io_num = hal_pin_map_hw_gpio(bus_cfg->miso),
+        .sclk_io_num = hal_pin_map_hw_gpio(bus_cfg->sclk),
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
         .max_transfer_sz = bus_cfg->max_transfer_sz > 0 ?
@@ -275,7 +276,7 @@ static int spi_master_device_add(struct hal_spi_ctx* ctx, struct hal_spi_hw* hw,
     {
         .clock_speed_hz = dev_cfg->clock_speed_hz > 0 ? dev_cfg->clock_speed_hz : 1000000,
         .mode = (uint8_t)dev_cfg->mode,
-        .spics_io_num = dev_cfg->cs_pin,
+        .spics_io_num = hal_pin_map_hw_gpio(dev_cfg->cs_pin),
         .queue_size = dev_cfg->queue_size > 0 ? dev_cfg->queue_size : 4,
     };
 

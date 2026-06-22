@@ -71,6 +71,7 @@ add_library(board STATIC
     "src/board_device.c"
     "src/bus.c"
     "src/board_driver.c"
+    "src/hal_pin_probe.c"
     "src/config_store.c"
     ${GENERATED_BOARD_SRCS}
 )

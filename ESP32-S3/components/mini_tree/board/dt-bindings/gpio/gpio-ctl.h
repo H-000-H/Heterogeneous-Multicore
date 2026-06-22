@@ -31,7 +31,7 @@
 #define GPIO_ACTIVE_LOW                 2
 #define GPIO_ACTIVE_HIGH                3
 
-/* ── 端口 (hal_pin_t [31:16]) ── */
+/* ── 端口 (hal_pin_t [31:16], 见 hal_if/include/hal_pin.h) ── */
 #define GPIO_PORT_0                     -1
 #define GPIOA                           0
 #define GPIOB                           1

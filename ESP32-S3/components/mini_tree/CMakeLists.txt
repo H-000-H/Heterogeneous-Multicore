@@ -43,6 +43,7 @@ set(HAL_INST_SRCS
 )
 set(HAL_SRCS
     "hal_if/src/hal_gpio.c"
+    "hal_if/src/hal_pin_map.c"
     "hal_if/src/hal_esp32s3.c"
     "hal_if/src/hal_pulse_engine_esp32s3.c"
     "hal_if/src/hal_cpu_amp.c"    # AMP 弱符号 (CPU_CORES=1 时无影响)
@@ -54,6 +55,7 @@ set(BOARD_SRCS
     "board/src/bus.c"
     "board/src/dev_lifecycle.c"
     "board/src/board_driver.c"
+    "board/src/hal_pin_probe.c"
     "board/src/config_store.c"
     "board/src/task_config.c"
     "board/src/task_utils.c"

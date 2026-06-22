@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "hal_pin.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -16,9 +17,9 @@ extern "C"
 struct hal_spi_bus_config
 {
     int host_id;
-    int mosi;
-    int miso;
-    int sclk;
+    hal_pin_t mosi;
+    hal_pin_t miso;
+    hal_pin_t sclk;
     int max_transfer_sz;
     int dma_chan;
     int bus_role;   /* HAL_SPI_BUS_ROLE_SLAVE | HAL_SPI_BUS_ROLE_MASTER */
@@ -29,7 +30,7 @@ struct hal_spi_device_config
 {
     int mode;
     int clock_speed_hz;
-    int cs_pin;
+    hal_pin_t cs_pin;
     int queue_size;
 };
 

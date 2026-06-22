@@ -6,6 +6,7 @@
 
 add_library(hal_if STATIC
     "src/hal_gpio.c"
+    "src/hal_pin_map.c"
     "src/hal_if_dummy.c"
     "src/hal_cpu_amp.c"
 )

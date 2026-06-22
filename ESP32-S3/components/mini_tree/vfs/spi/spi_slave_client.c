@@ -1,6 +1,7 @@
 #include "spi_slave_client.h"
 #include "spi_vfs_drv.h"
 #include "bus.h"
+#include "hal_pin_probe.h"
 #include "hal_spi.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
@@ -312,7 +313,8 @@ int spi_slave_client_probe(struct device* pdev)
 {
     struct spi_slave_client* priv;
     struct bus_controller* ctrl;
-    int cs = -1, mode = -1, clock_speed_hz = -1, queue_size = -1;
+    hal_pin_t cs = 0;
+    int mode = -1, clock_speed_hz = -1, queue_size = -1;
     struct hal_spi_device_config dev_cfg;
     struct hal_spi_bus_host* bus_host;
     int pool_idx;
@@ -332,7 +334,7 @@ int spi_slave_client_probe(struct device* pdev)
         return VFS_ERR_INVAL;
     }
 
-    if (device_get_prop_int(pdev, "cs-pin", &cs) ||
+    if (hal_pin_probe(pdev, "cs-port", "cs-pin", &cs) ||
         device_get_prop_int(pdev, "spi-mode", &mode) ||
         device_get_prop_int(pdev, "spi-max-frequency", &clock_speed_hz) ||
         device_get_prop_int(pdev, "queue-size", &queue_size))

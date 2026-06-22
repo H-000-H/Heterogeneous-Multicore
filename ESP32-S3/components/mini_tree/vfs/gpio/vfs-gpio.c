@@ -1,4 +1,5 @@
 #include "vfs-gpio.h"
+#include "hal_pin_probe.h"
 #include "VFS.h"
 #include "board_config.h"
 #include "compiler_compat.h"
@@ -191,15 +192,16 @@ static int vfs_gpio_probe(struct device* pdev)
         .pull = HAL_GPIO_PULL_NONE,
     };
 
-    if (device_get_prop_int(pdev, "gpio-port", &priv->cfg.port) ||
-        device_get_prop_int(pdev, "gpio-pin", &priv->cfg.pin) ||
+    if (hal_pin_probe(pdev, "gpio-port", "gpio-pin", &priv->pin) ||
         device_get_prop_int(pdev, "gpio-mode", &priv->cfg.mode) ||
         device_get_prop_int(pdev, "gpio-pull", &priv->cfg.pull))
         goto err_pool;
 
+    priv->cfg.port = HAL_PIN_PORT(priv->pin);
+    priv->cfg.pin  = HAL_PIN_NUM(priv->pin);
+
     COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "default-level", &default_level));
     priv->default_level = default_level;
-    priv->pin           = hal_gpio_config_pin(&priv->cfg);
 
     if (osal_mutex_create_static(&priv->io_mutex, s_gpio_mutex_storage[pool_idx],
                                  sizeof(s_gpio_mutex_storage[pool_idx])) != 0)

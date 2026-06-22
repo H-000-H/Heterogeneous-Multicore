@@ -38,27 +38,35 @@
 
 &spi1 {
 	status = "okay";
+	mosi-port = <GPIO_PORT_0>;
 	mosi-pin = <11>;
+	miso-port = <GPIO_PORT_0>;
 	miso-pin = <13>;
+	sclk-port = <GPIO_PORT_0>;
 	sclk-pin = <12>;
 	max-trans-buffer = <2048>;/* 从机的一次传输最大宽度 */
 };
 
 &spi2 {
 	status 		="disabled";
+	mosi-port 	=<GPIO_PORT_0>;
 	mosi-pin 	=<14>;
+	miso-port	=<GPIO_PORT_0>;
 	miso-pin	=<15>;
+	sclk-port	=<GPIO_PORT_0>;
 	sclk-pin	=<16>;
 	max-trans-buffer=<512>;/* 一个扇区大小 */
 };
 
 &fft_slave {
 	status = "okay";
+	cs-port = <GPIO_PORT_0>;
 	cs-pin = <10>;
 };
 
 &w25q64_master{
 	status ="disabled";
+	cs-port = <GPIO_PORT_0>;
 	cs-pin =<20>;
 };
 
