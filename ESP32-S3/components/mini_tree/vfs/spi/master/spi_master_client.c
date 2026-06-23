@@ -1,5 +1,4 @@
 #include "spi_master_client.h"
-#include "spi_vfs_drv.h"
 #include "bus.h"
 #include "device.h"
 #include "hal_spi_bus_host.h"
@@ -246,8 +245,8 @@ static int spi_master_write(struct device* pdev, const void* buffer, size_t len,
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
     if (ret == VFS_OK)
     {
-        int write_bytes = priv->ctx.host->bus.write(&priv->ctx.host->bus,
-                                                    (const uint8_t*)buffer, len);
+        int write_bytes = priv->ctx.host->dev.ops->write(hal_spi_host_bus(priv->ctx.host),
+                                                         (const uint8_t*)buffer, len);
         if (write_bytes > 0)
             ret = VFS_OK;
         else
@@ -292,95 +291,8 @@ static int spi_master_read(struct device* pdev, void* buffer, size_t len, uint32
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
     if (ret == VFS_OK)
     {
-        ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, (uint8_t*)buffer, len);
+        ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), (uint8_t*)buffer, len);
         ret = spi_xfer_session_end(&priv->ctx, ret);
-    }
-
-    dev_lc_io_end(lc);
-    return ret;
-}
-
-static int spi_master_ioctl(struct device* dev, int cmd, void* arg, size_t arg_len, uint32_t timeout_ms)
-{
-    struct spi_master_client* priv;
-    struct dev_lifecycle* lc;
-    int ret;
-
-    if (!dev || !dev->ops)
-        return VFS_ERR_INVAL;
-
-    priv = container_of(dev->ops, struct spi_master_client, ops);
-    lc = device_lc(dev);
-    if (IS_ERR(lc))
-        return PTR_ERR(lc);
-
-    ret = dev_lc_io_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
-    if (ret != VFS_OK)
-        return ret;
-
-    switch (cmd)
-    {
-    case SPI_CMD_READ:
-    {
-        const struct spi_read_arg* ra = (const struct spi_read_arg*)arg;
-        if (!ra || arg_len != sizeof(*ra) || !ra->data || ra->len == 0)
-            ret = VFS_ERR_INVAL;
-        else
-        {
-            ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-            if (ret == VFS_OK)
-            {
-                ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, ra->data, ra->len);
-                ret = spi_xfer_session_end(&priv->ctx, ret);
-            }
-        }
-        break;
-    }
-    case SPI_CMD_TRANSFER:
-    {
-        const struct spi_transfer_arg* ta = (const struct spi_transfer_arg*)arg;
-        if (!ta || arg_len != sizeof(*ta) || ta->len == 0)
-            ret = VFS_ERR_INVAL;
-        else
-            ret = spi_master_client_transfer(priv, ta->tx, ta->rx, ta->len, timeout_ms);
-        break;
-    }
-    case SPI_CMD_QUEUE_TX:
-    {
-        const struct spi_queue_arg* qa = (const struct spi_queue_arg*)arg;
-        if (!qa || arg_len != sizeof(*qa) || !qa->data || qa->len == 0)
-            ret = VFS_ERR_INVAL;
-        else if (!priv->ctx.host->bus.write_top_half)
-            ret = VFS_ERR_IO;
-        else
-        {
-            ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-            if (ret == VFS_OK)
-            {
-                ret = priv->ctx.host->bus.write_top_half(&priv->ctx.host->bus,
-                                                         qa->data, qa->len);
-                ret = spi_xfer_session_end(&priv->ctx, ret);
-            }
-        }
-        break;
-    }
-    case SPI_CMD_GET_TRANS_RESULT:
-    {
-        struct spi_trans_result_arg* tra = (struct spi_trans_result_arg*)arg;
-        if (!tra || arg_len != sizeof(*tra))
-            ret = VFS_ERR_INVAL;
-        else
-            ret = hal_spi_get_trans_result(&priv->ctx, tra->data, tra->len,
-                                           tra->trans_len, timeout_ms);
-        break;
-    }
-    case SPI_CMD_DEINIT:
-        spi_master_client_interface_detach(priv);
-        ret = VFS_OK;
-        break;
-    default:
-        ret = VFS_ERR_INVAL;
-        break;
     }
 
     dev_lc_io_end(lc);
@@ -393,7 +305,6 @@ static const struct file_operations spi_master_fops =
     .close = spi_master_close,
     .write = spi_master_write,
     .read  = spi_master_read,
-    .ioctl = spi_master_ioctl,
 };
 
 int spi_master_client_probe(struct device* pdev)

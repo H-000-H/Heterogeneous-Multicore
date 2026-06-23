@@ -195,5 +195,10 @@ static inline uint32_t COMPAT_RAND(uint32_t a, uint32_t b, uint32_t c, uint32_t 
     return xorshift_state;
 }
 
+typedef enum 
+{
+    MSB = 0,
+    LSB ,
+}Endianness;
 #endif /* COMPILER_COMPAT_H */
 

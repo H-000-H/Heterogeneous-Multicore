@@ -5,12 +5,12 @@
 #include <stdint.h>
 #include "compiler_compat.h"
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
 struct device;
-struct hal_spi_bus;
+struct bus_device;
 
 /* VFS ioctl 命令 (每条总线 namespace 0x100, 命令在 base 内递增) */
 #define SPI_CMD_BASE             COMPAT_MAGIC(SPI) + 0x40
@@ -59,11 +59,8 @@ struct spi_transfer_arg
     size_t         len;
 };
 
-int device_get_spi_bus(struct device* dev, struct hal_spi_bus** out) COMPAT_WARN_UNUSED_RESULT;
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* SPI_VFS_H */
-

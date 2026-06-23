@@ -3,17 +3,18 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "bus/bus.h"
 #include "hal_pin.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
 #define HAL_SPI_BUS_ROLE_SLAVE  0
 #define HAL_SPI_BUS_ROLE_MASTER 1
 
-/* SPI 总线配置 */
+/* SPI 总线控制器配置 (引脚/host 级, 不含设备 CS/mode) */
 struct hal_spi_bus_config
 {
     int host_id;
@@ -34,26 +35,23 @@ struct hal_spi_device_config
     int queue_size;
 };
 
-/* 总线传输 vtable (生命周期由 hal_spi_bus_host 管理, 无 init/deinit) */
-struct hal_spi_bus
+struct hal_spi_bus_host;
+
+/* Slave 异步入队: 映射到 bus_ops.transfer_async */
+static inline int hal_spi_bus_queue_tx(bus_device_t* bus, const uint8_t* data, size_t len)
 {
-    int (*write)(struct hal_spi_bus* bus, const uint8_t* data, size_t len);
-    int (*write_top_half)(struct hal_spi_bus* bus, const uint8_t* data, size_t len);
-    int (*read)(struct hal_spi_bus* bus, uint8_t* data, size_t len);
-    void* _impl;
-};
+    if (!bus || !bus->ops || !bus->ops->transfer_async || !data || len == 0)
+        return -1;
+    return bus->ops->transfer_async(bus, data, len, NULL, 0, NULL);
+}
 
-void hal_spi_bus_init_struct(struct hal_spi_bus* bus, int bus_role);
-
-int hal_spi_lock_bus(int bus_id, uint32_t timeout_ms);
-int hal_spi_unlock_bus(int bus_id);
-int hal_spi_assert_cs(int bus_id, int cs_line);
-int hal_spi_deassert_cs(int bus_id, int cs_line);
-void hal_spi_force_stop(void);
+static inline int hal_spi_bus_supports_async_tx(const bus_device_t* bus)
+{
+    return bus && bus->ops && bus->ops->transfer_async;
+}
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* HAL_SPI_BUS_H */
-

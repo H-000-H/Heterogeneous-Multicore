@@ -1,6 +1,7 @@
 #include "hal_spi.h"
 #include "hal_spi_bus_host.h"
 #include "hal_spi_bus.h"
+#include "bus/bus.h"
 #include "hal_pin.h"
 #include "VFS.h"
 #include "dt_config_gen.h"
@@ -51,10 +52,23 @@ static uint8_t s_host_mutex_storage[SPI_HOST_MAX][OSAL_MUTEX_STORAGE_SIZE] COMPA
 
 static const char* const kTag = "hal_spi";
 
-/*bus函数反推  SPI 总线控制器实体*/
-static struct hal_spi_bus_host* spi_bus_to_host(struct hal_spi_bus* bus)
+static struct hal_spi_bus_host* spi_bus_to_host(bus_device_t* bus)
 {
-    return bus ? (struct hal_spi_bus_host*)bus->_impl : NULL;
+    return bus ? container_of(bus, struct hal_spi_bus_host, dev) : NULL;
+}
+
+static void spi_bus_sync_config(bus_device_t* bus, const struct hal_spi_device_config* dev_cfg)
+{
+    if (!bus || !dev_cfg)
+        return;
+
+    bus->config.clock_speed_hz = (uint32_t)(dev_cfg->clock_speed_hz > 0 ? dev_cfg->clock_speed_hz : 1000000);
+    bus->config.spec.spi.mode = (spi_mode_t)dev_cfg->mode;
+    bus->config.spec.spi.direction = SPI_DIR_FULL_DUPLEX;
+    bus->config.spec.spi.data_size = 8;
+    bus->config.spec.spi.first_bit = 0;
+    bus->config.spec.spi.nss_mode = 1;
+    bus->config.spec.spi.wire_mode = 1;
 }
 
 /*总线反推软件*/
@@ -124,6 +138,7 @@ static int spi_host_mutex_ensure(struct hal_spi_bus_host* host)
         return VFS_ERR_NOMEM;
 
     host->bus_mutex = mtx;
+    host->dev.mutex = mtx;
     return VFS_OK;
 }
 
@@ -169,6 +184,7 @@ static int spi_slave_hw_init(struct hal_spi_bus_host* host,const struct hal_spi_
 
     host->hw_inited = 1;
     host->active_cfg = *dev_cfg;
+    spi_bus_sync_config(&host->dev, dev_cfg);
     return VFS_OK;
 }
 
@@ -301,6 +317,7 @@ static int spi_master_hw_init(struct hal_spi_bus_host* host,struct hal_spi_ctx* 
         return ret;
 
     host->active_cfg = *dev_cfg;
+    spi_bus_sync_config(&host->dev, dev_cfg);
     return VFS_OK;
 }
 
@@ -333,7 +350,7 @@ static int spi_master_transmit(struct hal_spi_ctx* ctx, struct hal_spi_hw* hw,
 }
 
 /*上半部异步进队 (仅 Slave) */
-static int spi_bus_write_top_half_impl(struct hal_spi_bus* bus, const uint8_t* data, size_t len)
+static int spi_bus_write_top_half_impl(bus_device_t* bus, const uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
     struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
@@ -363,7 +380,7 @@ static int spi_bus_write_top_half_impl(struct hal_spi_bus* bus, const uint8_t* d
 }
 
 /*同步写 (Slave) */
-static int spi_bus_write_impl(struct hal_spi_bus* bus, const uint8_t* data, size_t len)
+static int spi_bus_write_impl(bus_device_t* bus, const uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
     struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
@@ -392,7 +409,7 @@ static int spi_bus_write_impl(struct hal_spi_bus* bus, const uint8_t* data, size
 }
 
 /*同步读取 (Slave) */
-static int spi_bus_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t len)
+static int spi_bus_read_impl(bus_device_t* bus, uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
     struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
@@ -422,7 +439,7 @@ static int spi_bus_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t len)
 }
 
 /*主设备写*/
-static int spi_master_write_impl(struct hal_spi_bus* bus, const uint8_t* data, size_t len)
+static int spi_master_write_impl(bus_device_t* bus, const uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
     struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
@@ -441,7 +458,7 @@ static int spi_master_write_impl(struct hal_spi_bus* bus, const uint8_t* data, s
 }
 
 /*主设备读*/
-static int spi_master_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t len)
+static int spi_master_read_impl(bus_device_t* bus, uint8_t* data, size_t len)
 {
     struct hal_spi_bus_host* host = spi_bus_to_host(bus);
     struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
@@ -464,25 +481,150 @@ static int spi_master_read_impl(struct hal_spi_bus* bus, uint8_t* data, size_t l
     return (int)len;
 }
 
-/*总线初始化*/
-void hal_spi_bus_init_struct(struct hal_spi_bus* bus, int bus_role)
+static int spi_master_transfer_impl(bus_device_t* bus, const uint8_t* tx_buf, size_t tx_len,
+                                    uint8_t* rx_buf, size_t rx_len)
 {
-    if (!bus)
-        return;
+    struct hal_spi_bus_host* host = spi_bus_to_host(bus);
+    struct hal_spi_ctx* ctx = spi_host_active_ctx(host);
+    struct hal_spi_hw* hw = spi_ctx_hw(ctx);
+    int hw_idx;
+    size_t len = tx_len;
 
-    if (bus_role == HAL_SPI_BUS_ROLE_MASTER)
-    {
-        bus->write = spi_master_write_impl;
-        bus->write_top_half = NULL;
-        bus->read = spi_master_read_impl;
-    }
-    else
-    {
-        bus->write = spi_bus_write_impl;
-        bus->write_top_half = spi_bus_write_top_half_impl;
-        bus->read = spi_bus_read_impl;
-    }
-    bus->_impl = NULL;
+    if (rx_len > 0 && rx_len != tx_len)
+        return VFS_ERR_INVAL;
+    if (!host || !ctx || !hw || !host->hw_inited || len == 0)
+        return VFS_ERR_INVAL;
+
+    hw_idx = spi_ctx_hw_idx(ctx);
+    if (hw_idx < 0 || len > spi_host_max_transfer_bytes(host))
+        return VFS_ERR_INVAL;
+
+    const uint8_t* tx_p = tx_buf ? tx_buf : s_spi_tx_buf[hw_idx];
+    uint8_t* rx_p = rx_buf ? rx_buf : s_spi_rx_buf[hw_idx];
+
+    if (!tx_buf)
+        __builtin_memset(s_spi_tx_buf[hw_idx], 0, len);
+
+    return spi_master_transmit(ctx, hw, tx_p, rx_p, len);
+}
+
+static int spi_bus_open(bus_device_t* bus)
+{
+    COMPAT_IGNORE_RESULT(bus);
+    return VFS_OK;
+}
+
+static int spi_bus_close(bus_device_t* bus)
+{
+    COMPAT_IGNORE_RESULT(bus);
+    return VFS_OK;
+}
+
+static int spi_bus_ioctl(bus_device_t* bus, uint32_t cmd, void* arg)
+{
+    COMPAT_IGNORE_RESULT(bus);
+    COMPAT_IGNORE_RESULT(cmd);
+    COMPAT_IGNORE_RESULT(arg);
+    return VFS_ERR_INVAL;
+}
+
+static int spi_bus_write_op(bus_device_t* bus, const uint8_t* buf, size_t len)
+{
+    struct hal_spi_bus_host* host = spi_bus_to_host(bus);
+
+    if (!host)
+        return VFS_ERR_INVAL;
+
+    if (host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER)
+        return spi_master_write_impl(bus, buf, len);
+    return spi_bus_write_impl(bus, buf, len);
+}
+
+static int spi_bus_read_op(bus_device_t* bus, uint8_t* buf, size_t len)
+{
+    struct hal_spi_bus_host* host = spi_bus_to_host(bus);
+
+    if (!host)
+        return VFS_ERR_INVAL;
+
+    if (host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER)
+        return spi_master_read_impl(bus, buf, len);
+    return spi_bus_read_impl(bus, buf, len);
+}
+
+static int spi_bus_transfer_op(bus_device_t* bus, const uint8_t* tx_buf, size_t tx_len,
+                               uint8_t* rx_buf, size_t rx_len)
+{
+    struct hal_spi_bus_host* host = spi_bus_to_host(bus);
+
+    if (!host)
+        return VFS_ERR_INVAL;
+
+    if (host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER)
+        return spi_master_transfer_impl(bus, tx_buf, tx_len, rx_buf, rx_len);
+
+    if (tx_len == 0 || !tx_buf)
+        return VFS_ERR_INVAL;
+
+    int ret = spi_bus_write_impl(bus, tx_buf, tx_len);
+    if (ret < 0 || !rx_buf || rx_len == 0)
+        return ret;
+
+    return spi_bus_read_impl(bus, rx_buf, rx_len);
+}
+
+static int spi_bus_transfer_async_op(bus_device_t* bus, const uint8_t* tx_buf, size_t tx_len,
+                                     uint8_t* rx_buf, size_t rx_len,
+                                     void (*callback)(void* arg))
+{
+    struct hal_spi_bus_host* host = spi_bus_to_host(bus);
+    int ret;
+
+    COMPAT_IGNORE_RESULT(rx_buf);
+    COMPAT_IGNORE_RESULT(rx_len);
+
+    if (!host || host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER)
+        return VFS_ERR_INVAL;
+
+    ret = spi_bus_write_top_half_impl(bus, tx_buf, tx_len);
+    if (ret >= 0 && callback)
+        callback(NULL);
+
+    return ret;
+}
+
+static const bus_ops_t s_spi_slave_bus_ops =
+{
+    .open           = spi_bus_open,
+    .close          = spi_bus_close,
+    .ioctl          = spi_bus_ioctl,
+    .write          = spi_bus_write_op,
+    .read           = spi_bus_read_op,
+    .transfer       = spi_bus_transfer_op,
+    .transfer_async = spi_bus_transfer_async_op,
+};
+
+static const bus_ops_t s_spi_master_bus_ops =
+{
+    .open           = spi_bus_open,
+    .close          = spi_bus_close,
+    .ioctl          = spi_bus_ioctl,
+    .write          = spi_bus_write_op,
+    .read           = spi_bus_read_op,
+    .transfer       = spi_bus_transfer_op,
+    .transfer_async = NULL,
+};
+
+static void spi_bus_device_init(struct hal_spi_bus_host* host)
+{
+    bus_device_t* bus = &host->dev;
+
+    __builtin_memset(bus, 0, sizeof(*bus));
+    bus->type = BUS_TYPE_SPI;
+    bus->ops = (host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER) ?
+               &s_spi_master_bus_ops : &s_spi_slave_bus_ops;
+    bus->hw_handle = host;
+    bus->status = BUS_STATE_UNINIT;
 }
 
 /*SPI 总线主机资源初始化接口*/
@@ -508,9 +650,9 @@ int hal_spi_bus_host_init(int host_id, const struct hal_spi_bus_config* cfg)
     if (spi_host_mutex_ensure(host) != VFS_OK)
         return VFS_ERR_NOMEM;
 
-    hal_spi_bus_init_struct(&host->bus, host->cfg.bus_role);
-    host->bus._impl = host;
+    spi_bus_device_init(host);
     host->bus_ready = 1;
+    host->dev.status = BUS_STATE_READY;
     return VFS_OK;
 }
 
@@ -663,7 +805,9 @@ int hal_spi_xfer_begin(struct hal_spi_ctx* ctx, uint32_t timeout_ms)
         return ret;
     }
 
+    spi_bus_sync_config(&host->dev, &ctx->cfg);
     host->active_ctx = ctx;
+    host->dev.status = BUS_STATE_BUSY;
     return VFS_OK;
 }
 
@@ -675,7 +819,10 @@ int hal_spi_xfer_end(struct hal_spi_ctx* ctx)
 
     struct hal_spi_bus_host* host = ctx->host;
     if (host->active_ctx == ctx)
+    {
         host->active_ctx = NULL;
+        host->dev.status = BUS_STATE_READY;
+    }
 
     return osal_mutex_unlock(host->bus_mutex) == 0 ? VFS_OK : VFS_ERR_IO;
 }
@@ -771,7 +918,8 @@ void hal_spi_ctx_detach(struct hal_spi_ctx* ctx)
 }
 
 /*SPI Slave（从设备）异步 DMA 传输完成后的结果捞取接口*/
-int hal_spi_get_trans_result(struct hal_spi_ctx* ctx, uint8_t* rx_data, size_t rx_cap,size_t* trans_len, uint32_t timeout_ms)
+int hal_spi_get_trans_result(struct hal_spi_ctx* ctx, uint8_t* rx_data, size_t rx_cap,
+                             size_t* trans_len, uint32_t timeout_ms)
 {
     struct hal_spi_hw* hw = spi_ctx_hw(ctx);
     spi_slave_transaction_t* done = NULL;
@@ -817,78 +965,5 @@ int hal_spi_get_trans_result(struct hal_spi_ctx* ctx, uint8_t* rx_data, size_t r
     }
 
     return VFS_OK;
-}
-
-/*总线锁*/
-int hal_spi_lock_bus(int bus_id, uint32_t timeout_ms)
-{
-    struct hal_spi_bus_host* host;
-    int ret;
-
-    ret = hal_spi_bus_host_get(bus_id, &host);
-    if (ret != VFS_OK || !host->bus_mutex)
-        return ret != VFS_OK ? ret : VFS_ERR_INVAL;
-
-    return osal_mutex_lock(host->bus_mutex, timeout_ms) == 0 ? VFS_OK : VFS_ERR_BUSY;
-}
-
-int hal_spi_unlock_bus(int bus_id)
-{
-    struct hal_spi_bus_host* host;
-    int ret;
-
-    ret = hal_spi_bus_host_get(bus_id, &host);
-    if (ret != VFS_OK || !host->bus_mutex)
-        return ret != VFS_OK ? ret : VFS_ERR_INVAL;
-
-    return osal_mutex_unlock(host->bus_mutex) == 0 ? VFS_OK : VFS_ERR_IO;
-}
-
-/*拉低 CS*/
-int hal_spi_assert_cs(int bus_id, int cs_line)
-{
-    SYS_LOGW(kTag, "hardware CS enabled, skip manual cs assert"); 
-    COMPAT_IGNORE_RESULT(bus_id); 
-    COMPAT_IGNORE_RESULT(cs_line);
-    return VFS_OK;
-
-}
-
-/*拉高 CS*/
-int hal_spi_deassert_cs(int bus_id, int cs_line)
-{
-    COMPAT_IGNORE_RESULT(bus_id); COMPAT_IGNORE_RESULT(cs_line);
-    return VFS_OK;
-}
-
-/*强行停机注销全部资源*/
-void hal_spi_force_stop(void)
-{
-    for (int i = 0; i < SPI_HOST_MAX; i++)
-    {
-        struct hal_spi_bus_host* host = &s_spi_hosts[i];
-        if (!host->bus_ready)
-            continue;
-
-        if (host->active_ctx)
-        {
-            struct hal_spi_hw* hw = spi_ctx_hw(host->active_ctx);
-            if (hw && !hw->is_master &&
-                atomic_load_explicit(&hw->u.slave.trans_queued, memory_order_acquire))
-            {
-                spi_slave_transaction_t* done = NULL;
-                COMPAT_IGNORE_RESULT(spi_slave_get_trans_result(spi_host_id(host), &done, osal_ticks_from_ms(50)));
-                atomic_store_explicit(&hw->u.slave.trans_queued, false, memory_order_release);
-            }
-        }
-
-        if (host->cfg.bus_role == HAL_SPI_BUS_ROLE_MASTER)
-            COMPAT_IGNORE_RESULT(spi_master_bus_deinit(host));
-        else
-            COMPAT_IGNORE_RESULT(spi_slave_hw_deinit(host));
-        host->ref_count = 0;
-        host->bus_ready = 0;
-        host->active_ctx = NULL;
-    }
 }
 

@@ -1,5 +1,7 @@
 get_filename_component(_HAL_BUS_ROOT "${CMAKE_CURRENT_LIST_DIR}" ABSOLUTE)
 set(HAL_BUS_INCLUDE_DIRS
+    "${_HAL_BUS_ROOT}"
+    "${_HAL_BUS_ROOT}/bus"
     "${_HAL_BUS_ROOT}/spi"
     "${_HAL_BUS_ROOT}/i2c"
     "${_HAL_BUS_ROOT}/can"

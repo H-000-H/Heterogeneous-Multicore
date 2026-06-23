@@ -8,14 +8,14 @@ struct osal_mutex;
 struct hal_spi_ctx;
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
 /* SPI 总线控制器实体 (全局每 host_id 一份, 由 esp32,spi probe 初始化) */
 struct hal_spi_bus_host
 {
-    struct hal_spi_bus              bus;
+    bus_device_t                    dev;
     struct hal_spi_bus_config       cfg;
     struct osal_mutex*              bus_mutex;
     int                             ref_count;     /* interface open 引用计数 */
@@ -42,9 +42,14 @@ int hal_spi_bus_reconfigure(struct hal_spi_bus_host* host,
 int hal_spi_xfer_begin(struct hal_spi_ctx* ctx, uint32_t timeout_ms);
 int hal_spi_xfer_end(struct hal_spi_ctx* ctx);
 
+/* 从 host 取统一 bus_device (生命周期由 hal_spi_bus_host 管理) */
+static inline bus_device_t* hal_spi_host_bus(struct hal_spi_bus_host* host)
+{
+    return host ? &host->dev : NULL;
+}
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* HAL_SPI_BUS_HOST_H */
-

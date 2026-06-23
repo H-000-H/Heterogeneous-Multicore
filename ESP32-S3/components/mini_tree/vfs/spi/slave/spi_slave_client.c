@@ -48,25 +48,6 @@ static int spi_xfer_session_end(struct hal_spi_ctx* ctx, int io_ret)
     return io_ret;
 }
 
-int device_get_spi_bus(struct device* pdev, struct hal_spi_bus** out)
-{
-    struct spi_slave_client* priv;
-
-    if (!out)
-        return VFS_ERR_INVAL;
-    *out = NULL;
-
-    if (!pdev || !pdev->ops)
-        return VFS_ERR_INVAL;
-
-    priv = container_of(pdev->ops, struct spi_slave_client, ops);
-    if (!priv->ctx.host)
-        return VFS_ERR_NODEV;
-
-    *out = &priv->ctx.host->bus;
-    return VFS_OK;
-}
-
 static int spi_slave_open(struct device* pdev, void* arg)
 {
     struct spi_slave_client* priv;
@@ -163,8 +144,8 @@ static int spi_slave_write(struct device* pdev, const void* buffer, size_t len, 
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
     if (ret == VFS_OK)
     {
-        int write_bytes = priv->ctx.host->bus.write(&priv->ctx.host->bus,
-                                                    (const uint8_t*)buffer, len);
+        int write_bytes = priv->ctx.host->dev.ops->write(hal_spi_host_bus(priv->ctx.host),
+                                                         (const uint8_t*)buffer, len);
         if (write_bytes > 0)
             ret = VFS_OK;
         else
@@ -209,7 +190,7 @@ static int spi_slave_read(struct device* pdev, void* buffer, size_t len, uint32_
     ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
     if (ret == VFS_OK)
     {
-        ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, (uint8_t*)buffer, len);
+        ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), (uint8_t*)buffer, len);
         ret = spi_xfer_session_end(&priv->ctx, ret);
     }
 
@@ -247,7 +228,7 @@ static int spi_slave_ioctl(struct device* dev, int cmd, void* arg, size_t arg_le
             ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
             if (ret == VFS_OK)
             {
-                ret = priv->ctx.host->bus.read(&priv->ctx.host->bus, ra->data, ra->len);
+                ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), ra->data, ra->len);
                 ret = spi_xfer_session_end(&priv->ctx, ret);
             }
         }
@@ -258,15 +239,14 @@ static int spi_slave_ioctl(struct device* dev, int cmd, void* arg, size_t arg_le
         const struct spi_queue_arg* qa = (const struct spi_queue_arg*)arg;
         if (!qa || arg_len != sizeof(*qa) || !qa->data || qa->len == 0)
             ret = VFS_ERR_INVAL;
-        else if (!priv->ctx.host->bus.write_top_half)
+        else if (!hal_spi_bus_supports_async_tx(hal_spi_host_bus(priv->ctx.host)))
             ret = VFS_ERR_IO;
         else
         {
             ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
             if (ret == VFS_OK)
             {
-                ret = priv->ctx.host->bus.write_top_half(&priv->ctx.host->bus,
-                                                           qa->data, qa->len);
+                ret = hal_spi_bus_queue_tx(hal_spi_host_bus(priv->ctx.host), qa->data, qa->len);
                 ret = spi_xfer_session_end(&priv->ctx, ret);
             }
         }
