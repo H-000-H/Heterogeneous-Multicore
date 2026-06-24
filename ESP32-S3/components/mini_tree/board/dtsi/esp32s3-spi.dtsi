@@ -3,7 +3,7 @@
  * ESP32-S3 SPI — SoC default parameters (Linux-style bus + functional child)
  *
  * Board-specific pins / status in board *.dts &spi1 { } / &fft_slave { }.
- * 引脚: <signal>-port + <signal>-pin (见 hal_if/gpio/hal_pin.h, gpio-ctl.h).
+ * 引脚: <signal>-port + <signal>-pin (见 hal_if/gpio/hal_gpio.h, gpio-ctl.h).
  * Bindings:
  *   esp32,spi                        — vfs/spi/bus/spi_bus.c (Slave 总线)
  *   esp32,spi-master                 — vfs/spi/bus/spi_bus.c (Master 总线)

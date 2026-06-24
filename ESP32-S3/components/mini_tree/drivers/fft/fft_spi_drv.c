@@ -1,33 +1,20 @@
-#include "spi_slave_client.h"
+/*
+ * FFT SPI 驱动 — 委托 spi_slave_vfs 实现（dtc-lite drivers/fft 目录占位）
+ */
+#include "spi_slave_vfs.h"
 
 #include "device.h"
-
 #include "driver.h"
-
 #include "VFS.h"
 #include "compiler_compat_poison.h"
 
-
-
-static int fft_spi_probe(struct device* dev)
-
+int fft_spi_probe(struct device* dev)
 {
-
-    return spi_slave_client_probe(dev);
-
+    return spi_slave_vfs_probe(dev);
 }
 
-
-
-static int fft_spi_remove(struct device* dev)
-
+int fft_spi_remove(struct device* dev)
 {
-
-    return spi_slave_client_remove(dev);
-
+    return spi_slave_vfs_remove(dev);
 }
-
-
-
-DRIVER_REGISTER(fft_spi, "heterogeneous,fft-spi-slave", fft_spi_probe, fft_spi_remove)
 

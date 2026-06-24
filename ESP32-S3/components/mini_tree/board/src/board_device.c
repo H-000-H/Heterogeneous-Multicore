@@ -5,6 +5,7 @@
 
 #include "board_config.h"
 #include "board_devtable.h"
+#include "board_dma.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -96,6 +97,9 @@ int device_tree_init(void)
                  "device_tree_init: mutex pool >90%% used (%d/%d)\n",
                  board_dev_count(), OSAL_MUTEX_POOL_SIZE);
     }
+
+    if (board_dma_register_channels() != VFS_OK)
+        return VFS_ERR_IO;
 
     return board_dev_count() > 0 ? VFS_OK : VFS_ERR_IO;
 }

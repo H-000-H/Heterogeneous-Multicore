@@ -4,7 +4,30 @@
       "Read(//c/Users/18514/AppData/Roaming/Cursor/User/**)",
       "Read(//c/Users/18514/.cursor/**)",
       "Read(//c/Users/18514/AppData/Roaming/Code/User/**)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(command -v idf.py)",
+      "Bash(ninja -t targets all)",
+      "Bash(cmake .. -G Ninja)",
+      "Bash(\"D:/Python/python.exe\" -m venv \"D:/Espressif_vscode/tools/python_env/idf5.5_py3.13_env\")",
+      "Bash(export IDF_PATH=\"D:/Espressif_vscode/frameworks/esp-idf-v5.5.2\")",
+      "Bash(export IDF_TOOLS_PATH=\"D:/Espressif_vscode/tools\")",
+      "Bash(bash --rcfile /dev/null -c ' *)",
+      "Bash(\"D:/Espressif_vscode/tools/python_env/idf5.5_py3.13_env/Scripts/python.exe\" -m pip install rich)",
+      "Bash(\"D:/Espressif_vscode/tools/python_env/idf5.5_py3.13_env/Scripts/python.exe\" -m pip install -r \"D:/Espressif_vscode/frameworks/esp-idf-v5.5.2/tools/requirements/requirements.core.txt\" -c \"D:/Espressif_vscode/tools/espidf.constraints.v5.5.txt\")",
+      "Bash(\"/d/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe\" --version)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/mini_tree/system_cpp/include/system_cmd.hpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/mini_tree/system_cpp/include/system_cmd.hpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/mini_tree/system_cpp/src/system_cmd.cpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/mini_tree/system_cpp/src/system_cmd.cpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/mini_tree/system_cpp/include/system_cmd.hpp d:/Heterogeneous-Multicore-project/CH32V307/mini_tree/system_cpp/include/system_cmd.hpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/mini_tree/system_cpp/src/system_cmd.cpp d:/Heterogeneous-Multicore-project/CH32V307/mini_tree/system_cpp/src/system_cmd.cpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/app/inc/app_cmd_handlers.hpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/app/inc/app_cmd_handlers.hpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/app/src/app_cmd_handlers.cpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/app/src/app_cmd_handlers.cpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/app/src/app_spi_task.cpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/app/src/app_spi_task.cpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/app/src/app_led_task.cpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/app/src/app_led_task.cpp)",
+      "Bash(cp d:/Heterogeneous-Multicore-project/ESP32-S3/components/app/src/app_flash_task.cpp d:/Heterogeneous-Multicore-project/STM32F407ZGT6/app/src/app_flash_task.cpp)"
+    ],
+    "additionalDirectories": [
+      "d:\\Heterogeneous-Multicore-project\\STM32F407ZGT6\\mini_tree",
+      "d:\\Heterogeneous-Multicore-project\\CH32V307\\mini_tree"
     ]
   }
 }

@@ -34,11 +34,6 @@ else()
     set(OSAL_DEFINE CONFIG_OSAL_NULL)
 endif()
 
-# ── HAL: 总线 + 普通外设 ──
-set(HAL_BUS_SRCS
-    "hal_bus/hal_bus_dummy.c"
-    "hal_bus/spi/hal_spi.c"
-)
 file(STRINGS "${KCONFIG_DOT}" CONFIG_HAL_GPIO_ENTRY
      REGEX "^CONFIG_HAL_GPIO_(STM32|CH32|ESP32)=y$")
 if(CONFIG_HAL_GPIO_ENTRY STREQUAL "CONFIG_HAL_GPIO_STM32=y")
@@ -46,25 +41,31 @@ if(CONFIG_HAL_GPIO_ENTRY STREQUAL "CONFIG_HAL_GPIO_STM32=y")
 elseif(CONFIG_HAL_GPIO_ENTRY STREQUAL "CONFIG_HAL_GPIO_CH32=y")
     set(HAL_GPIO_SRC "hal_if/gpio/hal_gpio_ch32.c")
 else()
-    set(HAL_GPIO_SRC "hal_if/gpio/hal_gpio_esp32.c")
+    set(HAL_GPIO_SRC "hal/gpio/hal_gpio_esp32.c")
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/hal_if/paths.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/hal_bus/paths.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/hal/paths.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/vfs/spi/paths.cmake")
 
 set(HAL_SRCS
     ${HAL_GPIO_SRC}
-    "hal_if/uart/hal_uart.c"
-    "hal_if/soc/esp32s3/hal_esp32s3.c"
-    "hal_if/pulse/hal_pulse_engine_esp32s3.c"
-    "hal_if/cpu/hal_cpu_amp.c"    # AMP 弱符号 (CPU_CORES=1 时无影响)
+    "hal/pulse/hal_pulse_engine_esp32s3.c"
+    "hal/soc/esp32s3/hal_esp32s3.c"
+    "hal/cpu/hal_cpu_amp.c"
+    "hal/hal_if_dummy.c"
+    "hal/spi/spi_core.c"
+    "hal/spi/spi_controller_esp32.c"
+    "hal/uart/uart_hal.c"
+    "bus/dma/dma_core.c"
+    "bus/dma/dma_esp32.c"
+    "bus/src/bus_controller.c"
+    "bus/src/bus_client.c"
 )
 
 # ── Board layer (device tree, driver, config store, tasks) ──
 set(BOARD_SRCS
     "board/src/board_device.c"
-    "board/src/bus.c"
+    "board/src/board_dma.c"
     "board/src/dev_lifecycle.c"
     "board/src/board_driver.c"
     "board/src/config_store.c"
@@ -110,6 +111,7 @@ set(CORE_SRCS
 # ── System layer (C / C++ backend from Kconfig) ──
 if(CONFIG_SYSTEM_ENTRY STREQUAL "CONFIG_SYSTEM_CPP=y")
     set(SYSTEM_SRCS
+        "system_cpp/src/system_cmd.cpp"
         "system_cpp/src/system_init.cpp"
         "system_cpp/src/system_scrubber.cpp"
         "system_cpp/src/system_wdt.cpp"
@@ -131,10 +133,12 @@ set(DRIVER_SRCS
     "drivers/ws2812/ws2812_drv.c"
     "drivers/fft/fft_spi_drv.c"
     "drivers/flash/w25q64_spi_drv.c"
-    "vfs/spi/bus/spi_bus.c"
-    "vfs/spi/slave/spi_slave_client.c"
-    "vfs/spi/master/spi_master_client.c"
+    "vfs/spi/spi_slave_vfs.c"
     "vfs/gpio/vfs-gpio.c"
+    "bus/spi/spi_bus.c"
+    "bus/uart/uart_bus.c"
+    "vfs/spi/spi_vfs.c"
+    "vfs/uart/uart_vfs.c"
 )
 
 # ── Algorithm ──
@@ -146,7 +150,6 @@ set(ALGO_SRCS
 idf_component_register(
     SRCS
         ${OSAL_SRCS}
-        ${HAL_BUS_SRCS}
         ${HAL_SRCS}
         ${BOARD_SRCS}
         ${GEN_SRCS}
@@ -160,8 +163,15 @@ idf_component_register(
         "board/dt-bindings/gpio"
         "board/include"
         "core/include"
-        ${HAL_BUS_INCLUDE_DIRS}
-        ${HAL_IF_INCLUDE_DIRS}
+        "bus/dma"
+        "bus/include"
+        "hal/spi"
+        "hal/uart"
+        "bus/spi"
+        "bus/uart"
+        "vfs/spi/include"
+        "vfs/uart"
+        ${HAL_INCLUDE_DIRS}
         ${VFS_SPI_INCLUDE_DIRS}
         "osal/include"
         "system_c/include"
@@ -176,6 +186,7 @@ idf_component_register(
         esp_driver_gpio
         esp_driver_spi
         esp_driver_uart
+        etlcpp
 )
 
 # ═══════════════════════════════════════════════════════════════
@@ -203,7 +214,7 @@ add_custom_target(kconfig_gen DEPENDS ${KCONFIG_OUT})
 add_dependencies(${COMPONENT_LIB} kconfig_gen)
 
 # Make generated config.h available to this component
-target_include_directories(${COMPONENT_LIB} PRIVATE ${KCONFIG_GEN_DIR})
+target_include_directories(${COMPONENT_LIB} PUBLIC ${KCONFIG_GEN_DIR})
 
 target_compile_definitions(${COMPONENT_LIB} PRIVATE
     ${OSAL_DEFINE}
@@ -224,21 +235,27 @@ add_custom_command(
             "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"
+            "${CMAKE_CURRENT_LIST_DIR}/vfs/uart"
+            "${CMAKE_CURRENT_LIST_DIR}/bus/spi"
+            "${CMAKE_CURRENT_LIST_DIR}/bus/uart"
     DEPENDS
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/esp32s3.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-gpio.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-ws2812.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
+        "${BOARD_DTSI_DIR}/esp32s3-uart.dtsi"
         "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/bus/spi_bus.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/slave/spi_slave_client.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/master/spi_master_client.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_slave_vfs.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/uart/uart_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio/vfs-gpio.c"
+        "${CMAKE_CURRENT_LIST_DIR}/bus/spi/spi_bus.c"
+        "${CMAKE_CURRENT_LIST_DIR}/bus/uart/uart_bus.c"
         "${DTC_LITE}"
     COMMENT "Running dtc-lite on esp32-s3-devkitc-1.dts"
     VERBATIM

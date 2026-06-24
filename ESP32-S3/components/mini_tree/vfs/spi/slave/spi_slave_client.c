@@ -3,8 +3,6 @@
 #include "bus.h"
 #include "device.h"
 #include "hal_spi.h"
-#include "hal_spi_bus_host.h"
-#include "hal_spi_bus.h"
 #include "VFS.h"
 #include "dt_config_gen.h"
 #include "board_config.h"
@@ -22,7 +20,7 @@
 struct spi_slave_client
 {
     struct file_operations ops;
-    struct hal_spi_ctx     ctx;
+    struct hal_spi_dev     dev;
     struct osal_mutex*     io_mutex;
     int                    pool_idx;
 };
@@ -39,14 +37,6 @@ static void spi_slave_client_pool_boot_init(void)
 }
 
 static const char* const kTag = "spi_slave_client";
-
-static int spi_xfer_session_end(struct hal_spi_ctx* ctx, int io_ret)
-{
-    int end_ret = hal_spi_xfer_end(ctx);
-    if (end_ret != VFS_OK && io_ret == VFS_OK)
-        return VFS_ERR_IO;
-    return io_ret;
-}
 
 static int spi_slave_open(struct device* pdev, void* arg)
 {
@@ -71,11 +61,11 @@ static int spi_slave_open(struct device* pdev, void* arg)
     ret = VFS_OK;
     if (first == 1)
     {
-        ret = hal_spi_interface_attach(&priv->ctx);
+        ret = hal_spi_dev_hw_open(&priv->dev);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
         else
-            priv->ctx.attached = 1;
+            priv->dev.hw_open = 1;
     }
 
     if (ret == VFS_OK)
@@ -102,10 +92,10 @@ static int spi_slave_close(struct device* pdev)
     if (last < 0)
         return last;
 
-    if (last && priv->ctx.attached)
+    if (last && priv->dev.hw_open)
     {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-        priv->ctx.attached = 0;
+        COMPAT_IGNORE_RESULT(hal_spi_dev_hw_close(&priv->dev));
+        priv->dev.hw_open = 0;
     }
 
     dev_lc_close_end(lc);
@@ -141,18 +131,7 @@ static int spi_slave_write(struct device* pdev, const void* buffer, size_t len, 
         return VFS_ERR_INVAL;
     }
 
-    ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-    if (ret == VFS_OK)
-    {
-        int write_bytes = priv->ctx.host->dev.ops->write(hal_spi_host_bus(priv->ctx.host),
-                                                         (const uint8_t*)buffer, len);
-        if (write_bytes > 0)
-            ret = VFS_OK;
-        else
-            ret = VFS_ERR_IO;
-
-        ret = spi_xfer_session_end(&priv->ctx, ret);
-    }
+    ret = spi_slave_sync(&priv->dev, (const uint8_t*)buffer, NULL, len, timeout_ms);
 
     dev_lc_io_end(lc);
     return ret;
@@ -187,12 +166,7 @@ static int spi_slave_read(struct device* pdev, void* buffer, size_t len, uint32_
         return VFS_ERR_INVAL;
     }
 
-    ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-    if (ret == VFS_OK)
-    {
-        ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), (uint8_t*)buffer, len);
-        ret = spi_xfer_session_end(&priv->ctx, ret);
-    }
+    ret = spi_slave_sync(&priv->dev, NULL, (uint8_t*)buffer, len, timeout_ms);
 
     dev_lc_io_end(lc);
     return ret;
@@ -224,14 +198,7 @@ static int spi_slave_ioctl(struct device* dev, int cmd, void* arg, size_t arg_le
         if (!ra || arg_len != sizeof(*ra) || !ra->data || ra->len == 0)
             ret = VFS_ERR_INVAL;
         else
-        {
-            ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-            if (ret == VFS_OK)
-            {
-                ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), ra->data, ra->len);
-                ret = spi_xfer_session_end(&priv->ctx, ret);
-            }
-        }
+            ret = spi_slave_sync(&priv->dev, NULL, ra->data, ra->len, timeout_ms);
         break;
     }
     case SPI_CMD_QUEUE_TX:
@@ -239,17 +206,8 @@ static int spi_slave_ioctl(struct device* dev, int cmd, void* arg, size_t arg_le
         const struct spi_queue_arg* qa = (const struct spi_queue_arg*)arg;
         if (!qa || arg_len != sizeof(*qa) || !qa->data || qa->len == 0)
             ret = VFS_ERR_INVAL;
-        else if (!hal_spi_bus_supports_async_tx(hal_spi_host_bus(priv->ctx.host)))
-            ret = VFS_ERR_IO;
         else
-        {
-            ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-            if (ret == VFS_OK)
-            {
-                ret = hal_spi_bus_queue_tx(hal_spi_host_bus(priv->ctx.host), qa->data, qa->len);
-                ret = spi_xfer_session_end(&priv->ctx, ret);
-            }
-        }
+            ret = spi_slave_queue_tx(&priv->dev, qa->data, qa->len, timeout_ms);
         break;
     }
     case SPI_CMD_GET_TRANS_RESULT:
@@ -258,15 +216,15 @@ static int spi_slave_ioctl(struct device* dev, int cmd, void* arg, size_t arg_le
         if (!tra || arg_len != sizeof(*tra))
             ret = VFS_ERR_INVAL;
         else
-            ret = hal_spi_get_trans_result(&priv->ctx, tra->data, tra->len,
+            ret = hal_spi_get_trans_result(&priv->dev, tra->data, tra->len,
                                            tra->trans_len, timeout_ms);
         break;
     }
     case SPI_CMD_DEINIT:
-        if (priv->ctx.attached)
+        if (priv->dev.hw_open)
         {
-            COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-            priv->ctx.attached = 0;
+            COMPAT_IGNORE_RESULT(hal_spi_dev_hw_close(&priv->dev));
+            priv->dev.hw_open = 0;
         }
         ret = VFS_OK;
         break;
@@ -335,8 +293,8 @@ int spi_slave_client_probe(struct device* pdev)
     dev_cfg.cs_pin         = cs;
     dev_cfg.queue_size     = queue_size;
 
-    hal_spi_ctx_init(&priv->ctx, pool_idx, bus_host, &dev_cfg);
-    hal_spi_ctx_attach(&priv->ctx);
+    hal_spi_dev_init(&priv->dev, pool_idx, bus_host, &dev_cfg);
+    hal_spi_dev_register(&priv->dev);
 
     if (osal_mutex_create_static(&priv->io_mutex, s_spi_slave_mutex_storage[pool_idx],
                                  sizeof(s_spi_slave_mutex_storage[pool_idx])) != 0)
@@ -355,7 +313,7 @@ int spi_slave_client_probe(struct device* pdev)
     return VFS_OK;
 
 err_pool:
-    hal_spi_ctx_detach(&priv->ctx);
+    hal_spi_dev_unregister(&priv->dev);
     __builtin_memset(priv, 0, sizeof(*priv));
     osal_pool_release(&s_spi_slave_pool_ctrl, pool_idx);
     return VFS_ERR_IO;
@@ -393,13 +351,13 @@ int spi_slave_client_remove(struct device* pdev)
         return VFS_ERR_IO;
     }
 
-    if (priv->ctx.attached)
+    if (priv->dev.hw_open)
     {
-        COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&priv->ctx));
-        priv->ctx.attached = 0;
+        COMPAT_IGNORE_RESULT(hal_spi_dev_hw_close(&priv->dev));
+        priv->dev.hw_open = 0;
     }
 
-    hal_spi_ctx_detach(&priv->ctx);
+    hal_spi_dev_unregister(&priv->dev);
     osal_mutex_destroy(io_mutex);
     __builtin_memset(priv, 0, sizeof(*priv));
     osal_pool_release(&s_spi_slave_pool_ctrl, pool_idx);

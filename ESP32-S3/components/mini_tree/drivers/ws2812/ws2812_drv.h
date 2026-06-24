@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -19,8 +19,6 @@ extern "C"
 #define WS2812_CMD_SET_BRIGHTNESS  2  /* arg: uint8_t* */
 #define WS2812_CMD_OFF             3  /* arg: NULL */
 
-/* 静态发送缓冲上限 (字节). 运行时 num-leds / bytes-per-led 来自设备树;
- * 项目需要更大灯串时在编译选项或工程头里 #define 覆盖. */
 #ifndef WS2812_DRV_TX_BUF_MAX
 #define WS2812_DRV_TX_BUF_MAX  (64U * 4U)
 #endif
@@ -37,4 +35,3 @@ struct ws2812_color
 #endif
 
 #endif /* WS2812_DRV_H */
-

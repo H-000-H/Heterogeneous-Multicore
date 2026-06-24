@@ -151,7 +151,7 @@ HEADER_STRUCT_FIXES = {
         (r"typedef struct\r?\n\{", "struct adc_read_arg\r\n{"),
         (r"\} adc_read_arg_t;", "};"),
     ],
-    "hal_bus/spi/hal_spi_bus.h": [
+    "hal_bus/spi/hal_spi.h": [
         (r"typedef struct hal_spi_bus hal_spi_bus_t;\r?\n\r?\n", ""),
         (r"typedef struct\r?\n\{", "struct hal_spi_bus_config\r\n{", 1),
         (r"\} hal_spi_bus_config_t;", "};"),
@@ -304,9 +304,11 @@ def convert_tree(root: Path) -> list[str]:
 
 
 def main() -> int:
+    repo = Path(__file__).resolve().parents[4]
     targets = sys.argv[1:] or [
-        r"d:\can_project\CH32V307\mini_tree",
-        r"d:\can_project\STM32F407ZGT6\mini_tree",
+        str(repo / "STM32F407ZGT6" / "mini_tree"),
+        str(repo / "CH32V307" / "mini_tree"),
+        str(repo / "ESP32-S3" / "components" / "mini_tree"),
     ]
     for target in targets:
         root = Path(target)

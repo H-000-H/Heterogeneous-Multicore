@@ -1,8 +1,7 @@
 #include "spi_master_client.h"
 #include "bus.h"
 #include "device.h"
-#include "hal_spi_bus_host.h"
-#include "hal_spi_bus.h"
+#include "hal_spi.h"
 #include "VFS.h"
 #include "dt_config_gen.h"
 #include "board_config.h"
@@ -29,44 +28,36 @@ static void spi_master_client_pool_boot_init(void)
 
 static const char* const kTag = "spi_master_client";
 
-static int spi_xfer_session_end(struct hal_spi_ctx* ctx, int io_ret)
-{
-    int end_ret = hal_spi_xfer_end(ctx);
-    if (end_ret != VFS_OK && io_ret == VFS_OK)
-        return VFS_ERR_IO;
-    return io_ret;
-}
-
 int spi_master_client_transfer(struct spi_master_client* client, const uint8_t* tx,
                                uint8_t* rx, size_t len, uint32_t timeout_ms)
 {
     if (!client)
         return VFS_ERR_INVAL;
 
-    return hal_spi_transfer(&client->ctx, tx, rx, len, timeout_ms);
+    return spi_sync(&client->dev, tx, rx, len, timeout_ms);
 }
 
-int spi_master_client_interface_attach(struct spi_master_client* client)
+int spi_master_client_hw_open(struct spi_master_client* client)
 {
     int ret;
 
     if (!client)
         return VFS_ERR_INVAL;
 
-    ret = hal_spi_interface_attach(&client->ctx);
+    ret = hal_spi_dev_hw_open(&client->dev);
     if (ret == VFS_OK)
-        client->ctx.attached = 1;
+        client->dev.hw_open = 1;
 
     return ret;
 }
 
-void spi_master_client_interface_detach(struct spi_master_client* client)
+void spi_master_client_hw_close(struct spi_master_client* client)
 {
-    if (!client || !client->ctx.attached)
+    if (!client || !client->dev.hw_open)
         return;
 
-    COMPAT_IGNORE_RESULT(hal_spi_interface_detach(&client->ctx));
-    client->ctx.attached = 0;
+    COMPAT_IGNORE_RESULT(hal_spi_dev_hw_close(&client->dev));
+    client->dev.hw_open = 0;
 }
 
 int spi_master_client_bind(struct device* pdev, struct spi_master_client* client,
@@ -117,13 +108,13 @@ int spi_master_client_bind(struct device* pdev, struct spi_master_client* client
     dev_cfg.cs_pin         = cs;
     dev_cfg.queue_size     = queue_size;
 
-    hal_spi_ctx_init(&client->ctx, pool_idx, bus_host, &dev_cfg);
-    hal_spi_ctx_attach(&client->ctx);
+    hal_spi_dev_init(&client->dev, pool_idx, bus_host, &dev_cfg);
+    hal_spi_dev_register(&client->dev);
 
     if (osal_mutex_create_static(&client->io_mutex, mutex_storage,
                                  mutex_storage_size) != 0)
     {
-        hal_spi_ctx_detach(&client->ctx);
+        hal_spi_dev_unregister(&client->dev);
         __builtin_memset(client, 0, sizeof(*client));
         return VFS_ERR_IO;
     }
@@ -140,10 +131,10 @@ void spi_master_client_unbind(struct device* pdev, struct spi_master_client* cli
     if (!client)
         return;
 
-    if (client->ctx.attached)
-        spi_master_client_interface_detach(client);
+    if (client->dev.hw_open)
+        spi_master_client_hw_close(client);
 
-    hal_spi_ctx_detach(&client->ctx);
+    hal_spi_dev_unregister(&client->dev);
 
     if (client->io_mutex)
         osal_mutex_destroy(client->io_mutex);
@@ -177,7 +168,7 @@ static int spi_master_open(struct device* pdev, void* arg)
     ret = VFS_OK;
     if (first == 1)
     {
-        ret = spi_master_client_interface_attach(priv);
+        ret = spi_master_client_hw_open(priv);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
     }
@@ -207,7 +198,7 @@ static int spi_master_close(struct device* pdev)
         return last;
 
     if (last)
-        spi_master_client_interface_detach(priv);
+        spi_master_client_hw_close(priv);
 
     dev_lc_close_end(lc);
     return VFS_OK;
@@ -242,18 +233,7 @@ static int spi_master_write(struct device* pdev, const void* buffer, size_t len,
         return VFS_ERR_INVAL;
     }
 
-    ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-    if (ret == VFS_OK)
-    {
-        int write_bytes = priv->ctx.host->dev.ops->write(hal_spi_host_bus(priv->ctx.host),
-                                                         (const uint8_t*)buffer, len);
-        if (write_bytes > 0)
-            ret = VFS_OK;
-        else
-            ret = VFS_ERR_IO;
-
-        ret = spi_xfer_session_end(&priv->ctx, ret);
-    }
+    ret = spi_sync(&priv->dev, (const uint8_t*)buffer, NULL, len, timeout_ms);
 
     dev_lc_io_end(lc);
     return ret;
@@ -288,12 +268,7 @@ static int spi_master_read(struct device* pdev, void* buffer, size_t len, uint32
         return VFS_ERR_INVAL;
     }
 
-    ret = hal_spi_xfer_begin(&priv->ctx, timeout_ms);
-    if (ret == VFS_OK)
-    {
-        ret = priv->ctx.host->dev.ops->read(hal_spi_host_bus(priv->ctx.host), (uint8_t*)buffer, len);
-        ret = spi_xfer_session_end(&priv->ctx, ret);
-    }
+    ret = spi_sync(&priv->dev, NULL, (uint8_t*)buffer, len, timeout_ms);
 
     dev_lc_io_end(lc);
     return ret;

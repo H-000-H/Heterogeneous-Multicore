@@ -252,6 +252,21 @@ static inline void osal_null_irq_restore(uint32_t primask)
     __asm__ volatile("msr primask, %0" :: "r"(primask) : "memory");
 }
 
+#elif defined(__riscv)
+
+static inline uint32_t osal_null_irq_disable(void)
+{
+    uintptr_t mstatus;
+    __asm__ volatile("csrr %0, mstatus" : "=r"(mstatus));
+    __asm__ volatile("csrci mstatus, 8" ::: "memory");
+    return (uint32_t)mstatus;
+}
+
+static inline void osal_null_irq_restore(uint32_t mstatus)
+{
+    __asm__ volatile("csrw mstatus, %0" :: "r"((uintptr_t)mstatus) : "memory");
+}
+
 #else
 
 static inline uint32_t osal_null_irq_disable(void) { return 0U; }
@@ -317,14 +332,18 @@ int osal_pool_claim(osal_pool_t* pool)
     if (!pool || !pool->used_slots || pool->slot_count == 0)
         return -1;
 
+    uint32_t rand_val = COMPAT_RAND(0x43U, 0x32U, 0x43U, 0x32U);
+    size_t start_idx = rand_val % pool->slot_count;
+
     uint32_t irq = osal_null_irq_disable();
     int claimed = -1;
     for (size_t i = 0; i < pool->slot_count; i++)
     {
-        if (!pool->used_slots[i])
+        size_t cur = (start_idx + i) % pool->slot_count;
+        if (!pool->used_slots[cur])
         {
-            pool->used_slots[i] = 1;
-            claimed = (int)i;
+            pool->used_slots[cur] = 1;
+            claimed = (int)cur;
             break;
         }
     }

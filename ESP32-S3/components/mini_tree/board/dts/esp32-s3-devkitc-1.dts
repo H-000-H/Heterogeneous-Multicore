@@ -17,7 +17,7 @@
 #include "esp32s3-gpio.dtsi"
 #include "esp32s3-ws2812.dtsi"
 #include "esp32s3-spi.dtsi"
-
+#include "esp32s3-uart.dtsi"
 / {
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -72,4 +72,17 @@
 
 &gpios_pin {
 	status = "okay";
+};
+
+&uart1 {
+	status 		 = "okay";
+	rx-port		 = <DTS_UART_RX_PORT>;
+	rx-pin		 = <DTS_UART_RX_PIN>;
+	tx-port 	 = <DTS_UART_TX_PORT>;
+	tx-pin		 = <DTS_UART_TX_PIN>;
+	max-trans-buffer = <1024>;
+	uart-trans-baund = <DTS_UART_BAUD >;
+	stop-bit	 =<0>;
+	parity		 =<0>;
+	data-bit	 =<0>;
 };

@@ -6,7 +6,8 @@ include("${CMAKE_CURRENT_LIST_DIR}/paths.cmake")
 
 add_library(hal_bus STATIC
     "hal_bus_dummy.c"
-    "spi/hal_spi.c"
+    "spi/spi_core.c"
+    "spi/spi_controller_esp32.c"
 )
 
 target_include_directories(hal_bus PUBLIC ${HAL_BUS_INCLUDE_DIRS})

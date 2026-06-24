@@ -20,20 +20,10 @@
 #endif
 #endif
 
-/* ═══════════════════════════════════════════════════════════════════
- *  Legacy fallback — 数值可由 Kconfig 覆盖
- *  ═══════════════════════════════════════════════════════════════════ */
-
+                                                            /*板级默认常量*/
+/*===========================================================================================================================================================*/
 #define BOARD_MAX_SAFETY_PINS      8
 #define BOARD_SAFETY_MAX_CALLBACKS 4
-
-#ifndef BOARD_STACK_MONITOR_MAX_TASKS
-#ifdef CONFIG_BOARD_STACK_MONITOR_MAX_TASKS
-#define BOARD_STACK_MONITOR_MAX_TASKS CONFIG_BOARD_STACK_MONITOR_MAX_TASKS
-#else
-#define BOARD_STACK_MONITOR_MAX_TASKS 8
-#endif
-#endif
 
 #define BOARD_STACK_ALARM_RATIO_DEFAULT   15  /* 剩余栈 < 15% 时告警 */
 
@@ -43,7 +33,21 @@
 #ifndef BOARD_SAFE_STATE_FAULT_LED_PIN
 #define BOARD_SAFE_STATE_FAULT_LED_PIN 0
 #endif
+/*===========================================================================================================================================================*/
 
+                                                            /*栈监控容量*/
+/*===========================================================================================================================================================*/
+#ifndef BOARD_STACK_MONITOR_MAX_TASKS
+#ifdef CONFIG_BOARD_STACK_MONITOR_MAX_TASKS
+#define BOARD_STACK_MONITOR_MAX_TASKS CONFIG_BOARD_STACK_MONITOR_MAX_TASKS
+#else
+#define BOARD_STACK_MONITOR_MAX_TASKS 8
+#endif
+#endif
+/*===========================================================================================================================================================*/
+
+                                                            /*OSAL 运行时池*/
+/*===========================================================================================================================================================*/
 #ifndef OSAL_MUTEX_POOL_SIZE
 #ifdef CONFIG_OSAL_MUTEX_POOL_SIZE
 #define OSAL_MUTEX_POOL_SIZE CONFIG_OSAL_MUTEX_POOL_SIZE
@@ -59,5 +63,6 @@
 #ifndef OSAL_SEM_POOL_SIZE
 #define OSAL_SEM_POOL_SIZE        8
 #endif
+/*===========================================================================================================================================================*/
 
 #endif /* BOARD_CONFIG_H */

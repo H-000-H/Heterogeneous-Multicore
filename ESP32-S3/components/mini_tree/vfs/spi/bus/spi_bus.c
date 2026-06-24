@@ -1,6 +1,5 @@
 #include "bus.h"
-#include "hal_spi_bus_host.h"
-#include "hal_spi_bus.h"
+#include "hal_spi.h"
 #include "device.h"
 #include "driver.h"
 #include "VFS.h"
@@ -170,4 +169,3 @@ static int spi_controller_remove(struct device* dev)
 }
 
 DRIVER_REGISTER(spi_bus, "esp32,spi", spi_controller_probe, spi_controller_remove)
-DRIVER_REGISTER(spi_master_bus, "esp32,spi-master", spi_master_controller_probe, spi_controller_remove)

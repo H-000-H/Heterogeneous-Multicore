@@ -5,6 +5,7 @@
  * Build overrides via build/generated/board/mini_tree/dt_config_gen.h
  * (CMake puts generated dir ahead of board/include). */
 
+#define DTC_GEN_COUNT_ESP32_UART1                    1
 #define DTC_GEN_COUNT_ESP32_SPI                      1
 #define DTC_GEN_COUNT_ESP32_SPI_MASTER               1
 #define DTC_GEN_COUNT_ESP32_WS2812                   1

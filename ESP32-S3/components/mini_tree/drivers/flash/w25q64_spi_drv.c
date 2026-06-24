@@ -1,5 +1,12 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * W25Q64 SPI Flash 驱动（新架构版）
+ *
+ * 通过标准 device API 访问下层的 SPI VFS 驱动，
+ * 不再直接依赖 spi_master_client 等总线层私有结构。
+ */
 #include "w25q64_drv.h"
-#include "spi_master_client.h"
+#include "spi_vfs.h"
 #include "device.h"
 #include "driver.h"
 #include "dev_lifecycle.h"
@@ -30,11 +37,11 @@
 
 struct w25q64_device
 {
-    struct file_operations   ops;
-    struct spi_master_client spi;
-    size_t                   max_xfer;
-    uint32_t                 f_pos;/*当前读写位置*/
-    uint8_t                  jedec_id[W25Q64_JEDEC_ID_LEN];
+    struct file_operations ops;
+    struct device*         spi_dev;
+    size_t                 max_xfer;
+    uint32_t               f_pos;
+    uint8_t                jedec_id[W25Q64_JEDEC_ID_LEN];
 };
 
 static struct w25q64_device s_w25q64_pool[W25Q64_COUNT] COMPAT_ALIGNED(4);
@@ -66,7 +73,7 @@ static int w25q64_wait_ready(struct w25q64_device* flash, uint32_t timeout_ms)
 
     while (elapsed <= timeout_ms)
     {
-        if (spi_master_client_transfer(&flash->spi, tx, rx, sizeof(tx), 10U) != VFS_OK)
+        if (spi_vfs_transfer(flash->spi_dev, tx, rx, sizeof(tx), 10U) != VFS_OK)
             return VFS_ERR_IO;
 
         if ((rx[1] & W25Q64_STATUS_WIP) == 0U)
@@ -82,7 +89,7 @@ static int w25q64_wait_ready(struct w25q64_device* flash, uint32_t timeout_ms)
 static int w25q64_write_enable(struct w25q64_device* flash, uint32_t timeout_ms)
 {
     uint8_t cmd = W25Q64_SPI_OP_WRITE_ENABLE;
-    return spi_master_client_transfer(&flash->spi, &cmd, NULL, 1U, timeout_ms);
+    return spi_vfs_transfer(flash->spi_dev, &cmd, NULL, 1U, timeout_ms);
 }
 
 static int w25q64_hw_read_jedec(struct w25q64_device* flash, uint8_t id[W25Q64_JEDEC_ID_LEN],
@@ -91,7 +98,7 @@ static int w25q64_hw_read_jedec(struct w25q64_device* flash, uint8_t id[W25Q64_J
     uint8_t tx[4] = { W25Q64_SPI_OP_JEDEC_ID, 0x00, 0x00, 0x00 };
     uint8_t rx[4] = { 0, 0, 0, 0 };
 
-    if (spi_master_client_transfer(&flash->spi, tx, rx, sizeof(tx), timeout_ms) != VFS_OK)
+    if (spi_vfs_transfer(flash->spi_dev, tx, rx, sizeof(tx), timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     id[0] = rx[1];
@@ -107,7 +114,7 @@ static int w25q64_hw_read_data(struct w25q64_device* flash, uint32_t addr,
     uint8_t* rx;
     size_t chunk;
     size_t offset = 0U;
-    int pool_idx = flash->spi.pool_idx;
+    int pool_idx = (int)(flash - s_w25q64_pool);
 
     if (!data || len == 0U)
         return VFS_ERR_INVAL;
@@ -134,8 +141,8 @@ static int w25q64_hw_read_data(struct w25q64_device* flash, uint32_t addr,
         tx[3] = (uint8_t)(cur_addr & 0xFFU);
         __builtin_memset(tx + W25Q64_CMD_HDR_SIZE, 0, n);
 
-        if (spi_master_client_transfer(&flash->spi, tx, rx, W25Q64_CMD_HDR_SIZE + n,
-                                       timeout_ms) != VFS_OK)
+        if (spi_vfs_transfer(flash->spi_dev, tx, rx, W25Q64_CMD_HDR_SIZE + n,
+                             timeout_ms) != VFS_OK)
             return VFS_ERR_IO;
 
         __builtin_memcpy(data + offset, rx + W25Q64_CMD_HDR_SIZE, n);
@@ -145,12 +152,11 @@ static int w25q64_hw_read_data(struct w25q64_device* flash, uint32_t addr,
     return VFS_OK;
 }
 
-/*页编程*/
 static int w25q64_hw_page_program(struct w25q64_device* flash, uint32_t addr,
                                const uint8_t* data, size_t len, uint32_t timeout_ms)
 {
     uint8_t* tx;
-    int pool_idx = flash->spi.pool_idx;
+    int pool_idx = (int)(flash - s_w25q64_pool);
 
     if (!data || len == 0U || len > W25Q64_PAGE_SIZE)
         return VFS_ERR_INVAL;
@@ -169,8 +175,8 @@ static int w25q64_hw_page_program(struct w25q64_device* flash, uint32_t addr,
     if (w25q64_write_enable(flash, timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
-    if (spi_master_client_transfer(&flash->spi, tx, NULL, W25Q64_CMD_HDR_SIZE + len,
-                                   timeout_ms) != VFS_OK)
+    if (spi_vfs_transfer(flash->spi_dev, tx, NULL, W25Q64_CMD_HDR_SIZE + len,
+                         timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     return w25q64_wait_ready(flash, timeout_ms);
@@ -208,7 +214,6 @@ static int w25q64_hw_sector_erase(struct w25q64_device* flash, uint32_t addr, ui
 {
     uint8_t cmd[4];
 
-    /*4kb对其*/
     if ((addr & (W25Q64_SECTOR_SIZE - 1U)) != 0U)
         return VFS_ERR_INVAL;
     if (addr >= W25Q64_FLASH_SIZE)
@@ -222,7 +227,7 @@ static int w25q64_hw_sector_erase(struct w25q64_device* flash, uint32_t addr, ui
     if (w25q64_write_enable(flash, timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
-    if (spi_master_client_transfer(&flash->spi, cmd, NULL, sizeof(cmd), timeout_ms) != VFS_OK)
+    if (spi_vfs_transfer(flash->spi_dev, cmd, NULL, sizeof(cmd), timeout_ms) != VFS_OK)
         return VFS_ERR_IO;
 
     return w25q64_wait_ready(flash, timeout_ms);
@@ -235,7 +240,7 @@ static int w25q64_open(struct device* dev, void* arg)
     int first;
     int ret;
 
-    COMPAT_IGNORE_RESULT(arg);
+    (void)arg;
     if (!dev || !dev->ops)
         return VFS_ERR_INVAL;
 
@@ -255,7 +260,7 @@ static int w25q64_open(struct device* dev, void* arg)
     if (first == 1)
     {
         flash->f_pos = 0U;
-        ret = spi_master_client_interface_attach(&flash->spi);
+        ret = device_open(flash->spi_dev, NULL);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
     }
@@ -300,7 +305,7 @@ static int w25q64_close(struct device* dev)
         return last;
 
     if (last)
-        spi_master_client_interface_detach(&flash->spi);
+        COMPAT_IGNORE_RESULT(device_close(flash->spi_dev));
 
     dev_lc_close_end(lc);
     return VFS_OK;
@@ -492,13 +497,13 @@ static int w25q64_spi_probe(struct device* dev)
     if (flash->max_xfer > W25Q64_XFER_BUF_SIZE)
         flash->max_xfer = W25Q64_XFER_BUF_SIZE;
 
-    ret = spi_master_client_bind(dev, &flash->spi, s_w25q64_mutex_storage[pool_idx],
-                                 sizeof(s_w25q64_mutex_storage[pool_idx]), pool_idx);
-    if (ret != VFS_OK)
+    /* 找到父 SPI 控制器设备 */
+    flash->spi_dev = device_get_parent(dev);
+    if (!flash->spi_dev)
     {
         __builtin_memset(flash, 0, sizeof(*flash));
         osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
-        return ret;
+        return VFS_ERR_NODEV;
     }
 
     flash->ops = w25q64_fops;
@@ -506,7 +511,6 @@ static int w25q64_spi_probe(struct device* dev)
 
     if (device_set_priv(dev, flash) != VFS_OK)
     {
-        spi_master_client_unbind(dev, &flash->spi);
         __builtin_memset(flash, 0, sizeof(*flash));
         osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
         return VFS_ERR_IO;
@@ -533,7 +537,7 @@ static int w25q64_spi_remove(struct device* dev)
     if (IS_ERR(lc))
         return PTR_ERR(lc);
 
-    pool_idx = flash->spi.pool_idx;
+    pool_idx = (int)(flash - s_w25q64_pool);
 
     dev_lc_remove_start(lc);
     device_ops_unregister(dev);
@@ -541,7 +545,6 @@ static int w25q64_spi_remove(struct device* dev)
     if (dev_lc_remove_drain(lc, OSAL_WAIT_FOREVER) != VFS_OK)
         return VFS_ERR_IO;
 
-    spi_master_client_unbind(dev, &flash->spi);
     __builtin_memset(flash, 0, sizeof(*flash));
     osal_pool_release(&s_w25q64_pool_ctrl, pool_idx);
     dev_lc_remove_finish(lc);
