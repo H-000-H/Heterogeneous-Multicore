@@ -45,7 +45,6 @@ else()
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/hal/paths.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/vfs/spi/paths.cmake")
 
 set(HAL_SRCS
     ${HAL_GPIO_SRC}
@@ -53,13 +52,10 @@ set(HAL_SRCS
     "hal/soc/esp32s3/hal_esp32s3.c"
     "hal/cpu/hal_cpu_amp.c"
     "hal/hal_if_dummy.c"
-    "hal/spi/spi_core.c"
-    "hal/spi/spi_controller_esp32.c"
-    "hal/uart/uart_hal.c"
+    "hal/spi/hal_spi.c"
+    "hal/uart/hal_uart.c"
     "bus/dma/dma_core.c"
     "bus/dma/dma_esp32.c"
-    "bus/src/bus_controller.c"
-    "bus/src/bus_client.c"
 )
 
 # ── Board layer (device tree, driver, config store, tasks) ──
@@ -133,8 +129,8 @@ set(DRIVER_SRCS
     "drivers/ws2812/ws2812_drv.c"
     "drivers/fft/fft_spi_drv.c"
     "drivers/flash/w25q64_spi_drv.c"
-    "vfs/spi/spi_slave_vfs.c"
     "vfs/gpio/vfs-gpio.c"
+    "bus/bus.c"
     "bus/spi/spi_bus.c"
     "bus/uart/uart_bus.c"
     "vfs/spi/spi_vfs.c"
@@ -163,16 +159,15 @@ idf_component_register(
         "board/dt-bindings/gpio"
         "board/include"
         "core/include"
+        "bus"
         "bus/dma"
-        "bus/include"
         "hal/spi"
         "hal/uart"
         "bus/spi"
         "bus/uart"
-        "vfs/spi/include"
+        "vfs/spi"
         "vfs/uart"
         ${HAL_INCLUDE_DIRS}
-        ${VFS_SPI_INCLUDE_DIRS}
         "osal/include"
         "system_c/include"
         "system_cpp/include"
@@ -250,10 +245,10 @@ add_custom_command(
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_slave_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/uart/uart_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio/vfs-gpio.c"
+        "${CMAKE_CURRENT_LIST_DIR}/bus/bus.c"
         "${CMAKE_CURRENT_LIST_DIR}/bus/spi/spi_bus.c"
         "${CMAKE_CURRENT_LIST_DIR}/bus/uart/uart_bus.c"
         "${DTC_LITE}"

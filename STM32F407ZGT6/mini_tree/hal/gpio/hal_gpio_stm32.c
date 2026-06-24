@@ -1,3 +1,15 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * GPIO HAL — STM32F4 实现
+ *
+ * 适配 ESP32 hal_gpio.h 结构体与 API, 保留 STM32 HAL 库调用。
+ * 平台私有: 端口/引脚查找表、DTS bounds 校验、raw 读写。
+ *
+ * 寄存器约定:
+ *   - fast_get_level 读 IDR (通过 HAL_GPIO_ReadPin, 反映真实引脚电平)
+ *   - fast_set_level 写 BSRR (通过 HAL_GPIO_WritePin, 原子置位/复位)
+ *   - fast_toggle   写 BSRR (通过 HAL_GPIO_TogglePin, 原子操作)
+ */
 #include "hal_gpio.h"
 #include "VFS.h"
 #include "compiler_compat.h"

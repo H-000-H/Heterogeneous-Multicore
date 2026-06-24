@@ -4,15 +4,11 @@
 
 /* ===== probe 函数声明 ===== */
 extern int __attribute__((weak)) board_driver_probe_gpios(struct device* dev);
-extern int __attribute__((weak)) board_driver_probe_stm32_spi_master_bus(struct device* dev);
-extern int __attribute__((weak)) board_driver_probe_w25q64_spi(struct device* dev);
-extern int __attribute__((weak)) board_driver_probe_uart(struct device* dev);
+extern int __attribute__((weak)) board_driver_probe_uart_host_vfs(struct device* dev);
 
 /* ===== remove 函数声明 ===== */
 extern int __attribute__((weak)) board_driver_remove_gpios(struct device* dev);
-extern int __attribute__((weak)) board_driver_remove_stm32_spi_master_bus(struct device* dev);
-extern int __attribute__((weak)) board_driver_remove_w25q64_spi(struct device* dev);
-extern int __attribute__((weak)) board_driver_remove_uart(struct device* dev);
+extern int __attribute__((weak)) board_driver_remove_uart_host_vfs(struct device* dev);
 
 static int board_platform_probe(struct device* dev) {
     (void)dev;
@@ -25,9 +21,12 @@ static const probe_fn_t s_probe_fns[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = board_platform_probe,
     [DEV_ID_GPIO_0] = board_platform_probe,
     [DEV_ID_GPIOS_PIN_0] = board_driver_probe_gpios,
-    [DEV_ID_SPI_0] = board_driver_probe_stm32_spi_master_bus,
-    [DEV_ID_W25Q64_0] = board_driver_probe_w25q64_spi,
-    [DEV_ID_UART_0] = board_driver_probe_uart,
+    [DEV_ID_DMA_SPI1_RX] = board_platform_probe,
+    [DEV_ID_DMA_SPI1_TX] = board_platform_probe,
+    [DEV_ID_DMA_UART4_TX] = board_platform_probe,
+    [DEV_ID_SPI_0] = board_platform_probe,
+    [DEV_ID_W25Q64_0] = NULL,
+    [DEV_ID_UART_0] = board_driver_probe_uart_host_vfs,
 };
 
 static const remove_fn_t s_remove_fns[DEV_ID_COUNT] = {
@@ -36,9 +35,12 @@ static const remove_fn_t s_remove_fns[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = NULL,
     [DEV_ID_GPIO_0] = NULL,
     [DEV_ID_GPIOS_PIN_0] = board_driver_remove_gpios,
-    [DEV_ID_SPI_0] = board_driver_remove_stm32_spi_master_bus,
-    [DEV_ID_W25Q64_0] = board_driver_remove_w25q64_spi,
-    [DEV_ID_UART_0] = board_driver_remove_uart,
+    [DEV_ID_DMA_SPI1_RX] = NULL,
+    [DEV_ID_DMA_SPI1_TX] = NULL,
+    [DEV_ID_DMA_UART4_TX] = NULL,
+    [DEV_ID_SPI_0] = NULL,
+    [DEV_ID_W25Q64_0] = NULL,
+    [DEV_ID_UART_0] = board_driver_remove_uart_host_vfs,
 };
 
 static const device_id_t s_probe_order[DEV_ID_COUNT] = {
@@ -47,6 +49,9 @@ static const device_id_t s_probe_order[DEV_ID_COUNT] = {
     DEV_ID_SOC,
     DEV_ID_GPIO_0,
     DEV_ID_GPIOS_PIN_0,
+    DEV_ID_DMA_SPI1_RX,
+    DEV_ID_DMA_SPI1_TX,
+    DEV_ID_DMA_UART4_TX,
     DEV_ID_SPI_0,
     DEV_ID_UART_0,
     DEV_ID_W25Q64_0,
@@ -80,6 +85,9 @@ static const uint8_t s_cascade_counts[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = 0,
     [DEV_ID_GPIO_0] = 0,
     [DEV_ID_GPIOS_PIN_0] = 0,
+    [DEV_ID_DMA_SPI1_RX] = 0,
+    [DEV_ID_DMA_SPI1_TX] = 0,
+    [DEV_ID_DMA_UART4_TX] = 0,
     [DEV_ID_SPI_0] = 1,
     [DEV_ID_W25Q64_0] = 0,
     [DEV_ID_UART_0] = 0,
@@ -91,6 +99,9 @@ static const uint16_t s_cascade_offset[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = 0,
     [DEV_ID_GPIO_0] = 0,
     [DEV_ID_GPIOS_PIN_0] = 0,
+    [DEV_ID_DMA_SPI1_RX] = 0,
+    [DEV_ID_DMA_SPI1_TX] = 0,
+    [DEV_ID_DMA_UART4_TX] = 0,
     [DEV_ID_SPI_0] = 0,
     [DEV_ID_W25Q64_0] = 1,
     [DEV_ID_UART_0] = 1,
@@ -112,6 +123,9 @@ static const uint8_t s_children_counts[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = 0,
     [DEV_ID_GPIO_0] = 0,
     [DEV_ID_GPIOS_PIN_0] = 0,
+    [DEV_ID_DMA_SPI1_RX] = 0,
+    [DEV_ID_DMA_SPI1_TX] = 0,
+    [DEV_ID_DMA_UART4_TX] = 0,
     [DEV_ID_SPI_0] = 1,
     [DEV_ID_W25Q64_0] = 0,
     [DEV_ID_UART_0] = 0,
@@ -123,6 +137,9 @@ static const uint16_t s_children_offset[DEV_ID_COUNT] = {
     [DEV_ID_SOC] = 0,
     [DEV_ID_GPIO_0] = 0,
     [DEV_ID_GPIOS_PIN_0] = 0,
+    [DEV_ID_DMA_SPI1_RX] = 0,
+    [DEV_ID_DMA_SPI1_TX] = 0,
+    [DEV_ID_DMA_UART4_TX] = 0,
     [DEV_ID_SPI_0] = 0,
     [DEV_ID_W25Q64_0] = 1,
     [DEV_ID_UART_0] = 1,

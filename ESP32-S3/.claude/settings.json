@@ -27,7 +27,8 @@
     ],
     "additionalDirectories": [
       "d:\\Heterogeneous-Multicore-project\\STM32F407ZGT6\\mini_tree",
-      "d:\\Heterogeneous-Multicore-project\\CH32V307\\mini_tree"
+      "d:\\Heterogeneous-Multicore-project\\CH32V307\\mini_tree",
+      "C:\\Users\\18514\\.claude\\projects\\d--Heterogeneous-Multicore-project-ESP32-S3\\memory"
     ]
   }
 }

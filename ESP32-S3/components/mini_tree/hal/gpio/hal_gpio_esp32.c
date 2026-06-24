@@ -1,3 +1,17 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * GPIO HAL — ESP32-S3 实现
+ *
+ * 适配 hal_gpio.h 结构体与 API, 调用 ESP-IDF gpio driver。
+ * 平台私有: pin 查找表、DTS bounds 校验、raw 读写。
+ *
+ * 寄存器约定:
+ *   - fast_get_level 调 gpio_get_level (读实际引脚电平)
+ *   - fast_set_level 调 gpio_set_level (写 GPIO_OUT_REG)
+ *   - fast_toggle   读-改-写 (非原子, VFS 持锁下安全)
+ *
+ * ESP32 无 Port 表: 单逻辑端口 DTS_GPIOZERO=0, pin 即 SoC gpio_num_t。
+ */
 #include "hal_gpio.h"
 #include "VFS.h"
 #include "compiler_compat.h"

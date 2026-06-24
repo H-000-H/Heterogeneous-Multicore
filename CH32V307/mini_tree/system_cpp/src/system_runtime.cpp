@@ -1,7 +1,7 @@
 #include "system_runtime.hpp"
 #include "system_init.hpp"
 
-#include "system_log.hpp"
+#include "system_log.h"
 #include "compiler_compat_poison.h"
 
 static constexpr const char* kTag = "SystemRuntime";

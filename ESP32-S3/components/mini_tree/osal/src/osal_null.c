@@ -914,7 +914,7 @@ bool osal_queue_send(osal_queue_handle_t queue, const void* item, uint32_t timeo
     /* 判满 */
     if ((head - tail) >= q->queue_len) return false;
 
-    memcpy(&q->buf[(head & mask) * item_size], item, item_size);
+    __builtin_memcpy(&q->buf[(head & mask) * item_size], item, item_size);
     osal_atomic_store_release_u32(&q->head, head + 1U);
 
     return true;
@@ -936,7 +936,7 @@ bool osal_queue_send_from_isr(osal_queue_handle_t queue, const void* item,
 
     if ((head - tail) >= q->queue_len) return false;
 
-    memcpy(&q->buf[(head & mask) * item_size], item, item_size);
+    __builtin_memcpy(&q->buf[(head & mask) * item_size], item, item_size);
     osal_atomic_store_release_u32(&q->head, head + 1U);
 
     return true;
@@ -975,7 +975,7 @@ bool osal_queue_receive(osal_queue_handle_t queue, void* item, uint32_t timeout_
     uint32_t tail = osal_atomic_load_relaxed_u32(&q->tail);
     if (osal_atomic_load_acquire_u32(&q->head) == tail) return false;  /* 超时后仍空 */
 
-    memcpy(item, &q->buf[(tail & mask) * item_size], item_size);
+    __builtin_memcpy(item, &q->buf[(tail & mask) * item_size], item_size);
     osal_atomic_store_release_u32(&q->tail, tail + 1U);
 
     return true;
@@ -996,7 +996,7 @@ bool osal_queue_receive_from_isr(osal_queue_handle_t queue, void* item,
 
     if (osal_atomic_load_acquire_u32(&q->head) == tail) return false;
 
-    memcpy(item, &q->buf[(tail & mask) * item_size], item_size);
+    __builtin_memcpy(item, &q->buf[(tail & mask) * item_size], item_size);
     osal_atomic_store_release_u32(&q->tail, tail + 1U);
 
     return true;

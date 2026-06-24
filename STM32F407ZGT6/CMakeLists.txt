@@ -55,7 +55,6 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # mini_tree 中间件 — 配置见 mini_tree/.config
 add_subdirectory(mini_tree)
-add_subdirectory(hal)
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
@@ -69,7 +68,6 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
     mini_tree
-    stm32f407_hal
 )
 
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE

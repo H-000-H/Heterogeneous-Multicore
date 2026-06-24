@@ -42,7 +42,7 @@
 #ifdef CONFIG_OSAL_MUTEX_POOL_SIZE
 #define OSAL_MUTEX_POOL_SIZE CONFIG_OSAL_MUTEX_POOL_SIZE
 #else
-#define OSAL_MUTEX_POOL_SIZE 24
+#define OSAL_MUTEX_POOL_SIZE 12
 #endif
 #endif
 
@@ -51,7 +51,7 @@
 #endif
 
 #ifndef OSAL_SEM_POOL_SIZE
-#define OSAL_SEM_POOL_SIZE        8
+#define OSAL_SEM_POOL_SIZE        4
 #endif
 
 #endif /* BOARD_CONFIG_H */

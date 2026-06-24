@@ -119,6 +119,11 @@ PLATFORM_ONLY = {
         "hal_if/soc/stm32f407/hal_stm32f407.c",
         "hal_if/gpio/hal_gpio_stm32.c",
         "hal_if/cpu/hal_cpu_delay_stm32.c",
+        "hal_if/system/hal_dma_stm32.c",
+        "hal_if/system/hal_dma_stm32.h",
+        "hal_if/uart/hal_uart_stm32.c",
+        "hal_bus/spi/spi_core.c",
+        "hal_bus/spi/spi_controller_stm32.c",
     ],
     "ch32": [
         "board/include/vfs_adc.h",
@@ -127,6 +132,11 @@ PLATFORM_ONLY = {
         "hal_if/soc/ch32v307/hal_ch32v307.c",
         "hal_if/gpio/hal_gpio_ch32.c",
         "hal_if/cpu/hal_cpu_delay_ch32.c",
+        "hal_if/system/hal_dma_ch32.c",
+        "hal_if/system/hal_dma_ch32.h",
+        "hal_if/uart/hal_uart_ch32.c",
+        "hal_bus/spi/spi_core.c",
+        "hal_bus/spi/spi_controller_ch32.c",
     ],
 }
 

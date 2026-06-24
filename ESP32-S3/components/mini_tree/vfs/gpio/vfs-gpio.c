@@ -1,3 +1,4 @@
+#define VFS_GPIO_IMPL
 #include "vfs-gpio.h"
 #include "VFS.h"
 #include "board_config.h"
@@ -212,6 +213,8 @@ static int vfs_gpio_probe(struct device* pdev)
     return VFS_OK;
 
 err_mutex:
+    pdev->ops = NULL;                  /* 切断 fops, 防 UAF */
+    dev_lc_reset(device_lc(pdev));     /* 切断 io_lock 绑定 */
     osal_mutex_destroy(priv->io_mutex);
     priv->io_mutex = NULL;
 err_pool:

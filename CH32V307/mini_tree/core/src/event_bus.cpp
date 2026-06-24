@@ -1,6 +1,6 @@
 #include "event_bus.hpp"
 #include "safe_state.h"
-#include "system_log.hpp"
+#include "system_log.h"
 #include "system_wdt.hpp"
 #include "compiler_compat.h"
 #include "compiler_compat_poison.h"

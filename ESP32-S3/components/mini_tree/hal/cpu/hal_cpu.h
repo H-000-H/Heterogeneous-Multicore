@@ -1,3 +1,14 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * CPU HAL 层 — 硬件抽象接口 (ESP32-S3, Xtensa LX7 双核)
+ *
+ * 职责: CPU 紧急停止、AMP 启动、ISR 检测、中断控制。
+ * 与 STM32/CH32 hal_cpu.h API 对齐, 内部使用 ESP-IDF ROM API。
+ *
+ * 平台差异:
+ *   - ESP32-S3: 双核 Xtensa, 通过 Xthal_* API 控制中断
+ *   - ARM:      单核 Cortex-M, 通过 MRS/MSR 访问 IPSR/PRIMASK
+ */
 #ifndef HAL_CPU_H
 #define HAL_CPU_H
 

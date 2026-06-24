@@ -6,9 +6,10 @@
  * 注意: 仅供 dtc-lite 预处理, 勿加 #ifndef guard (会破坏宏展开).
  */
 
-#define SPI_DEFAULT_HOST_ID           1
+#define SPI_DEFAULT_HOST_ID           0
 #define SPI_DEFAULT_MAX_FREQUENCY_HZ  10000000
 #define SPI_DEFAULT_MODE              0
 #define SPI_DEFAULT_BITS_PER_WORD     8
 #define SPI_DEFAULT_QUEUE_SIZE        4
-#define SPI_DEFAULT_DMA_CHAN          (-1)
+#define SPI_DEFAULT_DMA_CHAN          (-1)  /* 板级默认 DMA；(-2) 关闭 */
+#define SPI_DMA_DISABLED              (-2)

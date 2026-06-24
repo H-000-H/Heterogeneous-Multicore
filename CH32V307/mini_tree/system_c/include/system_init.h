@@ -7,7 +7,6 @@
  *
  *   int main(void)
  {
- *       platform_hardware_init();
  *       mini_tree_pre_os_init();     // Phase 1
  *       platform_register_drivers();
  *       mini_tree_start_tasks();     // Phase 2

@@ -293,7 +293,7 @@ int device_get_prop_int_array(const struct device* dev, const char* key, int* ou
         char token[64];
         size_t len = (size_t)(p - start);
         if (len >= sizeof(token)) return VFS_ERR_INVAL;
-        memcpy(token, start, len);
+        __builtin_memcpy(token, start, len);
         token[len] = '\0';
 
         if (safe_parse_int32(token, &out_arr[count]) != 0) return VFS_ERR_INVAL;

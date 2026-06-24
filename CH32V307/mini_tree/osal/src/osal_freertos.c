@@ -12,12 +12,14 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
+#include "esp_task_wdt.h"
 #else
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
 #endif
-
+#include <stdlib.h>
+#include <time.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include "compiler_compat_poison.h"
@@ -114,59 +116,118 @@ void osal_spinlock_unlock(struct osal_spinlock* lock)
     }
 }
 
-/* ── 静态互斥锁池 (OSAL_MUTEX_POOL_SIZE 来自 board_config.h) ── */
-
-static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE];
-static uint8_t s_mutex_used[OSAL_MUTEX_POOL_SIZE];
+/* ── 槽位池 (每池独立临界区锁) ── */
 
 #ifdef ESP_PLATFORM
-static portMUX_TYPE s_pool_mux = portMUX_INITIALIZER_UNLOCKED;
-#endif
+_Static_assert(sizeof(portMUX_TYPE) <= OSAL_POOL_MUX_STORAGE_SIZE,
+               "OSAL_POOL_MUX_STORAGE_SIZE too small for portMUX_TYPE");
 
-int osal_pool_claim(volatile uint8_t* used_slots, size_t slot_count)
+static inline portMUX_TYPE* osal_pool_mux(osal_pool_t* pool)
 {
-    if (!used_slots || slot_count == 0) return -1;
+    return (portMUX_TYPE*)pool->mux_storage;
+}
+#else
+typedef int portMUX_TYPE;
+#endif
+
+static inline void osal_pool_lock(osal_pool_t* pool)
+{
+#ifdef ESP_PLATFORM
+    portMUX_TYPE* mux = osal_pool_mux(pool);
+    if (osal_in_isr())
+        portENTER_CRITICAL_ISR(mux);
+    else
+        taskENTER_CRITICAL(mux);
+#else
+    if (!osal_in_isr())
+        taskENTER_CRITICAL();
+    (void)pool;
+#endif
+}
+
+static inline void osal_pool_unlock(osal_pool_t* pool)
+{
+#ifdef ESP_PLATFORM
+    portMUX_TYPE* mux = osal_pool_mux(pool);
+    if (osal_in_isr())
+        portEXIT_CRITICAL_ISR(mux);
+    else
+        taskEXIT_CRITICAL(mux);
+#else
+    if (!osal_in_isr())
+        taskEXIT_CRITICAL();
+    (void)pool;
+#endif
+}
+
+int osal_pool_init(osal_pool_t* pool, volatile uint8_t* buffer, size_t count)
+{
+    if (!pool || !buffer || count == 0)
+        return -1;
+
+    pool->used_slots = buffer;
+    pool->slot_count = count;
+
+    for (size_t i = 0; i < count; i++)
+        buffer[i] = 0;
 
 #ifdef ESP_PLATFORM
-    if (!osal_in_isr()) taskENTER_CRITICAL(&s_pool_mux);
-#else
-    if (!osal_in_isr()) taskENTER_CRITICAL();
+    portMUX_INITIALIZE(osal_pool_mux(pool));
 #endif
-    int claimed_index = -1;
-    for (size_t i = 0; i < slot_count; i++)
+
+    return 0;
+}
+
+int osal_pool_claim(osal_pool_t* pool)
+{
+    if (!pool || !pool->used_slots || pool->slot_count == 0)
+        return -1;
+
+    uint32_t rand_val = COMPAT_RAND(0x43U, 0x32U, 0x43U, 0x32U);
+    size_t start_idx = rand_val % pool->slot_count;
+
+    osal_pool_lock(pool);
+
+    int ret_idx = -1;
+    for (size_t i = 0; i < pool->slot_count; i++)
     {
-        if (!used_slots[i])
+        size_t cur = (start_idx + i) % pool->slot_count;
+        if (!pool->used_slots[cur])
         {
-            used_slots[i] = 1;
-            claimed_index = (int)i;
+            pool->used_slots[cur] = 1;
+            ret_idx = (int)cur;
             break;
         }
     }
-#ifdef ESP_PLATFORM
-    if (!osal_in_isr()) taskEXIT_CRITICAL(&s_pool_mux);
-#else
-    if (!osal_in_isr()) taskEXIT_CRITICAL();
-#endif
-    return claimed_index;
+
+    osal_pool_unlock(pool);
+    return ret_idx;
 }
 
-void osal_pool_release(volatile uint8_t* used_slots, size_t slot_count, int slot_index)
+void osal_pool_release(osal_pool_t* pool, int slot_index)
 {
-    if (!used_slots || slot_index < 0 || (size_t)slot_index >= slot_count) return;
-#ifdef ESP_PLATFORM
-    if (!osal_in_isr()) taskENTER_CRITICAL(&s_pool_mux);
-#else
-    if (!osal_in_isr()) taskENTER_CRITICAL();
-#endif
-    used_slots[slot_index] = 0;
-#ifdef ESP_PLATFORM
-    if (!osal_in_isr()) taskEXIT_CRITICAL(&s_pool_mux);
-#else
-    if (!osal_in_isr()) taskEXIT_CRITICAL();
-#endif
+    if (!pool || !pool->used_slots || slot_index < 0 ||
+        (size_t)slot_index >= pool->slot_count)
+        return;
+
+    osal_pool_lock(pool);
+    pool->used_slots[slot_index] = 0;
+    osal_pool_unlock(pool);
 }
 
-/* ── 时间 ── */
+/* ── 静态互斥锁池 (OSAL_MUTEX_POOL_SIZE 来自 board_config.h) ── */
+
+static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
+
+pre_execution(150)
+static void osal_mutex_pool_boot_init(void)
+{
+    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+}
+
+/* ── 获取现在时间 ── */
 uint32_t osal_time_ms(void)
 {
     return (uint32_t)(xTaskGetTickCount() * portTICK_PERIOD_MS);
@@ -209,13 +270,13 @@ int osal_mutex_create_typed(struct osal_mutex** out, osal_mutex_type_t type)
     if (type != OSAL_MUTEX_RECURSIVE && type != OSAL_MUTEX_PLAIN) return -1;
     *out = NULL;
 
-    int index = osal_pool_claim(s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    int index = osal_pool_claim(&s_mutex_pool_ctrl);
     if (index < 0) return -1;
 
     struct osal_mutex* m = &s_mutex_pool[index];
     if (osal_mutex_init(m, type) != 0)
     {
-        osal_pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, index);
+        osal_pool_release(&s_mutex_pool_ctrl, index);
         return -1;
     }
     *out = (struct osal_mutex*)m;
@@ -281,7 +342,7 @@ void osal_mutex_destroy(struct osal_mutex* mutex)
     {
         if (&s_mutex_pool[i] == m)
         {
-            osal_pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, i);
+            osal_pool_release(&s_mutex_pool_ctrl, i);
             break;
         }
     }
@@ -317,8 +378,15 @@ struct osal_sem
 _Static_assert(sizeof(struct osal_sem) <= OSAL_SEM_STORAGE_SIZE,
                "OSAL_SEM_STORAGE_SIZE too small");
 
-static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE];
-static uint8_t s_sem_used[OSAL_SEM_POOL_SIZE];
+static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
+
+pre_execution(151)
+static void osal_sem_pool_boot_init(void)
+{
+    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+}
 
 static int osal_sem_init_binary(struct osal_sem* sem)
 {
@@ -337,14 +405,14 @@ int osal_sem_create_binary(struct osal_sem** out)
     if (!out)
         return -1;
 
-    int idx = osal_pool_claim(s_sem_used, OSAL_SEM_POOL_SIZE);
+    int idx = osal_pool_claim(&s_sem_pool_ctrl);
     if (idx < 0)
         return -1;
 
     struct osal_sem* sem = &s_sem_pool[idx];
     if (osal_sem_init_binary(sem) != 0)
     {
-        osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, idx);
+        osal_pool_release(&s_sem_pool_ctrl, idx);
         return -1;
     }
 
@@ -381,7 +449,7 @@ void osal_sem_destroy(struct osal_sem* sem)
         {
             if (&s_sem_pool[i] == sem)
             {
-                osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
+                osal_pool_release(&s_sem_pool_ctrl, (int)i);
                 break;
             }
         }
@@ -513,6 +581,13 @@ int osal_task_create_handle(const char* name, uint32_t stack_size,
 
 void osal_task_self_delete(void)
 {
+#ifdef ESP_PLATFORM
+    TaskHandle_t self = xTaskGetCurrentTaskHandle();
+    if (self != NULL && esp_task_wdt_status(self) == ESP_OK)
+    {
+        esp_task_wdt_delete(self);
+    }
+#endif
     vTaskDelete(NULL);
 }
 

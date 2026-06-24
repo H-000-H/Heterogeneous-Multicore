@@ -22,7 +22,7 @@
 #define RTT_HEAP_SIZE  (32 * 1024)
 #endif
 
-static uint8_t s_rtt_heap[RTT_HEAP_SIZE];
+static uint8_t s_rtt_heap[RTT_HEAP_SIZE] COMPAT_ALIGNED(4);
 static volatile int s_rtt_heap_inited = 0;
 
 /* 确保 RT-Thread 系统堆在第一次调用前完成初始化 */
@@ -94,21 +94,47 @@ void osal_spinlock_unlock(struct osal_spinlock* lock)
 }
 
 /* ── 静态互斥锁池 ── */
-static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE];
-static uint8_t s_mutex_used[OSAL_MUTEX_POOL_SIZE];
+static struct osal_mutex s_mutex_pool[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t           s_mutex_used[OSAL_MUTEX_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 
-int osal_pool_claim(volatile uint8_t* used_slots, size_t slot_count)
+pre_execution(150)
+static void osal_mutex_pool_boot_init(void)
 {
-    if (!used_slots || slot_count == 0) return -1;
+    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+}
+
+int osal_pool_init(osal_pool_t* pool, volatile uint8_t* buffer, size_t count)
+{
+    if (!pool || !buffer || count == 0)
+        return -1;
+
+    pool->used_slots = buffer;
+    pool->slot_count = count;
+
+    for (size_t i = 0; i < count; i++)
+        buffer[i] = 0;
+
+    return 0;
+}
+
+int osal_pool_claim(osal_pool_t* pool)
+{
+    if (!pool || !pool->used_slots || pool->slot_count == 0)
+        return -1;
+
+    uint32_t rand_val = COMPAT_RAND(0x43U, 0x32U, 0x43U, 0x32U);
+    size_t start_idx = rand_val % pool->slot_count;
 
     int claimed_index = -1;
     rt_base_t level = rt_hw_interrupt_disable();
-    for (size_t i = 0; i < slot_count; i++)
+    for (size_t i = 0; i < pool->slot_count; i++)
     {
-        if (!used_slots[i])
+        size_t cur = (start_idx + i) % pool->slot_count;
+        if (!pool->used_slots[cur])
         {
-            used_slots[i] = 1;
-            claimed_index = (int)i;
+            pool->used_slots[cur] = 1;
+            claimed_index = (int)cur;
             break;
         }
     }
@@ -116,11 +142,14 @@ int osal_pool_claim(volatile uint8_t* used_slots, size_t slot_count)
     return claimed_index;
 }
 
-void osal_pool_release(volatile uint8_t* used_slots, size_t slot_count, int slot_index)
+void osal_pool_release(osal_pool_t* pool, int slot_index)
 {
-    if (!used_slots || slot_index < 0 || (size_t)slot_index >= slot_count) return;
+    if (!pool || !pool->used_slots || slot_index < 0 ||
+        (size_t)slot_index >= pool->slot_count)
+        return;
+
     rt_base_t level = rt_hw_interrupt_disable();
-    used_slots[slot_index] = 0;
+    pool->used_slots[slot_index] = 0;
     rt_hw_interrupt_enable(level);
 }
 
@@ -167,13 +196,13 @@ int osal_mutex_create_typed(struct osal_mutex** out, osal_mutex_type_t type)
     if (type != OSAL_MUTEX_RECURSIVE && type != OSAL_MUTEX_PLAIN) return -1;
     *out = NULL;
 
-    int index = osal_pool_claim(s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    int index = osal_pool_claim(&s_mutex_pool_ctrl);
     if (index < 0) return -1;
 
     struct osal_mutex* m = &s_mutex_pool[index];
     if (osal_mutex_init(m, type, "osal_mtx") != 0)
     {
-        osal_pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, index);
+        osal_pool_release(&s_mutex_pool_ctrl, index);
         return -1;
     }
     *out = (struct osal_mutex*)m;
@@ -240,7 +269,7 @@ void osal_mutex_destroy(struct osal_mutex* mutex)
     {
         if (&s_mutex_pool[i] == m)
         {
-            osal_pool_release(s_mutex_used, OSAL_MUTEX_POOL_SIZE, i);
+            osal_pool_release(&s_mutex_pool_ctrl, i);
             break;
         }
     }
@@ -278,8 +307,15 @@ struct osal_sem
 _Static_assert(sizeof(struct osal_sem) <= OSAL_SEM_STORAGE_SIZE,
                "OSAL_SEM_STORAGE_SIZE too small");
 
-static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE];
-static uint8_t s_sem_used[OSAL_SEM_POOL_SIZE];
+static struct osal_sem s_sem_pool[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static uint8_t       s_sem_used[OSAL_SEM_POOL_SIZE] COMPAT_ALIGNED(4);
+static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
+
+pre_execution(151)
+static void osal_sem_pool_boot_init(void)
+{
+    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+}
 
 static int osal_sem_init_binary(struct osal_sem* sem)
 {
@@ -298,14 +334,14 @@ int osal_sem_create_binary(struct osal_sem** out)
     if (!out)
         return -1;
 
-    int idx = osal_pool_claim(s_sem_used, OSAL_SEM_POOL_SIZE);
+    int idx = osal_pool_claim(&s_sem_pool_ctrl);
     if (idx < 0)
         return -1;
 
     struct osal_sem* sem = &s_sem_pool[idx];
     if (osal_sem_init_binary(sem) != 0)
     {
-        osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, idx);
+        osal_pool_release(&s_sem_pool_ctrl, idx);
         return -1;
     }
 
@@ -342,7 +378,7 @@ void osal_sem_destroy(struct osal_sem* sem)
         {
             if (&s_sem_pool[i] == sem)
             {
-                osal_pool_release(s_sem_used, OSAL_SEM_POOL_SIZE, (int)i);
+                osal_pool_release(&s_sem_pool_ctrl, (int)i);
                 break;
             }
         }

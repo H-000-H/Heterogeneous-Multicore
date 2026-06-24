@@ -30,7 +30,7 @@
  * 原位于 osal.h, 提升至 middleware 层以消除层级倒置.
  * 依赖 production_log 的变体 (LOGE/LOGW) 推送至黑匣子环形缓冲区.
  */
-#include "production_log.h"
+#include "production_log.h"  /* IWYU pragma: keep */
 
 #define DRV_LOGE(tag, fmt, ...) do { \
     osal_log(OSAL_LOG_ERROR, tag, fmt, ##__VA_ARGS__); \

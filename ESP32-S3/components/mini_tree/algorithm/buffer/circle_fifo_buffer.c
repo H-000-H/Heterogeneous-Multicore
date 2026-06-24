@@ -46,12 +46,12 @@ uint16_t fifo_write_block(struct fifo_spsc* handle, const Fifo_Data_type* p_data
     uint16_t space_to_end = handle->size - w;
     if (space_to_end >= len)
     {
-        memcpy(&handle->buf[w], p_data, len * sizeof(Fifo_Data_type));
+        __builtin_memcpy(&handle->buf[w], p_data, len * sizeof(Fifo_Data_type));
     }
     else
     {
-        memcpy(&handle->buf[w], p_data, space_to_end * sizeof(Fifo_Data_type));
-        memcpy(&handle->buf[0], p_data + space_to_end, (len - space_to_end) * sizeof(Fifo_Data_type));
+        __builtin_memcpy(&handle->buf[w], p_data, space_to_end * sizeof(Fifo_Data_type));
+        __builtin_memcpy(&handle->buf[0], p_data + space_to_end, (len - space_to_end) * sizeof(Fifo_Data_type));
     }
     FIFO_STORE_REL(handle->w_ptr, (uint16_t)((w + len) % handle->size));
     return len;
@@ -83,12 +83,12 @@ uint16_t fifo_read_block(struct fifo_spsc* handle, Fifo_Data_type* p_data, uint1
     uint16_t space_to_end = handle->size - r;
     if (space_to_end >= len)
     {
-        memcpy(p_data, &handle->buf[r], len * sizeof(Fifo_Data_type));
+        __builtin_memcpy(p_data, &handle->buf[r], len * sizeof(Fifo_Data_type));
     }
     else
     {
-        memcpy(p_data, &handle->buf[r], space_to_end * sizeof(Fifo_Data_type));
-        memcpy(p_data + space_to_end, &handle->buf[0], (len - space_to_end) * sizeof(Fifo_Data_type));
+        __builtin_memcpy(p_data, &handle->buf[r], space_to_end * sizeof(Fifo_Data_type));
+        __builtin_memcpy(p_data + space_to_end, &handle->buf[0], (len - space_to_end) * sizeof(Fifo_Data_type));
     }
     FIFO_STORE_REL(handle->r_ptr, (uint16_t)((r + len) % handle->size));
     return len;

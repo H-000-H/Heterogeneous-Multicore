@@ -13,13 +13,20 @@ import sys
 from pathlib import Path
 from typing import List
 
-# kconfiglib ships as a single module (pip); no kconfiglib.core subpackage
-from kconfiglib import Kconfig, BOOL, HEX, INT, STRING
+# kconfiglib ships as a single module (pip); namespace packages expose symbols in .core
+try:
+    from kconfiglib import Kconfig, BOOL, HEX, INT, STRING
+except ImportError:
+    from kconfiglib.core import Kconfig, BOOL, HEX, INT, STRING
 try:
     from kconfiglib import TRISTATE
     _BOOL_TYPES = (BOOL, TRISTATE)
 except ImportError:
-    _BOOL_TYPES = (BOOL,)
+    try:
+        from kconfiglib.core import TRISTATE
+        _BOOL_TYPES = (BOOL, TRISTATE)
+    except ImportError:
+        _BOOL_TYPES = (BOOL,)
 
 
 def _atomic_write(path: Path, content: str) -> None:

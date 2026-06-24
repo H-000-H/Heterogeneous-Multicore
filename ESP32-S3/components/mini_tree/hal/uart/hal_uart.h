@@ -1,5 +1,20 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * UART HAL 层 — 硬件抽象接口 (ESP32-S3, vtable 模式)
+ *
+ * 与 STM32/CH32 hal_uart.h 结构对齐, 采用 vtable 模式。
+ * 职责: 寄存器配置与传输执行, 不含锁/DMA 策略。
+ *
+ * HAL 层不分配数据缓冲区。所有 tx/rx 指针由调用者提供。
+ * 需要中间缓冲的场景在 VFS 层通过 buffer_pool 处理。
+ */
 #ifndef HAL_UART_H
 #define HAL_UART_H
+
+/*
+ * HAL 层不分配数据缓冲区。所有 tx/rx 指针由调用者提供。
+ * 需要中间缓冲的场景在 VFS 层通过 buffer_pool 处理。
+ */
 
 #include "compiler_compat.h"
 #include "hal_gpio.h"

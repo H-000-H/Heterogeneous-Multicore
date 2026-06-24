@@ -48,7 +48,7 @@ static struct w25q64_device s_w25q64_pool[W25Q64_COUNT] COMPAT_ALIGNED(4);
 static uint8_t              s_w25q64_used[W25Q64_COUNT] COMPAT_ALIGNED(4);
 static osal_pool_t          s_w25q64_pool_ctrl COMPAT_ALIGNED(4);
 static uint8_t s_w25q64_mutex_storage[W25Q64_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
-static uint8_t s_w25q64_tx_buf[W25Q64_COUNT][W25Q64_XFER_FRAME_SIZE] COMPAT_ALIGNED(4);
+static uint8_t s_w25q64_tx_buf[W25Q64_COUNT][W25Q64_XFER_FRAME_SIZE] COMPAT_ALIGNED(32);
 static uint8_t s_w25q64_rx_buf[W25Q64_COUNT][W25Q64_XFER_FRAME_SIZE] COMPAT_ALIGNED(4);
 
 static const char* const kTag = "w25q64";
@@ -551,4 +551,4 @@ static int w25q64_spi_remove(struct device* dev)
     return VFS_OK;
 }
 
-DRIVER_REGISTER(w25q64_spi, "heterogeneous,w25q64-master", w25q64_spi_probe, w25q64_spi_remove)
+DRIVER_REGISTER(w25q64_spi, "winbond,w25q64", w25q64_spi_probe, w25q64_spi_remove)

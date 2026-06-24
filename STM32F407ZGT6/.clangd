@@ -1,5 +1,5 @@
 ﻿CompileFlags:
-  CompilationDatabase: build-ninja
+  CompilationDatabase: build/Debug
   Add:
     - --target=arm-none-eabi
     - -mcpu=cortex-m4
@@ -14,8 +14,7 @@ Diagnostics:
 If:
   PathMatch: .*mini_tree[/\\].*\.(c|cpp|S)$
 CompileFlags:
-  # compile_commands 提供绝对 -I；另加 isystem 供 esp-clang 找到 stdio.h 等
-  CompilationDatabase: build-ninja
+  CompilationDatabase: build/Debug
   Add:
     - --target=arm-none-eabi
     - -mcpu=cortex-m4
@@ -27,7 +26,7 @@ CompileFlags:
 
 ---
 If:
-  PathMatch: .*hal_inst[/\\].*\.h$
+  PathMatch: .*hal[/\\].*\.h$
 CompileFlags:
   CompilationDatabase: None
   Add:
@@ -38,46 +37,6 @@ CompileFlags:
     - c-header
     - -DSTM32F407xx
     - -DUSE_HAL_DRIVER
-    - -I../../hal_bus/include
-    - -I.
-    - -isystem
-    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
-    - -isystem
-    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
-
----
-If:
-  PathMatch: .*hal_bus[/\\].*\.h$
-CompileFlags:
-  CompilationDatabase: None
-  Add:
-    - --target=arm-none-eabi
-    - -mcpu=cortex-m4
-    - -std=gnu17
-    - -x
-    - c-header
-    - -DSTM32F407xx
-    - -DUSE_HAL_DRIVER
-    - -I.
-    - -isystem
-    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
-    - -isystem
-    - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/lib/gcc/arm-none-eabi/13.3.1/include
-
----
-If:
-  PathMatch: .*hal_if[/\\].*\.h$
-CompileFlags:
-  CompilationDatabase: None
-  Add:
-    - --target=arm-none-eabi
-    - -mcpu=cortex-m4
-    - -std=gnu17
-    - -x
-    - c-header
-    - -DSTM32F407xx
-    - -DUSE_HAL_DRIVER
-    - -I../../hal_bus/include
     - -I.
     - -isystem
     - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
@@ -100,8 +59,8 @@ CompileFlags:
     - -I.
     - -I../../core/include
     - -I../../osal/include
-    - -I../../../build-ninja/generated/board/mini_tree
-    - -I../../../build-ninja/generated/kconfig/mini_tree
+    - -I../../../build/Debug/generated/board/mini_tree
+    - -I../../../build/Debug/generated/kconfig/mini_tree
     - -isystem
     - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
     - -isystem
@@ -144,9 +103,11 @@ CompileFlags:
     - -I../../board/include
     - -I../../core/include
     - -I../../osal/include
-    - -I../../hal_if/gpio
-    - -I../../../build-ninja/generated/board/mini_tree
-    - -I../../../build-ninja/generated/kconfig/mini_tree
+    - -I../../hal/gpio
+    - -I../../bus/spi
+    - -I../../bus/uart
+    - -I../../../build/Debug/generated/board/mini_tree
+    - -I../../../build/Debug/generated/kconfig/mini_tree
     - -isystem
     - C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/arm-none-eabi/include
     - -isystem
@@ -156,7 +117,7 @@ CompileFlags:
 If:
   PathMatch: .*[/\\]app[/\\].*\.(c|cpp|h|S)$
 CompileFlags:
-  CompilationDatabase: build-ninja
+  CompilationDatabase: build/Debug
   Add:
     - --target=arm-none-eabi
     - -mcpu=cortex-m4
@@ -170,7 +131,7 @@ CompileFlags:
 If:
   PathMatch: .*[/\\]Core[/\\].*\.(c|cpp|h|S)$
 CompileFlags:
-  CompilationDatabase: build-ninja
+  CompilationDatabase: build/Debug
   Add:
     - --target=arm-none-eabi
     - -mcpu=cortex-m4

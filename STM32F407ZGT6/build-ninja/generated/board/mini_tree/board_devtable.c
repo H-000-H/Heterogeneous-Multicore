@@ -48,13 +48,43 @@ static const struct device_property DEV_gpios_pin_0_props[] = {
     {"default-level", "0x0"},
 };
 
+/* /soc/dma@spi1-rx */
+static const struct device_property DEV_dma_spi1_rx_props[] = {
+    {"mini-tree,platform", "true"},
+    {"reg", "0xa"},
+    {"controller", "0x2"},
+    {"stream", "0x0"},
+    {"channel", "0x3"},
+};
+
+/* /soc/dma@spi1-tx */
+static const struct device_property DEV_dma_spi1_tx_props[] = {
+    {"mini-tree,platform", "true"},
+    {"reg", "0xb"},
+    {"controller", "0x2"},
+    {"stream", "0x3"},
+    {"channel", "0x3"},
+};
+
+/* /soc/dma@uart4-tx */
+static const struct device_property DEV_dma_uart4_tx_props[] = {
+    {"mini-tree,platform", "true"},
+    {"reg", "0x14"},
+    {"controller", "0x1"},
+    {"stream", "0x4"},
+    {"channel", "0x4"},
+};
+
 /* /soc/spi@0 */
 static const struct device_property DEV_spi_0_props[] = {
     {"reg", "0x0"},
     {"#address-cells", "0x1"},
     {"#size-cells", "0x0"},
     {"host-id", "0x1"},
+    {"hw-instance", "0x1"},
     {"dma-chan", "-0x1"},
+    {"dma-tx", "dma_spi1_tx"},
+    {"dma-rx", "dma_spi1_rx"},
     {"mosi-port", "0x0"},
     {"mosi-pin", "0x7"},
     {"miso-port", "0x0"},
@@ -77,6 +107,8 @@ static const struct device_property DEV_w25q64_0_props[] = {
 static const struct device_property DEV_uart_0_props[] = {
     {"reg", "0x0"},
     {"host-id", "0x0"},
+    {"hw-instance", "0x4"},
+    {"dma-tx", "dma_uart4_tx"},
     {"rx-port", "0x0"},
     {"rx-pin", "0x1"},
     {"tx-port", "0x2"},
@@ -104,6 +136,15 @@ static const uint32_t DEV_gpio_0_REG_DATA[] = {
 static const uint32_t DEV_gpios_pin_0_REG_DATA[] = {
     0x0,
 };
+static const uint32_t DEV_dma_spi1_rx_REG_DATA[] = {
+    0xa,
+};
+static const uint32_t DEV_dma_spi1_tx_REG_DATA[] = {
+    0xb,
+};
+static const uint32_t DEV_dma_uart4_tx_REG_DATA[] = {
+    0x14,
+};
 static const uint32_t DEV_spi_0_REG_DATA[] = {
     0x0,
 };
@@ -123,6 +164,18 @@ static const struct device_reg DEV_gpio_0_REGS[] = {
 
 static const struct device_reg DEV_gpios_pin_0_REGS[] = {
     { .addr = &DEV_gpios_pin_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_dma_spi1_rx_REGS[] = {
+    { .addr = &DEV_dma_spi1_rx_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_dma_spi1_tx_REGS[] = {
+    { .addr = &DEV_dma_spi1_tx_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_dma_uart4_tx_REGS[] = {
+    { .addr = &DEV_dma_uart4_tx_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
 };
 
 static const struct device_reg DEV_spi_0_REGS[] = {
@@ -226,6 +279,57 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
+    [DEV_ID_DMA_SPI1_RX] = {
+        .name       = "dma@spi1-rx",
+        .label      = "dma_spi1_rx",
+        .compatible = "stm32,dma-channel",
+        .path       = "/soc/dma@spi1-rx",
+        .status     = DEVICE_STATUS_READY,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 5,
+        .props      = DEV_dma_spi1_rx_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_dma_spi1_rx_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_DMA_SPI1_TX] = {
+        .name       = "dma@spi1-tx",
+        .label      = "dma_spi1_tx",
+        .compatible = "stm32,dma-channel",
+        .path       = "/soc/dma@spi1-tx",
+        .status     = DEVICE_STATUS_READY,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 5,
+        .props      = DEV_dma_spi1_tx_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_dma_spi1_tx_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_DMA_UART4_TX] = {
+        .name       = "dma@uart4-tx",
+        .label      = "dma_uart4_tx",
+        .compatible = "stm32,dma-channel",
+        .path       = "/soc/dma@uart4-tx",
+        .status     = DEVICE_STATUS_READY,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 5,
+        .props      = DEV_dma_uart4_tx_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_dma_uart4_tx_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
     [DEV_ID_SPI_0] = {
         .name       = "spi@0",
         .label      = "spi1",
@@ -234,7 +338,7 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .status     = DEVICE_STATUS_DISABLED,
         .criticality = DEVICE_CRIT_WARNING,
         .flags      = 0,
-        .prop_count = 11,
+        .prop_count = 14,
         .props      = DEV_spi_0_props,
         .dep_count  = 0,
         .deps       = (const device_id_t*)NULL,
@@ -268,7 +372,7 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .status     = DEVICE_STATUS_READY,
         .criticality = DEVICE_CRIT_WARNING,
         .flags      = 0,
-        .prop_count = 10,
+        .prop_count = 12,
         .props      = DEV_uart_0_props,
         .dep_count  = 0,
         .deps       = (const device_id_t*)NULL,

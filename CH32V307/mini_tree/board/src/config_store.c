@@ -35,7 +35,6 @@ typedef enum
 } cs_type_t;
 
 struct cs_entry
-
 {
     char     key[32];
     cs_type_t type;
@@ -124,7 +123,7 @@ static const char* find_json_value(const char* key)
 
     char search_pat[64];
     search_pat[0] = '"';
-    memcpy(search_pat + 1, key, key_len);
+    __builtin_memcpy(search_pat + 1, key, key_len);
     search_pat[key_len + 1] = '"';
     search_pat[key_len + 2] = ':';
     search_pat[key_len + 3] = '\0';
@@ -153,7 +152,7 @@ static struct cs_entry* add_entry(const char* key, cs_type_t type)
     e->key[sizeof(e->key) - 1] = '\0';
     e->type  = type;
     e->dirty = false;
-    memset(&e->value, 0, sizeof(e->value));
+    __builtin_memset(&e->value, 0, sizeof(e->value));
     return e;
 }
 
@@ -204,7 +203,7 @@ static bool load_factory_defaults(void)
         }
 
         char key_buf[32];
-        memcpy(key_buf, key_start, key_len);
+        __builtin_memcpy(key_buf, key_start, key_len);
         key_buf[key_len] = '\0';
 
         struct cs_entry* e = add_entry(key_buf, type);
@@ -229,7 +228,7 @@ static bool load_factory_defaults(void)
                 {
                     size_t slen = (size_t)(q2 - q1 - 1);
                     if (slen >= sizeof(e->value.s)) slen = sizeof(e->value.s) - 1;
-                    memcpy(e->value.s, q1 + 1, slen);
+                    __builtin_memcpy(e->value.s, q1 + 1, slen);
                     e->value.s[slen] = '\0';
                 }
                 break;
@@ -255,7 +254,7 @@ static bool blob_serialize(uint8_t* buf, size_t buf_size, size_t* out_len)
         if (pos + 1 + key_len + 1 + 8 > buf_size) return false;
 
         buf[pos++] = key_len;
-        memcpy(buf + pos, e->key, key_len);
+        __builtin_memcpy(buf + pos, e->key, key_len);
         pos += key_len;
         buf[pos++] = (uint8_t)e->type;
 
@@ -270,7 +269,7 @@ static bool blob_serialize(uint8_t* buf, size_t buf_size, size_t* out_len)
         case CS_TYPE_FLOAT:
         {
             uint32_t bits;
-            memcpy(&bits, &e->value.f, sizeof(bits));
+            __builtin_memcpy(&bits, &e->value.f, sizeof(bits));
             buf[pos++] = (uint8_t)(bits & 0xFF);
             buf[pos++] = (uint8_t)((bits >> 8) & 0xFF);
             buf[pos++] = (uint8_t)((bits >> 16) & 0xFF);
@@ -285,7 +284,7 @@ static bool blob_serialize(uint8_t* buf, size_t buf_size, size_t* out_len)
             uint16_t slen = (uint16_t)strlen(e->value.s);
             buf[pos++] = (uint8_t)(slen & 0xFF);
             buf[pos++] = (uint8_t)((slen >> 8) & 0xFF);
-            memcpy(buf + pos, e->value.s, slen);
+            __builtin_memcpy(buf + pos, e->value.s, slen);
             pos += slen;
             break;
         }
@@ -310,7 +309,7 @@ static bool blob_deserialize(const uint8_t* buf, size_t len)
         if (pos + key_len > len || key_len >= 32) return false;
 
         char key[32];
-        memcpy(key, buf + pos, key_len);
+        __builtin_memcpy(key, buf + pos, key_len);
         key[key_len] = '\0';
         pos += key_len;
 
@@ -337,7 +336,7 @@ static bool blob_deserialize(const uint8_t* buf, size_t len)
                           | ((uint32_t)buf[pos + 1] << 8)
                           | ((uint32_t)buf[pos + 2] << 16)
                           | ((uint32_t)buf[pos + 3] << 24);
-            memcpy(&e->value.f, &bits, sizeof(e->value.f));
+            __builtin_memcpy(&e->value.f, &bits, sizeof(e->value.f));
             pos += 4;
             break;
         }
@@ -352,7 +351,7 @@ static bool blob_deserialize(const uint8_t* buf, size_t len)
             pos += 2;
             if (pos + slen > len) return false;
             if (slen >= sizeof(e->value.s)) slen = (uint16_t)(sizeof(e->value.s) - 1);
-            memcpy(e->value.s, buf + pos, slen);
+            __builtin_memcpy(e->value.s, buf + pos, slen);
             e->value.s[slen] = '\0';
             pos += slen;
             break;
@@ -385,7 +384,7 @@ static bool load_from_storage(uint8_t slot)
     if (len < 6) return false;
 
     uint32_t stored_crc;
-    memcpy(&stored_crc, buf, sizeof(stored_crc));
+    __builtin_memcpy(&stored_crc, buf, sizeof(stored_crc));
 
     uint32_t calc_crc = crc32_le(0, buf + 4, (uint32_t)(len - 4));
     if (stored_crc != calc_crc)
@@ -416,7 +415,7 @@ static bool save_to_storage(uint8_t slot)
     if (!blob_serialize(buf + 4, BLOB_MAX - 4, &out_len)) return false;
 
     uint32_t crc = crc32_le(0, buf + 4, (uint32_t)out_len);
-    memcpy(buf, &crc, sizeof(crc));
+    __builtin_memcpy(buf, &crc, sizeof(crc));
     out_len += 4;
 
     if (!hal_storage_write_blob(slot, buf, out_len)) return false;

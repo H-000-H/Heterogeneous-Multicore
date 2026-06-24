@@ -7,8 +7,9 @@
  * Bindings:
  *   esp32,spi                        — vfs/spi/bus/spi_bus.c (Slave 总线)
  *   esp32,spi-master                 — vfs/spi/bus/spi_bus.c (Master 总线)
- *   heterogeneous,fft-spi-slave      — drivers/fft/fft_spi_drv.c → spi_slave_client
- *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c → spi_master_client
+ *   heterogeneous,spi-master-client  — vfs/spi/spi_vfs.c (Master 通用 client)
+ *   heterogeneous,fft-spi-slave      — vfs/spi/spi_vfs.c (Slave 通用 client)
+ *   winbond,w25q64                   — drivers/flash/w25q64_spi_drv.c (Flash 叶子设备)
  */
 
 #include "esp32s3.dtsi"
@@ -43,13 +44,20 @@
 		dma-chan       =<DTS_SPI_DEFAULT_DMA_CHAN>;
 		status 	       ="disabled";
 
-		w25q64_master: w25q64@0 {
-			compatible = "heterogeneous,w25q64-master";
-			reg	   		=<0>;
-			spi-mode   		=<DTS_SPI_DEFAULT_MODE>;
-			spi-max-frequency	=<DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
-			queue-size		=<DTS_SPI_DEFAULT_QUEUE_SIZE>;
-			status			="disabled";
+		spi_master: spi-master@0 {
+			compatible = "heterogeneous,spi-master-client";
+			reg = <0>;
+			spi-mode = <DTS_SPI_DEFAULT_MODE>;
+			spi-max-frequency = <DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+			queue-size = <DTS_SPI_DEFAULT_QUEUE_SIZE>;
+			status = "disabled";
+
+			w25q64_master: w25q64@0 {
+				compatible = "winbond,w25q64";
+				reg = <0>;
+				max-trans-buffer = <512>;
+				status = "disabled";
+			};
 		};
 	};
 };

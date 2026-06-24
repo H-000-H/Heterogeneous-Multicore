@@ -4,9 +4,7 @@
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/etl.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/hal_if/paths.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/hal_bus/paths.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/vfs/spi/paths.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/hal/paths.cmake")
 
 set(KCONFIG_DOT "${CMAKE_CURRENT_LIST_DIR}/.config")
 set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${KCONFIG_DOT}")
@@ -17,14 +15,29 @@ file(STRINGS "${KCONFIG_DOT}" CONFIG_HAL_GPIO_ENTRY
      REGEX "^CONFIG_HAL_GPIO_(STM32|CH32|ESP32)=y$")
 
 if(CONFIG_HAL_GPIO_ENTRY STREQUAL "CONFIG_HAL_GPIO_STM32=y")
-    set(HAL_GPIO_SRC "hal_if/gpio/hal_gpio_stm32.c")
-    set(HAL_CPU_DELAY_SRC "hal_if/cpu/hal_cpu_delay_stm32.c")
+    set(HAL_GPIO_SRC "hal/gpio/hal_gpio_stm32.c")
+    set(HAL_CPU_DELAY_SRC "hal/cpu/hal_cpu_delay_stm32.c")
+    set(HAL_PLATFORM_SRCS
+        "hal/system/hal_dma_stm32.c"
+    )
+    set(NEW_ARCH_SRCS
+        "hal/spi/hal_spi_stm32.c"
+        "hal/uart/hal_uart_stm32.c"
+        "bus/dma/dma_core.c"
+        "bus/dma/dma_stm32.c"
+    )
 elseif(CONFIG_HAL_GPIO_ENTRY STREQUAL "CONFIG_HAL_GPIO_CH32=y")
-    set(HAL_GPIO_SRC "hal_if/gpio/hal_gpio_ch32.c")
-    set(HAL_CPU_DELAY_SRC "hal_if/cpu/hal_cpu_delay_ch32.c")
+    set(HAL_GPIO_SRC "hal/gpio/hal_gpio_ch32.c")
+    set(HAL_CPU_DELAY_SRC "hal/cpu/hal_cpu_delay_ch32.c")
 else()
-    set(HAL_GPIO_SRC "hal_if/gpio/hal_gpio_esp32.c")
+    set(HAL_GPIO_SRC "hal/gpio/hal_gpio_esp32.c")
     set(HAL_CPU_DELAY_SRC "")
+    set(HAL_PLATFORM_SRCS "")
+    set(NEW_ARCH_SRCS "")
+endif()
+
+if(NOT DEFINED HAL_PLATFORM_SRCS)
+    set(HAL_PLATFORM_SRCS "")
 endif()
 
 if(CONFIG_OSAL_ENTRY STREQUAL "CONFIG_OSAL_FREERTOS=y")
@@ -41,6 +54,7 @@ endif()
 if(CONFIG_SYSTEM_ENTRY STREQUAL "CONFIG_SYSTEM_CPP=y")
     set(SYSTEM_SRCS
         "system_cpp/src/lifecycle.cpp"
+        "system_cpp/src/system_cmd.cpp"
         "system_cpp/src/system_init.cpp"
         "system_cpp/src/system_runtime.cpp"
         "system_cpp/src/system_scrubber.cpp"
@@ -58,24 +72,23 @@ else()
     )
 endif()
 
-set(HAL_BUS_SRCS
-    "hal_bus/hal_bus_dummy.c"
-)
-
 set(HAL_SRCS
     ${HAL_GPIO_SRC}
     ${HAL_CPU_DELAY_SRC}
-    "hal_if/cpu/hal_cpu_amp.c"
-    "hal_if/soc/stm32f407/hal_stm32f407.c"
-    "hal_if/hal_if_dummy.c"
+    ${HAL_PLATFORM_SRCS}
+    ${NEW_ARCH_SRCS}
+    "hal/cpu/hal_cpu_amp.c"
+    "hal/soc/stm32f407/hal_stm32f407.c"
+    "hal/hal_if_dummy.c"
 )
 
 set(DRIVER_SRCS
     "drivers/flash/w25q64_spi_drv.c"
-    "vfs/spi/bus/spi_bus.c"
-    "vfs/spi/master/spi_master_client.c"
     "vfs/gpio/vfs-gpio.c"
-    "vfs/uart/vfs-uart.c"
+    "bus/spi/spi_bus.c"
+    "bus/uart/uart_bus.c"
+    "vfs/spi/spi_vfs.c"
+    "vfs/uart/uart_vfs.c"
 )
 
 set(KCONFIG_GEN_DIR "${CMAKE_BINARY_DIR}/generated/kconfig/mini_tree")
@@ -126,6 +139,8 @@ add_custom_command(
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/uart"
+            "${CMAKE_CURRENT_LIST_DIR}/bus/spi"
+            "${CMAKE_CURRENT_LIST_DIR}/bus/uart"
     DEPENDS
         "${DTC_LITE}"
         "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/ast.py"
@@ -139,13 +154,16 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/stm32f407-gpio.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-spi.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-uart.dtsi"
+        "${BOARD_DTSI_DIR}/stm32f407-dma.dtsi"
         "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${BOARD_DT_BINDINGS_DIR}/uart/uart-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/bus/spi_bus.c"
-        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/master/spi_master_client.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
+        "${CMAKE_CURRENT_LIST_DIR}/vfs/uart/uart_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio/vfs-gpio.c"
+        "${CMAKE_CURRENT_LIST_DIR}/bus/spi/spi_bus.c"
+        "${CMAKE_CURRENT_LIST_DIR}/bus/uart/uart_bus.c"
     COMMENT "Running dtc-lite on stm32f407zgt6.dts"
     VERBATIM
 )
@@ -162,12 +180,12 @@ add_custom_command(
 
 add_library(mini_tree STATIC
     ${OSAL_SRCS}
-    ${HAL_BUS_SRCS}
     ${HAL_SRCS}
     "board/src/board_device.c"
-    "board/src/bus.c"
+    "board/src/board_dma.c"
     "board/src/dev_lifecycle.c"
     "board/src/board_driver.c"
+    "board/src/bus.c"
     "board/src/config_store.c"
     "board/src/task_config.c"
     "board/src/task_utils.c"
@@ -181,6 +199,17 @@ add_library(mini_tree STATIC
     "algorithm/buffer/circle_fifo_buffer.c"
 )
 
+target_include_directories(mini_tree PUBLIC
+    "${CMAKE_CURRENT_LIST_DIR}/bus/dma"
+    "${CMAKE_CURRENT_LIST_DIR}/bus/include"
+    "${CMAKE_CURRENT_LIST_DIR}/hal/spi"
+    "${CMAKE_CURRENT_LIST_DIR}/hal/uart"
+    "${CMAKE_CURRENT_LIST_DIR}/bus/spi"
+    "${CMAKE_CURRENT_LIST_DIR}/bus/uart"
+    "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
+    "${CMAKE_CURRENT_LIST_DIR}/vfs/uart"
+)
+
 set_source_files_properties(${GEN_SRCS} PROPERTIES GENERATED TRUE)
 
 target_include_directories(mini_tree
@@ -190,10 +219,7 @@ target_include_directories(mini_tree
         "${CMAKE_CURRENT_LIST_DIR}/board/dt-bindings/gpio"
         "${CMAKE_CURRENT_LIST_DIR}/board/include"
         "${CMAKE_CURRENT_LIST_DIR}/core/include"
-        ${HAL_BUS_INCLUDE_DIRS}
-        ${HAL_IF_INCLUDE_DIRS}
-        "${CMAKE_CURRENT_LIST_DIR}/hal_if/soc/stm32f407"
-        ${VFS_SPI_INCLUDE_DIRS}
+        ${HAL_INCLUDE_DIRS}
         "${CMAKE_CURRENT_LIST_DIR}/osal/include"
         "${CMAKE_CURRENT_LIST_DIR}/system_c/include"
         "${CMAKE_CURRENT_LIST_DIR}/system_cpp/include"

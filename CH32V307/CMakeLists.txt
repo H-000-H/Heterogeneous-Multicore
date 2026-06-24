@@ -32,7 +32,7 @@ project(${CMAKE_PROJECT_NAME} VERSION 1.0.0 LANGUAGES C CXX ASM)
 
 file(GLOB_RECURSE CH307_NODE_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/SRC/Core/*.c"
-    "${CMAKE_CURRENT_SOURCE_DIR}/SRC/User/ch32v30x_it.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SRC/User/*.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/SRC/Startup/startup_ch32v30x_D8C.S"
     "${CMAKE_CURRENT_SOURCE_DIR}/app/src/*.cpp"
 )
@@ -63,8 +63,9 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${CH307_NODE_SRCS})
 
+add_subdirectory(hal)
 add_subdirectory(mini_tree)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE mini_tree)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE mini_tree ch32_periph)
 
 target_include_directories(mini_tree PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/SRC/Peripheral/inc"

@@ -1,3 +1,15 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * GPIO HAL 层 — 硬件抽象接口 (ESP32-S3)
+ *
+ * 结构与 API 与 STM32/CH32 hal_gpio.h 对齐, 采用 fast/safe 双层 inline。
+ * 职责: 虚拟引脚抽象 + ESP-IDF gpio driver 调用, 不含锁/中断管理。
+ *
+ * 虚拟引脚 hal_pin_t:
+ *   v[0] = port_idx (ESP32 固定为 0)
+ *   v[1] = pin_idx  (即 SoC gpio_num_t)
+ *   平台通过 g_pin_lut[] 解包为 gpio_num_t。
+ */
 #ifndef HAL_GPIO_H
 #define HAL_GPIO_H
 

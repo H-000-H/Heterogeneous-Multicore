@@ -9,6 +9,7 @@ dependencies.lock
 # 过滤编辑器本地配置
 .vscode/
 .idea/
+.cursor/
 *.suo
 *.ntvs*
 *.njsproj

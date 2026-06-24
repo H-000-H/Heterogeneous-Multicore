@@ -14,7 +14,7 @@
 #define configTICK_RATE_HZ                      1000
 #define configMAX_PRIORITIES                    32
 #define configMINIMAL_STACK_SIZE                128
-#define configTOTAL_HEAP_SIZE                   8192
+#define configTOTAL_HEAP_SIZE                   4096
 #define configMAX_TASK_NAME_LEN                 16
 #define configUSE_TRACE_FACILITY                0
 #define INCLUDE_eTaskGetState                   1

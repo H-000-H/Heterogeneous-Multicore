@@ -15,6 +15,7 @@
 
 #include "stm32f407.dtsi"
 #include "stm32f407-gpio.dtsi"
+#include "stm32f407-dma.dtsi"
 #include "stm32f407-spi.dtsi"
 #include "stm32f407-uart.dtsi"
 

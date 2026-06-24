@@ -333,7 +333,8 @@ inline bool SystemCmd::registerCmd(const char* name, bool (*handler)(Ctx*))
 #ifndef CONFIG_OSAL_NULL
     CmdString cmd(name);
     osal_spinlock_lock(m_lock);
-    if (m_commands.full() || m_commands.contains(cmd)) {
+    if (m_commands.full() || m_commands.contains(cmd)) 
+    {
         osal_spinlock_unlock(m_lock);
         return false;
     }

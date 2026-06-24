@@ -8,9 +8,12 @@ typedef enum {
     DEV_ID_ = 0,
     DEV_ID_CPU_0 = 1,
     DEV_ID_SOC = 2,
-    DEV_ID_SPI_0 = 3,
-    DEV_ID_DEVICE_0 = 4,
-    DEV_ID_COUNT = 5
+    DEV_ID_GPIO_0 = 3,
+    DEV_ID_GPIOS_PIN_0 = 4,
+    DEV_ID_SPI_0 = 5,
+    DEV_ID_W25Q64_0 = 6,
+    DEV_ID_UART_0 = 7,
+    DEV_ID_COUNT = 8
 } device_id_t;
 
 #endif /* BOARD_NODES_H */

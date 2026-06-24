@@ -14,7 +14,9 @@
 /dts-v1/;
 
 #include "ch32v307.dtsi"
+#include "ch32v307-gpio.dtsi"
 #include "ch32v307-spi.dtsi"
+#include "ch32v307-uart.dtsi"
 
 / {
 	#address-cells = <1>;

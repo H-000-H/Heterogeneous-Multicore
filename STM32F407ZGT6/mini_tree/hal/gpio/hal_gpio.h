@@ -1,3 +1,15 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * GPIO HAL 层 — 硬件抽象接口 (STM32/CH32)
+ *
+ * 结构与 API 与 ESP32 hal_gpio.h 对齐, 采用 fast/safe 双层 inline。
+ * 职责: 虚拟引脚抽象 + 寄存器直写, 不含锁/中断管理。
+ *
+ * 虚拟引脚 hal_pin_t:
+ *   v[0] = port_idx (0=GPIOA, 1=GPIOB, ...)
+ *   v[1] = pin_idx  (0..15)
+ *   平台通过 g_*_port_lut[] / g_*_pin_lut[] 解包为寄存器地址与掩码。
+ */
 #ifndef HAL_GPIO_H
 #define HAL_GPIO_H
 
@@ -15,6 +27,11 @@ extern "C"
 #define HAL_GPIO_PORT_DEFAULT 0
 #define HAL_PIN_INVALID_NUM   UINT16_MAX
 
+/* 跨平台虚拟逻辑引脚
+ * 无论哪个平台，都不要把原生指针或原生掩码丢进来！
+ * v[0] (port): 虚拟端口号。如 0=PORTA, 1=PORTB, 2=PORTC... (ESP32固定为0)
+ * v[1] (pin):  虚拟引脚号。如 0=PIN0, 1=PIN1, 5=PIN5...
+ */
 typedef struct hal_pin
 {
     uint16_t v[2];   /* v[0]=port_idx, v[1]=pin_idx */

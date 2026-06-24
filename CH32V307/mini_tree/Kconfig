@@ -129,6 +129,49 @@ config ENABLE_FLASH_SCRUBBER
       Independent of ENABLE_WDT.
 endmenu
 
+menu "HAL GPIO"
+
+config HAL_GPIO_PORT_ENUM
+    bool "GPIO port enum (GPIOA/B/C for multi-port MCUs)"
+    default y
+    help
+      Enable gpio-port field in device tree for multi-port MCUs (STM32/CH32).
+      hal_pin_probe reads port when enabled; port is always 0 on ESP32.
+
+choice HAL_PIN_MAP_MODE
+    prompt "Logical pin to HW GPIO encoding"
+    default HAL_PIN_MAP_LINEAR
+    help
+      How hal_pin_map_hw_gpio() encodes hal_pin_t for subsystems
+      that need a single integer (e.g. ESP-IDF SPI pin numbers).
+
+config HAL_PIN_MAP_FLAT
+    bool "Flat (pin field only, ESP32)"
+
+config HAL_PIN_MAP_LINEAR
+    bool "Linear (port << 4 | pin, STM32/CH32)"
+
+endchoice
+
+choice HAL_GPIO_BACKEND
+    prompt "GPIO driver backend"
+    default HAL_GPIO_CH32
+    help
+      Platform-specific GPIO implementation linked at build time.
+
+config HAL_GPIO_ESP32
+    bool "ESP-IDF gpio driver"
+
+config HAL_GPIO_STM32
+    bool "STM32 register GPIO"
+
+config HAL_GPIO_CH32
+    bool "CH32 GPIO library"
+
+endchoice
+
+endmenu
+
 menu "Runtime Capacity"
 
 config EVENT_BUS_QUEUE_LEN

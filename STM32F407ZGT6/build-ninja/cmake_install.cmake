@@ -47,11 +47,6 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree/cmake_install.cmake")
 endif()
 
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/hal/cmake_install.cmake")
-endif()
-
 if(CMAKE_INSTALL_COMPONENT)
   set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
 else()

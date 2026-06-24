@@ -5,13 +5,14 @@
 
 #include "board_config.h"
 #include "board_devtable.h"
+#include "board_dma.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "compiler_compat.h"
-#include "hal_cpu_fast.h"
+#include "hal_cpu.h"
 #include "event_bus.h"
 #include "safe_state.h"
 #include "compiler_compat_poison.h"
@@ -21,7 +22,7 @@ _Static_assert(OSAL_MUTEX_POOL_SIZE >= DEV_ID_COUNT,
                "OSAL_MUTEX_POOL_SIZE too small for DEV_ID_COUNT devices");
 
 /* ── 运行时设备实例表 ── */
-static struct device s_devices[DEV_ID_COUNT];
+static struct device s_devices[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 static uint8_t s_device_lock_storage[DEV_ID_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
 /* ── device_set_status FSM 原子锁 (IEC 61508 2.7.1) ── */
@@ -97,6 +98,9 @@ int device_tree_init(void)
                  board_dev_count(), OSAL_MUTEX_POOL_SIZE);
     }
 
+    if (board_dma_register_channels() != VFS_OK)
+        return VFS_ERR_IO;
+
     return board_dev_count() > 0 ? VFS_OK : VFS_ERR_IO;
 }
 
@@ -106,28 +110,43 @@ int device_tree_init(void)
 /* ── 运行时设备实例访问 ── */
 struct device* board_dev_get(device_id_t id)
 {
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT) return NULL;
+    if ((int)id < 0 || (int)id >= DEV_ID_COUNT)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
     return &s_devices[id];
 }
 
 struct device* device_find(const char* name)
 {
-    device_id_t id = board_dev_find(name);
-    if ((int)id < 0) return NULL;
+    device_id_t id;
+
+    if (!name)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    id = board_dev_find(name);
+    if ((int)id < 0)
+        return (struct device*)ERR_PTR(VFS_ERR_NODEV);
     return board_dev_get(id);
 }
 
 struct device* device_find_by_label(const char* label)
 {
-    device_id_t id = board_dev_find_by_label(label);
-    if ((int)id < 0) return NULL;
+    device_id_t id;
+
+    if (!label)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    id = board_dev_find_by_label(label);
+    if ((int)id < 0)
+        return (struct device*)ERR_PTR(VFS_ERR_NODEV);
     return board_dev_get(id);
 }
 
 struct device* device_get_phandle_dev(const struct device* dev, const char* key)
 {
     const char* val;
-    if (device_get_prop_str(dev, key, &val) != VFS_OK) return NULL;
+
+    if (!dev || !key)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    if (device_get_prop_str(dev, key, &val) != VFS_OK)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
     /* dtc-lite 将 phandle 引用存为 label 名字符串 */
     return device_find_by_label(val);
 }
@@ -139,28 +158,38 @@ struct device* device_find_by_id(device_id_t id)
 
 struct device* device_find_by_path(const char* path)
 {
-    if (!path) return NULL;
+    if (!path)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
     for (int i = 0; i < DEV_ID_COUNT; i++)
     {
         const struct device_node* node = board_node_get((device_id_t)i);
         if (node && node->path && strcmp(node->path, path) == 0)
             return board_dev_get((device_id_t)i);
     }
-    return NULL;
+    return (struct device*)ERR_PTR(VFS_ERR_NODEV);
 }
 
 struct device* device_find_by_compatible(const char* compatible)
 {
-    device_id_t id = board_dev_find_by_compat(compatible);
-    if ((int)id < 0) return NULL;
+    device_id_t id;
+
+    if (!compatible)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    id = board_dev_find_by_compat(compatible);
+    if ((int)id < 0)
+        return (struct device*)ERR_PTR(VFS_ERR_NODEV);
     return board_dev_get(id);
 }
 
 struct device* device_get_parent(const struct device* dev)
 {
-    if (!dev || !dev->node) return NULL;
-    const struct device_node* node = dev->node;
-    if (node->dep_count <= 0 || !node->deps) return NULL;
+    const struct device_node* node;
+
+    if (!dev || !dev->node)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    node = dev->node;
+    if (node->dep_count <= 0 || !node->deps)
+        return (struct device*)ERR_PTR(VFS_ERR_NODEV);
     return board_dev_get(node->deps[0]);
 }
 
@@ -264,7 +293,7 @@ int device_get_prop_int_array(const struct device* dev, const char* key, int* ou
         char token[64];
         size_t len = (size_t)(p - start);
         if (len >= sizeof(token)) return VFS_ERR_INVAL;
-        memcpy(token, start, len);
+        __builtin_memcpy(token, start, len);
         token[len] = '\0';
 
         if (safe_parse_int32(token, &out_arr[count]) != 0) return VFS_ERR_INVAL;
@@ -356,28 +385,38 @@ int device_set_priv(struct device* dev, void* priv)
 
 void* device_get_priv(const struct device* dev)
 {
-    return dev ? dev->priv_data : NULL;
+    if (!dev)
+        return ERR_PTR(VFS_ERR_INVAL);
+    if (!dev->priv_data)
+        return ERR_PTR(VFS_ERR_NODEV);
+    return dev->priv_data;
 }
 
 /* ── 设备遍历 ── */
 struct device* device_get_first(void)
 {
-    return board_dev_count() > 0 ? board_dev_get((device_id_t)0) : NULL;
+    if (board_dev_count() <= 0)
+        return (struct device*)ERR_PTR(VFS_ERR_NODEV);
+    return board_dev_get((device_id_t)0);
 }
 
 struct device* device_get_next(const struct device* prev)
 {
-    if (!prev) return NULL;
+    if (!prev)
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
+    if (IS_ERR(prev))
+        return (struct device*)ERR_PTR(VFS_ERR_INVAL);
     for (int i = 0; i < board_dev_count(); i++)
     {
         if (board_dev_get((device_id_t)i) == prev)
         {
             int next = i + 1;
-            if (next >= board_dev_count()) return NULL;
+            if (next >= board_dev_count())
+                return (struct device*)ERR_PTR(VFS_ERR_NODEV);
             return board_dev_get((device_id_t)next);
         }
     }
-    return NULL;
+    return (struct device*)ERR_PTR(VFS_ERR_INVAL);
 }
 
 int device_get_count(void)
@@ -406,6 +445,11 @@ int device_open(struct device* dev, void* arg)
     {
         COMPAT_IGNORE_RESULT(device_unlock(dev));
         return VFS_ERR_IO;
+    }
+    if (dev->status == DEVICE_STATUS_RUNNING)
+    {
+        COMPAT_IGNORE_RESULT(device_unlock(dev));
+        return VFS_OK;
     }
     if (dev->status != DEVICE_STATUS_PROBED)
     {
@@ -593,11 +637,42 @@ void device_ops_unregister(struct device* dev)
 
 struct dev_lifecycle* device_lc(struct device* dev)
 {
-    return dev ? &dev->lc : NULL;
+    if (!dev)
+        return (struct dev_lifecycle*)ERR_PTR(VFS_ERR_INVAL);
+    return &dev->lc;
 }
 
 void device_lc_bind(struct device* dev, struct osal_mutex* io_lock)
 {
     if (dev)
         dev_lc_init(&dev->lc, io_lock);
+}
+
+static hal_pin_t pin_from_parts(int port, int pin)
+{
+    int p = (port >= 0) ? port : HAL_GPIO_PORT_DEFAULT;
+    return hal_pin_make(p, (uint16_t)pin);
+}
+
+int hal_pin_probe(const struct device* dev, const char* port_key, const char* pin_key,
+                  hal_pin_t* out)
+{
+    int port = 0;
+    int pin  = -1;
+
+    if (!dev || !pin_key || !out)
+        return VFS_ERR_INVAL;
+
+    if (device_get_prop_int(dev, pin_key, &pin))
+        return VFS_ERR_INVAL;
+
+#if COMPAT_CFG_ENABLED(HAL_GPIO_PORT_ENUM)
+    if (port_key)
+        COMPAT_IGNORE_RESULT(device_get_prop_int(dev, port_key, &port));
+#else
+    (void)port_key;
+#endif
+
+    *out = pin_from_parts(port, pin);
+    return VFS_OK;
 }

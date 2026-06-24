@@ -1,11 +1,10 @@
 /*
- * FFT SPI 驱动 — 委托 spi_slave_vfs 实现（dtc-lite drivers/fft 目录占位）
+ * FFT SPI 驱动 — 委托 spi_vfs slave 实现（dtc-lite drivers/fft 目录占位）
  */
-#include "spi_slave_vfs.h"
-
 #include "device.h"
 #include "driver.h"
 #include "VFS.h"
+#include "spi_vfs.h"
 #include "compiler_compat_poison.h"
 
 int fft_spi_probe(struct device* dev)

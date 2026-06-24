@@ -13,6 +13,11 @@
 #ifndef EPROBE_DEFER
 #define EPROBE_DEFER 140
 #endif
+
+#ifndef ENOSYS
+#define ENOSYS 38
+#endif
+
 #define VFS_ERR_INVAL    (-EINVAL)       /* 无效参数 */
 #define VFS_ERR_NOMEM    (-ENOMEM)       /* 内存不足 */
 #define VFS_ERR_IO       (-EIO)          /* 物理 IO 错误 */
@@ -23,6 +28,7 @@
 #define VFS_ERR_HW_FATAL (-EHWPOISON)    /* 硬件物理故障, 不可恢复 */
 #define VFS_ERR_DEFER    (-EPROBE_DEFER) /* 依赖未就绪, 稍后重试 */
 #define VFS_ERR_NODEV    (-ENODEV)       /* 设备已拆除或不存在 */
+#define VFS_ERR_NOTSUPP  (-ENOSYS)       /* 操作不支持/未实现 */
 
 /* 指针的特殊处理 */
 extern const char ERR_SECTION_BASE;
