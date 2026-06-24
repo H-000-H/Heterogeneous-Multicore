@@ -25,6 +25,7 @@ probe_fn_t board_probe_get_fn(device_id_t id);
 remove_fn_t board_remove_get_fn(device_id_t id);
 
 const device_id_t* board_cascade_get(device_id_t id, int* count);
+const device_id_t* board_children_get(device_id_t id, int* count);
 
 #ifdef __cplusplus
 }

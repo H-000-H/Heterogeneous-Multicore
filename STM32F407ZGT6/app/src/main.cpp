@@ -18,18 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
-#include "can.h"
-#include "i2c.h"
-#include "rtc.h"
-#include "spi.h"
-#include "tim.h"
-#include "usart.h"
-#include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "system_init.h"
+#include "driver.h"
+#include "spi.h"
+#include "usart.h"
+#include "compiler_compat.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,6 +58,13 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+pre_execution(50)
+static void stm32_board_periph_init(void)
+{
+    MX_SPI1_Init();
+    MX_UART4_Init();
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -91,7 +94,12 @@ extern "C" __attribute__((used, section(".entry"))) int stm32f407zgt6_node_main(
 
   /* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
+  /* mini_tree 两段式点火 (时钟 SystemClock_Config; 外设 GPIO 由 main pre_execution) */
+  mini_tree_pre_os_init();
+  board_register_all_drivers();
+  mini_tree_start_tasks();
+  system_init_complete();
+
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -100,6 +108,7 @@ extern "C" __attribute__((used, section(".entry"))) int stm32f407zgt6_node_main(
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    mini_tree_system_loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

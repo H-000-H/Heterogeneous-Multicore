@@ -13,24 +13,13 @@ import sys
 from pathlib import Path
 from typing import List
 
-# ESP-IDF bundles a custom kconfiglib that may not export TRISTATE
-from kconfiglib import Kconfig
+# kconfiglib ships as a single module (pip); no kconfiglib.core subpackage
+from kconfiglib import Kconfig, BOOL, HEX, INT, STRING
 try:
-    # Newer/forked layout (some ESP-IDF bundles use this)
-    from kconfiglib.core import BOOL, HEX, INT, STRING
-    try:
-        from kconfiglib.core import TRISTATE
-        _BOOL_TYPES = (BOOL, TRISTATE)
-    except ImportError:
-        _BOOL_TYPES = (BOOL,)
+    from kconfiglib import TRISTATE
+    _BOOL_TYPES = (BOOL, TRISTATE)
 except ImportError:
-    # Upstream single-module layout
-    from kconfiglib import BOOL, HEX, INT, STRING
-    try:
-        from kconfiglib import TRISTATE
-        _BOOL_TYPES = (BOOL, TRISTATE)
-    except ImportError:
-        _BOOL_TYPES = (BOOL,)
+    _BOOL_TYPES = (BOOL,)
 
 
 def _atomic_write(path: Path, content: str) -> None:

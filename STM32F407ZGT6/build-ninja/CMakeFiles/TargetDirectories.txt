@@ -8,6 +8,8 @@ D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree/CMakeFile
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree/CMakeFiles/mini_tree_gen.dir
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree/CMakeFiles/edit_cache.dir
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree/CMakeFiles/rebuild_cache.dir
+D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree_etl/CMakeFiles/edit_cache.dir
+D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/mini_tree_etl/CMakeFiles/rebuild_cache.dir
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/hal/CMakeFiles/stm32f407_hal.dir
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/hal/CMakeFiles/edit_cache.dir
 D:/Heterogeneous-Multicore-project/STM32F407ZGT6/build-ninja/hal/CMakeFiles/rebuild_cache.dir

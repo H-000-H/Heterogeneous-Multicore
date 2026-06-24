@@ -7,6 +7,7 @@
 #include "board_nodes.h"
 #include "dev_lifecycle.h"
 #include "compiler_compat.h"
+#include "hal_gpio.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -137,6 +138,11 @@ int device_get_prop_str(const struct device* dev, const char* key, const char** 
     COMPAT_WARN_UNUSED_RESULT;
 int device_get_prop_bool(const struct device* dev, const char* key, int* val)
     COMPAT_WARN_UNUSED_RESULT;
+
+/* 从 DTS 属性读取 port + pin → hal_pin_t (port_key 可省略, 默认 0) */
+int hal_pin_probe(const struct device* dev, const char* port_key, const char* pin_key,
+                  hal_pin_t* out) COMPAT_WARN_UNUSED_RESULT;
+
 const char* device_get_name(const struct device* dev);
 const char* device_get_compatible(const struct device* dev);
 enum device_status device_get_status(const struct device* dev);

@@ -1,92 +1,165 @@
-# mini_tree 设备树说明 (STM32F407)
+# mini_tree 设备树说明 (ESP32-S3)
 
 编译期由 `tools/dtc-lite.py`（**PLY 词法分析** + 递归下降语法分析）解析 `board/dts/*.dts` 与 `board/dtsi/*.dtsi`，生成 `board_nodes.h`、`board_devtable.c`、`board_probe.c`、`dt_config_gen.h` 等。
 
 ## 文件布局（Linux 写法；dts / dtsi 分目录）
 
 ```
-board/dts/stm32f407zgt6.dts        板级入口 (/dts-v1/, includes, / { }, &label)
-board/dtsi/stm32f407.dtsi          SoC 根 / { compatible, cpus, soc: soc { ... } }
-board/dtsi/stm32f407-spi.dtsi      IP: #include soc.dtsi + &soc { spi@0 { ... } }
+board/dts/esp32-s3-devkitc-1.dts   板级入口 (/dts-v1/, includes, / { }, &label)
+board/dtsi/esp32s3.dtsi            SoC 根 / { compatible, cpus, soc: soc { ... } }
+board/dtsi/esp32s3-spi.dtsi        IP: &soc { spi@0 / spi@1 + 子设备 }
+board/dtsi/esp32s3-ws2812.dtsi     IP: &soc { led@0 { ... } }
 board/dt-bindings/                 #include <dt-bindings/...> 常量
 tools/dtc-lite.py                  CLI 入口（CMake 调用）
 tools/dtc_lite/                    PLY 编译器实现
 tools/vendor/ply/                  vendored PLY 3.x（构建无需 pip install）
 ```
 
-| Linux 内核 | mini_tree (STM32) |
-|------------|-------------------|
-| `stm32f407.dtsi` | `board/dtsi/stm32f407.dtsi` |
-| `stm32f407-dk.dts` | `board/dts/stm32f407zgt6.dts` |
+| Linux 内核 | mini_tree (ESP32-S3) |
+|------------|----------------------|
+| `esp32s3.dtsi` | `board/dtsi/esp32s3.dtsi` |
+| `esp32-s3-devkitc-1.dts` | `board/dts/esp32-s3-devkitc-1.dts` |
 | `&soc { ... };` | 同左 |
 | `#include <dt-bindings/...>` | 同左（dtc-lite 从 `board/dt-bindings/` 解析） |
 
 ## dtc-lite 编译流水线
 
 ```
-board/dts/*.dts → ① #include 预处理 → ② PLY lexer → ③ parser → AST
-    → ④ compiler（overlay 合并 / 驱动校验）→ ⑤ generator → board_*.c/h
+board/dts/*.dts
+    │  ① C 预处理器（#include / #define / #ifdef，非 PLY）
+    ▼
+合并后的 DTS 文本
+    │  ② PLY lexer（dtc_lite/lexer.py）
+    ▼
+Token 流
+    │  ③ 递归下降 parser（dtc_lite/parser.py）
+    ▼
+DtsNode AST
+    │  ④ 语义 Pass（dtc_lite/compiler.py）
+    │     - label_map → &label 延迟合并 / 虚空创生
+    │     - aliases / chosen / interrupt 解析
+    │     - DRIVER_REGISTER 扫描 + compatible 校验
+    ▼
+device_list + driver_map
+    │  ⑤ C 代码生成（dtc_lite/generator.py）
+    ▼
+board_devtable.c / board_probe.c / dt_config_gen.h ...
 ```
 
-## dtc-lite 解析规则（无序全解耦版）
+**无序全解耦：** 多个 `/ { }` 任意顺序合并；`&label { }` 延迟合并；未知 label 可自动创生（仍建议在 IP dtsi 写完整模板）。
 
-**无严格 include 顺序约束。** 多个 `/ { }` 任意合并；`&label { }` 延迟合并；未知 label 可自动创生（仍建议在 IP dtsi 写完整模板）。
+## PLY 词法规格（lexer）
 
-旧约束「板级 `/ { }` 须紧接 SoC dtsi」「不可在两个根节之间插入 `&soc`」**已作废**。
+实现见 `tools/dtc_lite/lexer.py`。token 类型：
+
+| Token | 字面/模式 | 说明 |
+|-------|-----------|------|
+| `DTSV1` | `/dts-v1/` | 文件头 |
+| `DELETE_NODE` | `/delete-node/` | 删除节点 |
+| `DELETE_PROP` | `/delete-property/` | 删除属性 |
+| `STRING` | `"..."` | 支持 `\"` `\\` `\n` `\t` |
+| `INT` | `-?(0x... \| \d+)` | 十六进制须 `0x` 前缀 |
+| `IDENT` | `[A-Za-z_][A-Za-z0-9_\-.,/]*` | 含 compatible 中的逗号 |
+| `POUND` | `#` | `#address-cells` 等 |
+| `SLASH` | `/` | 根节点 `/ {`；注释 `//` `/* */` 优先匹配 |
+| 标点 | `{ } ; = < > & : , @` | |
+
+注释与 `/dts-v1/` 的匹配优先级高于裸 `/`，避免 `/*` 被拆成 `SLASH` + 非法 `*`。
+
+## 语法规格（parser）
+
+实现见 `tools/dtc_lite/parser.py`。等价 EBNF：
+
+```ebnf
+document   ::= { top_item }
+top_item   ::= "/dts-v1/" ";"?
+             | "/" "{" node_body "}" ";"?
+             | "&" IDENT "{" node_body "}" ";"?
+             | "/delete-node/" delete_target ";"?
+             | "/delete-property/" IDENT ";"?
+             | ";"
+
+node_body  ::= { body_item }
+
+body_item  ::= "#" IDENT [ "=" prop_value ] ";"?
+             | IDENT "{" node_body "}" ";"?
+             | IDENT ":" IDENT [ "@" addr ] "{" node_body "}" ";"?
+             | IDENT "=" prop_value ";"?
+             | IDENT ";"                          (* boolean property *)
+             | IDENT "@" addr "{" node_body "}" ";"?
+             | IDENT "@" addr int_seq ";"?
+             | "/delete-node/" delete_target ";"?
+             | "/delete-property/" IDENT ";"?
+
+prop_value ::= { STRING | INT | "<" cell_seq ">" | "&" IDENT }
+
+cell_seq   ::= { INT | "&" IDENT | IDENT }
+
+delete_target ::= "&" IDENT | IDENT [ "@" addr ] | "/" path
+```
+
+解析完成后 `DTSCompiler._merge_overlays()` 将 `&label` 引用合并到目标节点；若 label 未定义则按 Linux 语义虚空创生（`soc` 挂根下，其余挂 `/soc` 下）。
 
 ## board *.dts 推荐布局
 
-见 `board/dts/stm32f407zgt6.dts`：
+见 `board/dts/esp32-s3-devkitc-1.dts`：
 
 1. `/dts-v1/`
 2. `#include` SoC dtsi + IP dtsi（**可集中在文件头**）
-3. `/ { model, compatible }`
-4. `&label { ... }` — 启用外设时添加
+3. `/ { model, compatible, aliases }`
+4. `&label { ... }` — 板级引脚 / `status = "okay"`
 
-## IP *.dtsi 推荐布局
+## compatible 与属性契约
 
-见 `board/dtsi/stm32f407-spi.dtsi`：
+### `esp32,spi` / `esp32,spi-master`（总线控制器）
 
-1. `#include "stm32f407.dtsi"`
-2. `#include <dt-bindings/...>`
-3. `&soc { ... }` — 默认 `status = "disabled"`
-
-板级 `.dts` 也会 include SoC dtsi；与 IP dtsi 内重复 include **由 dtc-lite 合并，不重复节点**。
-
-## 职责分层
-
-| 层级 | 文件 | 内容 |
+| 属性 | 类型 | 说明 |
 |------|------|------|
-| 常量 | `board/dt-bindings/*.h` | 仅 `#define` |
-| SoC | `board/dtsi/stm32f407.dtsi` | `cpus` + `soc: soc { simple-bus }` |
-| IP 模板 | `board/dtsi/stm32f407-spi.dtsi` 等 | `&soc { dev@reg }` |
-| 板级 | `board/dts/stm32f407zgt6.dts` | includes + `/ { }` + `&label` |
+| `host-id` | int | HAL SPI host 编号 |
+| `mosi-pin` / `miso-pin` / `sclk-pin` | int | 板级覆写 |
+| `dma-chan` | int | `-1` 表示自动分配 |
+| `max-trans-buffer` | int | 单次传输上限 |
+| `status` | string | `"okay"` / `"disabled"` |
 
-## 节点路径惯例
+- `esp32,spi` → Slave 总线（`spi_bus.c`）
+- `esp32,spi-master` → Master 总线（`spi_master_bus`）
 
-外设路径形如 `/soc/<dev>@<reg>`。运行时通过 `device_get_prop_*()` 读取属性。
+### `heterogeneous,fft-spi-slave` / `heterogeneous,w25q64-master`（SPI 子设备）
 
-## 平台说明
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `cs-pin` | int | 片选 GPIO |
+| `spi-mode` | int | CPOL/CPHA |
+| `spi-max-frequency` | int | Hz |
+| `queue-size` | int | 传输队列深度 |
+| `status` | string | 启用开关 |
 
-SPI 模板见 `board/dtsi/stm32f407-spi.dtsi`（默认 disabled）。启用示例：
+**角色约束（probe 阶段校验）：**
 
-```dts
-&spi1 {
-	status = "okay";
-	/* mosi-pin / miso-pin / sclk-pin 等待板级定义 */
-};
-&spi_dev0 {
-	status = "okay";
-	cs-pin = <N>;
-};
+- `fft-spi-slave` 必须挂在 `esp32,spi`（slave）总线下
+- `w25q64-master` 必须挂在 `esp32,spi-master` 总线下
+
+挂错会在 probe 直接 `VFS_ERR_INVAL`，不会留 `ctx->host == NULL` 的半初始化设备。
+
+### `esp32,ws2812`
+
+| 属性 | 类型 | 说明 |
+|------|------|------|
+| `gpio` | int | 板级必配 |
+| `num-leds` | int | 板级必配 |
+| `brightness` / `color-order` / RMT 时序 | 见 dtsi | 默认来自 `dt-bindings/led/ws2812-timing.h` |
+
+## CMake 集成
+
+`components/mini_tree/CMakeLists.txt` 在构建前调用：
+
+```text
+python tools/dtc-lite.py board/dts/esp32-s3-devkitc-1.dts <build>/generated <driver_dirs...>
 ```
 
-须同时提供对应 `DRIVER_REGISTER` 驱动目录给 `dtc-lite`（CMake `mini_tree/CMakeLists.txt` 中配置）。
+`driver_dirs` 须覆盖所有 `DRIVER_REGISTER` 所在目录，否则 `status = "okay"` 且无驱动的节点会导致构建失败。
 
-新增 IP 时参照 ESP32 仓库 `esp32s3-ws2812.dtsi` 与 ESP32 `board/docs/devicetree.md` binding 表。
+## 依赖
 
----
-
-## compatible: `stm32,spi-host` / `stm32,spi-device`
-
-Bus Host + Interface 两级节点。模板见 `board/dtsi/stm32f407-spi.dtsi`；常量见 `board/dt-bindings/spi/spi-parameter.h`。
+- Python 3.8+
+- PLY 已 vendored 于 `tools/vendor/ply/`，无需额外 `pip install`

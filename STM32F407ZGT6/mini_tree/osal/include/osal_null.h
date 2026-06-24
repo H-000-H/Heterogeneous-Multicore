@@ -25,6 +25,8 @@ extern "C"
  *       // ... 处理 ...
  *       osal_null_isr_exit();
  *   }
+ *
+ * 原子后端在 menuconfig → OSAL Backend → Bare-metal Atomic Backend 配置.
  */
 
 /* 在 ISR 入口调用 (设置 osal_in_isr() 为 true) */

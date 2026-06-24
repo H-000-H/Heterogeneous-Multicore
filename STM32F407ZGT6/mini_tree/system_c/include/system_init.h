@@ -5,14 +5,15 @@
  *
  * 用户工程在 main() 中按两段式点火调用:
  *
- *   int main(void)
- {
- *       platform_hardware_init();
- *       mini_tree_pre_os_init();     // Phase 1
- *       platform_register_drivers();
- *       mini_tree_start_tasks();     // Phase 2
+ *   int main(void) {
+ *       HAL_Init();
+ *       SystemClock_Config();            // 仅保留 Cube 时钟
+ *       mini_tree_pre_os_init();         // Phase 1
+ *       board_register_all_drivers();
+ *       mini_tree_start_tasks();         // Phase 2: DTS probe → hal_if
+ *       system_init_complete();
  *   #ifdef CONFIG_OSAL_NULL
- *       while (1) { mini_tree_system_loop(); }   // 裸机轮询
+ *       while (1) { mini_tree_system_loop(); }
  *   #else
  *       vTaskStartScheduler();
  *   #endif

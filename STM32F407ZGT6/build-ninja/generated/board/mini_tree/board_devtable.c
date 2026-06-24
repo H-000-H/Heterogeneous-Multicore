@@ -13,7 +13,7 @@
 static const struct device_property DEV__props[] = {
     {"#address-cells", "0x1"},
     {"#size-cells", "0x0"},
-    {"model", "STMicro STM32F407ZGT6"},
+    {"model", "STMicroDTS_UART_HOSTID    0STM32F407ZGT6"},
 };
 
 /* /cpus/cpu@0 */
@@ -30,24 +30,66 @@ static const struct device_property DEV_soc_props[] = {
     {"#size-cells", "0x0"},
 };
 
+/* /soc/gpio@0 */
+static const struct device_property DEV_gpio_0_props[] = {
+    {"reg", "0x0"},
+    {"gpio-controller", "true"},
+    {"#gpio-cells", "0x2"},
+};
+
+/* /soc/gpios-pin@0 */
+static const struct device_property DEV_gpios_pin_0_props[] = {
+    {"reg", "0x0"},
+    {"gpio-port", "0x0"},
+    {"gpio-pin", "0x0"},
+    {"gpio-mode", "0x1"},
+    {"gpio-pull", "0x0"},
+    {"gpio-intr", ""},
+    {"default-level", "0x0"},
+};
+
 /* /soc/spi@0 */
 static const struct device_property DEV_spi_0_props[] = {
     {"reg", "0x0"},
+    {"#address-cells", "0x1"},
+    {"#size-cells", "0x0"},
     {"host-id", "0x1"},
     {"dma-chan", "-0x1"},
+    {"mosi-port", "0x0"},
+    {"mosi-pin", "0x7"},
+    {"miso-port", "0x0"},
+    {"miso-pin", "0x6"},
+    {"sclk-port", "0x0"},
+    {"sclk-pin", "0x5"},
 };
 
-/* /soc/spi@0/device@0 */
-static const struct device_property DEV_device_0_props[] = {
+/* /soc/spi@0/w25q64@0 */
+static const struct device_property DEV_w25q64_0_props[] = {
     {"reg", "0x0"},
     {"spi-mode", "0x0"},
     {"spi-max-frequency", "0x989680"},
     {"queue-size", "0x4"},
+    {"cs-port", "0x0"},
+    {"cs-pin", "0x4"},
+};
+
+/* /soc/uart@0 */
+static const struct device_property DEV_uart_0_props[] = {
+    {"reg", "0x0"},
+    {"host-id", "0x0"},
+    {"rx-port", "0x0"},
+    {"rx-pin", "0x1"},
+    {"tx-port", "0x2"},
+    {"tx-pin", "0xa"},
+    {"uart-trans-baund", "0x1c200"},
+    {"data-bit", "0x8"},
+    {"stop-bit", "0x0"},
+    {"parity", "0x0"},
 };
 
 /* ===== 依赖表 ===== */
 
-static const device_id_t DEV_device_0_deps[] = {
+static const device_id_t DEV_w25q64_0_deps[] = {
     DEV_ID_SPI_0,
 };
 
@@ -56,22 +98,43 @@ static const device_id_t DEV_device_0_deps[] = {
 static const uint32_t DEV_cpu_0_REG_DATA[] = {
     0x0,
 };
+static const uint32_t DEV_gpio_0_REG_DATA[] = {
+    0x0,
+};
+static const uint32_t DEV_gpios_pin_0_REG_DATA[] = {
+    0x0,
+};
 static const uint32_t DEV_spi_0_REG_DATA[] = {
     0x0,
 };
-static const uint32_t DEV_device_0_REG_DATA[] = {
+static const uint32_t DEV_w25q64_0_REG_DATA[] = {
+    0x0,
+};
+static const uint32_t DEV_uart_0_REG_DATA[] = {
     0x0,
 };
 static const struct device_reg DEV_cpu_0_REGS[] = {
     { .addr = &DEV_cpu_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
 };
 
+static const struct device_reg DEV_gpio_0_REGS[] = {
+    { .addr = &DEV_gpio_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_gpios_pin_0_REGS[] = {
+    { .addr = &DEV_gpios_pin_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
 static const struct device_reg DEV_spi_0_REGS[] = {
     { .addr = &DEV_spi_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
 };
 
-static const struct device_reg DEV_device_0_REGS[] = {
-    { .addr = &DEV_device_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+static const struct device_reg DEV_w25q64_0_REGS[] = {
+    { .addr = &DEV_w25q64_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
+};
+
+static const struct device_reg DEV_uart_0_REGS[] = {
+    { .addr = &DEV_uart_0_REG_DATA[0], .addr_cells = 1, .size = NULL, .size_cells = 0 },
 };
 
 /* ===== irq 表 ===== */
@@ -129,15 +192,49 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
+    [DEV_ID_GPIO_0] = {
+        .name       = "gpio@0",
+        .label      = "gpio",
+        .compatible = "stm32,gpio",
+        .path       = "/soc/gpio@0",
+        .status     = DEVICE_STATUS_READY,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 3,
+        .props      = DEV_gpio_0_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_gpio_0_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_GPIOS_PIN_0] = {
+        .name       = "gpios-pin@0",
+        .label      = "gpios_pin",
+        .compatible = "heterogeneous,gpios",
+        .path       = "/soc/gpios-pin@0",
+        .status     = DEVICE_STATUS_DISABLED,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 7,
+        .props      = DEV_gpios_pin_0_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_gpios_pin_0_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
     [DEV_ID_SPI_0] = {
         .name       = "spi@0",
         .label      = "spi1",
-        .compatible = "stm32,spi-host",
+        .compatible = "stm32,spi-master",
         .path       = "/soc/spi@0",
         .status     = DEVICE_STATUS_DISABLED,
         .criticality = DEVICE_CRIT_WARNING,
         .flags      = 0,
-        .prop_count = 3,
+        .prop_count = 11,
         .props      = DEV_spi_0_props,
         .dep_count  = 0,
         .deps       = (const device_id_t*)NULL,
@@ -146,20 +243,37 @@ static const struct device_node s_nodes[DEV_ID_COUNT] = {
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
-    [DEV_ID_DEVICE_0] = {
-        .name       = "device@0",
-        .label      = "spi_dev0",
-        .compatible = "stm32,spi-device",
-        .path       = "/soc/spi@0/device@0",
+    [DEV_ID_W25Q64_0] = {
+        .name       = "w25q64@0",
+        .label      = "w25q64_master",
+        .compatible = "heterogeneous,w25q64-master",
+        .path       = "/soc/spi@0/w25q64@0",
         .status     = DEVICE_STATUS_DISABLED,
         .criticality = DEVICE_CRIT_WARNING,
         .flags      = 0,
-        .prop_count = 4,
-        .props      = DEV_device_0_props,
+        .prop_count = 6,
+        .props      = DEV_w25q64_0_props,
         .dep_count  = 1,
-        .deps       = (const device_id_t*)DEV_device_0_deps,
+        .deps       = (const device_id_t*)DEV_w25q64_0_deps,
         .reg_count  = 1,
-        .regs       = (const struct device_reg*)DEV_device_0_REGS,
+        .regs       = (const struct device_reg*)DEV_w25q64_0_REGS,
+        .irq_count  = 0,
+        .irqs       = (const struct device_irq*)NULL,
+    },
+    [DEV_ID_UART_0] = {
+        .name       = "uart@0",
+        .label      = "uart1",
+        .compatible = "stm32,uart1",
+        .path       = "/soc/uart@0",
+        .status     = DEVICE_STATUS_READY,
+        .criticality = DEVICE_CRIT_WARNING,
+        .flags      = 0,
+        .prop_count = 10,
+        .props      = DEV_uart_0_props,
+        .dep_count  = 0,
+        .deps       = (const device_id_t*)NULL,
+        .reg_count  = 1,
+        .regs       = (const struct device_reg*)DEV_uart_0_REGS,
         .irq_count  = 0,
         .irqs       = (const struct device_irq*)NULL,
     },
