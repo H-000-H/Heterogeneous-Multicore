@@ -26,8 +26,6 @@ typedef struct hal_dma_ch32_xfer
 } hal_dma_ch32_xfer_t;
 
 void hal_dma_ch32_clocks_enable(void);
-int  hal_dma_ch32_lock(void);
-void hal_dma_ch32_unlock(void);
 void hal_dma_ch32_init(void);
 
 int hal_dma_ch32_channel_disable(DMA_Channel_TypeDef* channel, uint32_t timeout_ms);

@@ -106,20 +106,7 @@ static inline int hal_spi_transfer(struct hal_spi_dev* dev, const uint8_t* tx, u
     return spi_sync(dev, tx, rx, len, timeout_ms);
 }
 
-/* ===== Slave API (st/ch 不支持, 返回 VFS_ERR_NOTSUPP) ===== */
-int spi_slave_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
-                   size_t len, uint32_t timeout_ms);
-int spi_slave_queue_tx(struct hal_spi_dev* dev, const uint8_t* data, size_t len,
-                       uint32_t timeout_ms);
-int hal_spi_get_trans_result(struct hal_spi_dev* dev, uint8_t* rx_data, size_t rx_cap,
-                             size_t* trans_len, uint32_t timeout_ms);
-
-/* ===== Async API (st/ch 不支持, 返回 VFS_ERR_NOTSUPP) ===== */
-int hal_spi_transfer_async(struct hal_spi_dev* dev,
-                           const uint8_t* tx, uint8_t* rx,
-                           size_t len, hal_spi_callback_t cb,
-                           void* userdata);
-int hal_spi_transfer_poll(struct hal_spi_dev* dev, uint32_t timeout_ms);
+/* ===== Slave / Async API: st/ch 不支持, bus 层直接返回 NOTSUPP ===== */
 
 #ifdef __cplusplus
 }

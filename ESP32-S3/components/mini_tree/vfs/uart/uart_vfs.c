@@ -196,7 +196,7 @@ static int uart_vfs_open(struct device* dev, void* arg)
     struct dev_lifecycle*   lc;
     int                     first;
 
-    (void)arg;
+    COMPAT_IGNORE_RESULT(arg);
     if (!dev || !dev->ops)
         return VFS_ERR_INVAL;
 
@@ -299,7 +299,7 @@ static int uart_vfs_ioctl(struct device* dev, int cmd, void* arg,
     struct dev_lifecycle* lc;
     int                   ret;
 
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     if (!dev || !dev->ops)
         return VFS_ERR_INVAL;
 

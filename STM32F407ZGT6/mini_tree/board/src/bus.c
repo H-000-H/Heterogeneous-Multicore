@@ -32,8 +32,8 @@ static uint8_t               s_client_used[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 /*@=========================================================================================================================*
  * device → device_id 转换
  *
- * 通过 board_dev_find(name) 哈希查表, O(1).
- * 返回 (device_id_t)-1 表示未找到.
+ * 通过 board_dev_find(name) linear scan, O(n).
+ * 返回 (device_id_t)-1 表示未找到 (-fshort-enums 下为 0xFF, 不能用 (int)id < 0 判断).
  *@=========================================================================================================================*/
 static device_id_t device_to_id(const struct device* dev)
 {
@@ -67,7 +67,7 @@ int bus_controller_bind_full(struct device* dev, bus_type_t type,
         return VFS_ERR_INVAL;
 
     id = device_to_id(dev);
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT)
+    if (id == (device_id_t)-1 || (int)id >= DEV_ID_COUNT)
         return VFS_ERR_INVAL;
 
     s_controllers[id].type     = type;
@@ -76,18 +76,6 @@ int bus_controller_bind_full(struct device* dev, bus_type_t type,
     s_controllers[id].hw_ctx   = hw_ctx;
     s_controller_used[id]      = 1;
     return VFS_OK;
-}
-
-/*@=========================================================================================================================*
- * bus_controller_bind — 绑定 controller (legacy, 不带 ctlr_ops)
- *
- * 内部调用 bus_controller_bind_full(dev, type, ops, NULL, hw_ctx).
- * 老驱动兼容, 新驱动应直接用 bus_controller_bind_full.
- *@=========================================================================================================================*/
-int bus_controller_bind(struct device* dev, bus_type_t type,
-                        const struct bus_ops* ops, void* hw_ctx)
-{
-    return bus_controller_bind_full(dev, type, ops, NULL, hw_ctx);
 }
 
 /*@=========================================================================================================================*
@@ -118,7 +106,7 @@ int bus_controller_of(const struct device* dev, struct bus_controller** out)
         return PTR_ERR(parent);
 
     id = device_to_id(parent);
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT || !s_controller_used[id])
+    if (id == (device_id_t)-1 || (int)id >= DEV_ID_COUNT || !s_controller_used[id])
         return VFS_ERR_NODEV;
 
     *out = &s_controllers[id];
@@ -147,12 +135,17 @@ int bus_client_bind(struct device* child, struct device* controller, void* cli_c
         return VFS_ERR_INVAL;
 
     child_id = device_to_id(child);
-    if ((int)child_id < 0 || (int)child_id >= DEV_ID_COUNT)
+    if (child_id == (device_id_t)-1 || (int)child_id >= DEV_ID_COUNT)
         return VFS_ERR_INVAL;
 
     ctl_id = device_to_id(controller);
-    if ((int)ctl_id < 0 || (int)ctl_id >= DEV_ID_COUNT || !s_controller_used[ctl_id])
+    if (ctl_id == (device_id_t)-1 || (int)ctl_id >= DEV_ID_COUNT || !s_controller_used[ctl_id])
         return VFS_ERR_NODEV;
+
+    /* parent 一致性: child 必须是 controller 的子设备 (防止跨树挂载).
+     * device_get_parent 返回 ERR_PTR 时 != controller, 自动走 INVAL 分支. */
+    if (device_get_parent(child) != controller)
+        return VFS_ERR_INVAL;
 
     ctrl = &s_controllers[ctl_id];
     s_clients[child_id].ctrl    = ctrl;
@@ -183,7 +176,7 @@ int bus_client_priv(const struct device* child, void** out)
         return VFS_ERR_INVAL;
 
     id = device_to_id(child);
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT || !s_client_used[id])
+    if (id == (device_id_t)-1 || (int)id >= DEV_ID_COUNT || !s_client_used[id])
         return VFS_ERR_NODEV;
 
     *out = s_clients[id].cli_ctx;
@@ -204,7 +197,7 @@ void bus_controller_unbind(struct device* dev)
         return;
 
     id = device_to_id(dev);
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT)
+    if (id == (device_id_t)-1 || (int)id >= DEV_ID_COUNT)
         return;
 
     s_controller_used[id] = 0;
@@ -225,7 +218,7 @@ void bus_client_unbind(const struct device* child)
         return;
 
     id = device_to_id(child);
-    if ((int)id < 0 || (int)id >= DEV_ID_COUNT)
+    if (id == (device_id_t)-1 || (int)id >= DEV_ID_COUNT)
         return;
 
     s_client_used[id] = 0;

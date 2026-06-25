@@ -163,7 +163,7 @@ int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
     int                ret;
     int                xfer_ret;
 
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     if (!dev || !dev->ctlr || !dev->hw_open || len == 0)
         return VFS_ERR_INVAL;
 
@@ -688,7 +688,7 @@ int spi_controller_xfer(struct hal_spi_bus_host* host, struct hal_spi_hw* hw,
 
 int spi_controller_apply_dev_cfg(struct hal_spi_dev* dev)
 {
-    (void)dev;
+    COMPAT_IGNORE_RESULT(dev);
     return VFS_OK;
 }
 /*===========================================================================================================================================================*/

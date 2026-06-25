@@ -151,14 +151,6 @@ static int ch32_uart_read(struct hal_uart_dev* pdev, uint8_t* data, size_t len)
     return (int)len;
 }
 
-static int ch32_uart_transmit(struct hal_uart_dev* pdev, uint8_t* rx, uint8_t* tx,
-                               size_t rx_len, size_t tx_len)
-{
-    (void)rx; (void)tx; (void)rx_len; (void)tx_len;
-    (void)pdev;
-    return VFS_ERR_NOTSUPP;
-}
-
 static int ch32_uart_deinit(const struct hal_uart_config_t* cfg)
 {
     return ch32_uart_close(cfg);
@@ -169,7 +161,7 @@ static const struct hal_uart_bus s_ch32_uart_bus = {
     .close    = ch32_uart_close,
     .read     = ch32_uart_read,
     .write    = ch32_uart_write,
-    .transmit = ch32_uart_transmit,
+    .transmit = NULL,  /* 从机半双工不支持, bus 层不调用 */
     .deinit   = ch32_uart_deinit,
     ._impl    = NULL
 };
@@ -181,7 +173,7 @@ const struct hal_uart_bus* hal_uart_bus_get(void)
 
 int hal_uart_xfer_begin(struct hal_uart_dev* pdev, uint32_t timeout_ms)
 {
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     if (!pdev)
         return VFS_ERR_INVAL;
     pdev->status = UART_STATE_BUSY;
@@ -218,7 +210,7 @@ int hal_uart_write_dma_ch32(struct hal_uart_dev* pdev,
     hal_dma_ch32_xfer_t cfg;
     int ret;
 
-    (void)dma_tx; (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(dma_tx); COMPAT_IGNORE_RESULT(timeout_ms);
 
     if (!pdev || !data || len == 0 || len > CH32_UART_DMA_MAX_XFER)
         return VFS_ERR_INVAL;
@@ -226,10 +218,6 @@ int hal_uart_write_dma_ch32(struct hal_uart_dev* pdev,
     usart = ch32_usart_instance(pdev->cfg.uart_host);
     if (!usart)
         return VFS_ERR_IO;
-
-    ret = hal_dma_ch32_lock();
-    if (ret != VFS_OK)
-        return ret;
 
     hal_dma_ch32_clocks_enable();
 
@@ -252,7 +240,6 @@ int hal_uart_write_dma_ch32(struct hal_uart_dev* pdev,
     }
 
     ch32_uart_dma_abort(usart);
-    hal_dma_ch32_unlock();
     return ret;
 }
 

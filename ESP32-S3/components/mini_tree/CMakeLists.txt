@@ -127,7 +127,6 @@ endif()
 # ── VFS 设备驱动 ──
 set(DRIVER_SRCS
     "drivers/ws2812/ws2812_drv.c"
-    "drivers/fft/fft_spi_drv.c"
     "drivers/flash/w25q64_spi_drv.c"
     "vfs/gpio/vfs-gpio.c"
     "bus/bus.c"
@@ -243,7 +242,6 @@ add_custom_command(
         "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
-        "${CMAKE_CURRENT_LIST_DIR}/drivers/fft/fft_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/uart/uart_vfs.c"

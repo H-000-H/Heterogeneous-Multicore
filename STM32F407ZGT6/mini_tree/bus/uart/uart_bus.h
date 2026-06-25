@@ -85,20 +85,13 @@ int  uart_bus_host_deinit(struct device* dev) COMPAT_WARN_UNUSED_RESULT;
 /*===========================================================================================================================================================*/
                                                               /* Client API (VFS 层调用) */
 /*===========================================================================================================================================================*/
-int  uart_bus_client_register(struct device* dev,
-                              const struct uart_bus_client_config* cfg)
-    COMPAT_WARN_UNUSED_RESULT;
+int  uart_bus_client_register(struct device* dev,const struct uart_bus_client_config* cfg)COMPAT_WARN_UNUSED_RESULT;
 void uart_bus_client_unregister(struct device* dev);
-
 int  uart_bus_open(struct device* dev) COMPAT_WARN_UNUSED_RESULT;
 int  uart_bus_close(struct device* dev) COMPAT_WARN_UNUSED_RESULT;
 
-int  uart_bus_write(struct device* dev,
-                    const uint8_t* data, size_t len,
-                    uint32_t timeout_ms) COMPAT_WARN_UNUSED_RESULT;
-int  uart_bus_read(struct device* dev,
-                   uint8_t* data, size_t len,
-                   uint32_t timeout_ms) COMPAT_WARN_UNUSED_RESULT;
+int  uart_bus_write(struct device* dev,const uint8_t* data, size_t len,uint32_t timeout_ms) COMPAT_WARN_UNUSED_RESULT;
+int  uart_bus_read(struct device* dev,uint8_t* data, size_t len,uint32_t timeout_ms) COMPAT_WARN_UNUSED_RESULT;
 
 #ifdef __cplusplus
 }

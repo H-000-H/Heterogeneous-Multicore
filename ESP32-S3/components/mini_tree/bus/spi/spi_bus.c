@@ -18,8 +18,9 @@
  *   - impl 函数实现具体逻辑, wrapper 函数转发 (保持 API 兼容)
  *
  * 引用计数 (atomic_int):
- *   - spi_bus_ops_open/close: atomic_fetch_add/sub
- *   - spi_bus_open/close (legacy): 同上
+ *   - spi_client_register_impl: atomic_fetch_add (client 注册时 +1)
+ *   - spi_client_unregister_impl: atomic_fetch_sub (client 注销时 -1)
+ *   - bus_ops open/close (spi_bus_open/close): 只触 HAL open/close, 不改 ref_count
  *   - host_deinit: atomic_load 检查 > 0 拒绝销毁
  *
  * 异步传输关键点:

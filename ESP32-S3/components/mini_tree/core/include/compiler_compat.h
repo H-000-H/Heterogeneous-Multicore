@@ -55,6 +55,94 @@
 #define COMPAT_PACKED     __attribute__((packed))
 /*===========================================================================================================================================================*/
 
+                                                            /*函数内联控制*/
+/*===========================================================================================================================================================*/
+/* 强制内联: 用于高频热路径 (ISR/fast path), 绕过 -O0 调试限制 */
+#define COMPAT_ALWAYS_INLINE __attribute__((always_inline)) inline
+/* 禁止内联: 防止调试函数或冷路径膨胀代码段 */
+#define COMPAT_NOINLINE      __attribute__((noinline))
+/* 展开调用链所有内联: 用于性能关键入口函数 */
+#define COMPAT_FLATTEN       __attribute__((flatten))
+/*===========================================================================================================================================================*/
+
+                                                            /*函数副作用标注*/
+/*===========================================================================================================================================================*/
+/* pure: 仅读全局变量/指针参数, 无写入 → 编译器可 CSE 消除冗余调用 */
+#define COMPAT_PURE       __attribute__((pure))
+/* const: 不读不写任何全局状态, 仅依赖参数 → 可被 CSE + 循环不变量外提 */
+#define COMPAT_CONST_FUNC __attribute__((const))
+/* noreturn: 标记 panic/assert 终止路径, 消除调用者 fallthrough 假设 */
+#define COMPAT_NORETURN   __attribute__((noreturn))
+/* hot: 热路径函数, 编译器优先内联并放置在代码段前部 (icache 友好) */
+#define COMPAT_HOT        __attribute__((hot))
+/* cold: 冷路径 (错误处理), 编译器减小内联并放置在代码段尾部 */
+#define COMPAT_COLD       __attribute__((cold))
+/*===========================================================================================================================================================*/
+
+                                                            /*符号可见性保留*/
+/*===========================================================================================================================================================*/
+/* used: 防止 LTO/GC 删除看似未引用的静态符号 (如 linker table entry) */
+#define COMPAT_USED   __attribute__((used))
+/* unused: 抑制未使用参数/变量的 -Wunused 警告 */
+#define COMPAT_UNUSED __attribute__((unused))
+/* may_alias: 允许通过不同类型指针访问同一内存 (type-punning 安全) */
+#define COMPAT_MAY_ALIAS __attribute__((may_alias))
+/*===========================================================================================================================================================*/
+
+                                                            /*编译期诊断与控制流*/
+/*===========================================================================================================================================================*/
+/* fallthrough: 显式标注 switch case 贯穿 (C++17 [[fallthrough]] 等价, 消除 -Wimplicit-fallthrough) */
+#if defined(__cplusplus) && __cplusplus >= 201703L
+#define COMPAT_FALLTHROUGH [[fallthrough]]
+#elif COMPAT_GNU_EXT_OK
+#define COMPAT_FALLTHROUGH __attribute__((fallthrough))
+#else
+#define COMPAT_FALLTHROUGH ((void)0)
+#endif
+
+/* deprecated: 标记废弃 API, 编译期警告 + 消息提示 */
+#if COMPAT_GNU_EXT_OK
+#define COMPAT_DEPRECATED(msg) __attribute__((deprecated(msg)))
+#else
+#define COMPAT_DEPRECATED(msg)
+#endif
+
+/* static_assert: C11 _Static_assert 兼容, 编译期布局校验 */
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#define COMPAT_STATIC_ASSERT(cond, msg) static_assert(cond, msg)
+#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#define COMPAT_STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
+#else
+#define COMPAT_STATIC_ASSERT(cond, msg) typedef char COMPAT_SA_##__LINE__[(cond) ? 1 : -1]
+#endif
+
+/* compile_error: 在特定配置路径触发编译期错误 (替代 #error, 可嵌套宏) */
+#if COMPAT_GNU_EXT_OK
+#define COMPAT_COMPILE_ERROR(msg) __attribute__((error(msg)))
+#endif
+/*===========================================================================================================================================================*/
+
+                                                            /*位操作内置函数*/
+/*===========================================================================================================================================================*/
+#define COMPAT_CLZ(x)      __builtin_clz(x)      /* 前导零计数 (需 x≠0) */
+#define COMPAT_POPCOUNT(x) __builtin_popcount(x) /* 置位计数 */
+#define COMPAT_FFS(x)      __builtin_ffs(x)      /* 最低置位位号 (1-based, 0=全零) */
+/*===========================================================================================================================================================*/
+
+                                                            /*预取与对齐假设*/
+/*===========================================================================================================================================================*/
+/* prefetch: 预取数据到 L1 cache, rw=0 读预取, locality=3 高时间局部性 */
+#define COMPAT_PREFETCH(addr, rw, locality) __builtin_prefetch((addr), (rw), (locality))
+/* assume_aligned: 告知编译器指针 N 字节对齐, 生成向量化 load/store */
+#if COMPAT_GNU_EXT_OK
+#define COMPAT_ASSUME_ALIGNED(ptr, n) __builtin_assume_aligned((ptr), (n))
+#else
+#define COMPAT_ASSUME_ALIGNED(ptr, n) (ptr)
+#endif
+/* constant_p: 编译期判断表达式是否为常量 (用于优化分支选择) */
+#define COMPAT_CONSTANT_P(expr) __builtin_constant_p(expr)
+/*===========================================================================================================================================================*/
+
                                                             /*VFS Magic 命名空间*/
 /*===========================================================================================================================================================*/
 /* VFS ioctl 总线 namespace: 每条总线占 0x100, 新增总线只在表里加一行 */

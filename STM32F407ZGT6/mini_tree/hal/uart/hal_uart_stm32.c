@@ -172,15 +172,6 @@ static int stm32_uart_read(struct hal_uart_dev* pdev, uint8_t* data, size_t len)
     return (int)len;
 }
 
-static int stm32_uart_transmit(struct hal_uart_dev* pdev, uint8_t* rx, uint8_t* tx,
-                                size_t rx_len, size_t tx_len)
-{
-    /* 从机半双工模式不支持, 空实现 */
-    (void)rx; (void)tx; (void)rx_len; (void)tx_len;
-    (void)pdev;
-    return VFS_ERR_NOTSUPP;
-}
-
 static int stm32_uart_deinit(const struct hal_uart_config_t* cfg)
 {
     return stm32_uart_close(cfg);
@@ -191,7 +182,7 @@ static const struct hal_uart_bus s_stm32_uart_bus = {
     .close    = stm32_uart_close,
     .read     = stm32_uart_read,
     .write    = stm32_uart_write,
-    .transmit = stm32_uart_transmit,
+    .transmit = NULL,  /* 从机半双工不支持, bus 层不调用 */
     .deinit   = stm32_uart_deinit,
     ._impl    = NULL
 };

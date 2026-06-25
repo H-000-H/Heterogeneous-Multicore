@@ -14,8 +14,9 @@
  *   - impl 函数实现具体逻辑, wrapper 函数转发 (保持 API 兼容)
  *
  * 引用计数 (atomic_int):
- *   - uart_bus_ops_open/close: atomic_fetch_add/sub
- *   - uart_bus_open/close (legacy): 同上
+ *   - uart_client_register_impl: atomic_fetch_add (client 注册时 +1, HAL open)
+ *   - uart_client_unregister_impl: atomic_fetch_sub (client 注销时 -1, HAL close)
+ *   - bus_ops open/close: 只做 IO gate, 不改 ref_count (HAL open 在 client_register)
  *   - host_deinit: atomic_load 检查 > 0 拒绝销毁
  *@=========================================================================================================================*/
 #define UART_BUS_IMPL
@@ -124,8 +125,7 @@ static int uart_bus_ops_open(void* ctx)
     struct uart_bus_client* cli = (struct uart_bus_client*)ctx;
     if (!cli || !cli->host)
         return VFS_ERR_NODEV;
-    atomic_fetch_add(&cli->host->ref_count, 1);
-    return VFS_OK;
+    return VFS_OK;  /* HAL open 在 client_register, bus_ops open 只做 IO gate */
 }
 
 static int uart_bus_ops_close(void* ctx)
@@ -133,8 +133,7 @@ static int uart_bus_ops_close(void* ctx)
     struct uart_bus_client* cli = (struct uart_bus_client*)ctx;
     if (!cli || !cli->host)
         return VFS_ERR_NODEV;
-    atomic_fetch_sub(&cli->host->ref_count, 1);
-    return VFS_OK;
+    return VFS_OK;  /* HAL close 在 client_unregister, bus_ops close 只做 IO gate */
 }
 
 static int uart_bus_ops_write(void* ctx, const void* data, size_t len,
@@ -319,10 +318,11 @@ int uart_bus_host_deinit(struct device* dev)
 static int uart_client_register_impl(struct device* dev, const void* cfg, void** out)
 {
     const struct uart_bus_client_config* client_cfg = (const struct uart_bus_client_config*)cfg;
-    struct uart_bus_client* cli;
-    struct uart_bus_host*   host;
-    int                     idx;
-    int                     ret;
+    struct bus_controller*   ctlr;
+    struct uart_bus_host*     host;
+    struct uart_bus_client*   cli;
+    int                       idx;
+    int                       ret;
 
     if (!dev || !client_cfg)
         return VFS_ERR_INVAL;
@@ -330,9 +330,16 @@ static int uart_client_register_impl(struct device* dev, const void* cfg, void**
     if (uart_client_from_device(dev))
         return VFS_OK;
 
-    host = uart_host_from_device(dev);
-    if (!host)
+    /* 通过 parent 查找 host (对齐 spi_bus.c, 修复 dev 直接匹配 host 池的 bug:
+     *   s_uart_hosts[i].dev 存的是 host device, client dev 永远匹配不上)
+     *   dev = client → device_get_parent → host device → s_controllers → hw_ctx */
+    if (bus_controller_of(dev, &ctlr) != VFS_OK)
         return VFS_ERR_NODEV;
+    if (ctlr->type != BUS_TYPE_UART)
+        return VFS_ERR_NODEV;
+    host = (struct uart_bus_host*)ctlr->hw_ctx;
+    if (!host)
+        return VFS_ERR_IO;
 
     idx = uart_client_pool_claim();
     if (idx < 0)
@@ -351,6 +358,8 @@ static int uart_client_register_impl(struct device* dev, const void* cfg, void**
             return ret;
         }
     }
+
+    atomic_fetch_add(&host->ref_count, 1);  /* 对齐 spi: client_register +1 */
 
     if (out)
         *out = cli;
@@ -380,6 +389,9 @@ static void uart_client_unregister_impl(struct device* dev)
     if (host && host->vtable && host->vtable->close)
         COMPAT_IGNORE_RESULT(host->vtable->close(&host->hal_dev.cfg));
 
+    if (host)
+        atomic_fetch_sub(&host->ref_count, 1);  /* 对齐 spi: client_unregister -1 */
+
     uart_client_pool_release((int)(cli - s_uart_clients));
 }
 
@@ -402,8 +414,7 @@ int uart_bus_open(struct device* dev)
     struct uart_bus_client* cli = uart_client_from_device(dev);
     if (!cli || !cli->host)
         return VFS_ERR_NODEV;
-    atomic_fetch_add(&cli->host->ref_count, 1);
-    return VFS_OK;
+    return VFS_OK;  /* ref_count 在 client_register/unregister 维护 */
 }
 
 int uart_bus_close(struct device* dev)
@@ -411,8 +422,7 @@ int uart_bus_close(struct device* dev)
     struct uart_bus_client* cli = uart_client_from_device(dev);
     if (!cli || !cli->host)
         return VFS_ERR_NODEV;
-    atomic_fetch_sub(&cli->host->ref_count, 1);
-    return VFS_OK;
+    return VFS_OK;  /* ref_count 在 client_register/unregister 维护 */
 }
 
 int uart_bus_write(struct device* dev,

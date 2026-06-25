@@ -320,7 +320,7 @@ Discarded input sections
                 0x00000000        0x1 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
  .srodata._ZZN9SystemCmd9getTypeIdI9CmdLedSetEEPKvvE11type_marker
                 0x00000000        0x1 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
- .debug_info    0x00000000     0xb986 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
+ .debug_info    0x00000000     0xb987 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
  .debug_abbrev  0x00000000      0xd55 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
  .debug_loclists
                 0x00000000     0x1ac8 CMakeFiles/ch307_node.dir/app/src/app_cmd_handlers.cpp.obj
@@ -344,7 +344,7 @@ Discarded input sections
  .rodata.str1.4
                 0x00000000       0xe3 CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
  .sbss          0x00000000        0x4 CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
- .debug_info    0x00000000     0x1400 CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
+ .debug_info    0x00000000     0x1401 CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
  .debug_abbrev  0x00000000      0x393 CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
  .debug_loclists
                 0x00000000       0x8d CMakeFiles/ch307_node.dir/app/src/app_flash_task.cpp.obj
@@ -368,7 +368,7 @@ Discarded input sections
  .rodata.str1.4
                 0x00000000       0x87 CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
  .sbss          0x00000000        0x4 CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
- .debug_info    0x00000000     0x13ef CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
+ .debug_info    0x00000000     0x13f0 CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
  .debug_abbrev  0x00000000      0x376 CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
  .debug_loclists
                 0x00000000       0x6a CMakeFiles/ch307_node.dir/app/src/app_led_task.cpp.obj
@@ -389,7 +389,7 @@ Discarded input sections
  .bss           0x00000000        0x0 CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
  .rodata.str1.4
                 0x00000000       0x6b CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
- .debug_info    0x00000000     0x787a CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
+ .debug_info    0x00000000     0x787b CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
  .debug_abbrev  0x00000000      0x95a CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
  .debug_loclists
                 0x00000000       0x9b CMakeFiles/ch307_node.dir/app/src/app_spi_task.cpp.obj
@@ -850,7 +850,7 @@ Discarded input sections
  .text._ZNK3etl4lessIcEclERKcS3_
                 0x00000000       0x36 mini_tree/libmini_tree.a(system_cmd.cpp.obj)
  .rodata        0x00000000        0xc mini_tree/libmini_tree.a(system_cmd.cpp.obj)
- .debug_info    0x00000000     0xa580 mini_tree/libmini_tree.a(system_cmd.cpp.obj)
+ .debug_info    0x00000000     0xa581 mini_tree/libmini_tree.a(system_cmd.cpp.obj)
  .debug_abbrev  0x00000000      0xbc9 mini_tree/libmini_tree.a(system_cmd.cpp.obj)
  .debug_aranges
                 0x00000000      0x428 mini_tree/libmini_tree.a(system_cmd.cpp.obj)
@@ -881,8 +881,8 @@ Discarded input sections
  .sdata         0x00000000        0x4 mini_tree/libmini_tree.a(task_manager.cpp.obj)
  .rodata        0x00000000       0x48 mini_tree/libmini_tree.a(task_manager.cpp.obj)
  .srodata       0x00000000        0x4 mini_tree/libmini_tree.a(task_manager.cpp.obj)
- .debug_info    0x00000000      0xa69 mini_tree/libmini_tree.a(task_manager.cpp.obj)
- .debug_abbrev  0x00000000      0x2b3 mini_tree/libmini_tree.a(task_manager.cpp.obj)
+ .debug_info    0x00000000      0xa6a mini_tree/libmini_tree.a(task_manager.cpp.obj)
+ .debug_abbrev  0x00000000      0x2c4 mini_tree/libmini_tree.a(task_manager.cpp.obj)
  .debug_aranges
                 0x00000000       0x20 mini_tree/libmini_tree.a(task_manager.cpp.obj)
  .debug_line    0x00000000      0x1e1 mini_tree/libmini_tree.a(task_manager.cpp.obj)
@@ -1198,7 +1198,7 @@ END GROUP
                 0x000001c0                        . = ALIGN (0x40)
  *fill*         0x000001a4       0x1c 
 
-.text           0x000001c0    0x12610
+.text           0x000001c0    0x124bc
                 0x000001c0                        . = ALIGN (0x4)
  *(.text)
  .text          0x000001c0      0x25a CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
@@ -1499,500 +1499,494 @@ END GROUP
                 0x0000aaaa                safe_state_clear_bootloop
                 0x0000aac4                enter_safe_state
                 0x0000aade                safe_state_nmi_emergency_stamp
- .text          0x0000aaf2      0x1b8 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .text          0x0000aaf2      0x1d8 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
                 0x0000aaf2                hal_pwm_init_struct
                 0x0000ab36                hal_pwm_force_stop_all
                 0x0000ab48                hal_cpu_emergency_stop_all_cores
                 0x0000ab58                hal_wdt_init_rtc
-                0x0000ab70                hal_wdt_feed_rtc
-                0x0000ab82                hal_wdt_rtc_set_long_timeout
-                0x0000ab94                hal_wdt_rtc_restore_timeout
-                0x0000aba6                hal_wdt_init_twdt
-                0x0000abbe                hal_wdt_subscribe
-                0x0000abd6                hal_wdt_unsubscribe
-                0x0000abee                hal_wdt_feed_twdt
-                0x0000ac00                hal_flash_read
-                0x0000ac58                hal_flash_get_app_addr
-                0x0000ac6c                hal_flash_get_app_size
-                0x0000ac82                hal_platform_critical_hardware_lock
-                0x0000ac98                hal_platform_nmi_emergency_stamp
- .text          0x0000acaa      0x304 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
-                0x0000ace2                hal_dma_ch32_clocks_enable
-                0x0000acfc                hal_dma_ch32_lock
-                0x0000ad5e                hal_dma_ch32_unlock
-                0x0000ad88                hal_dma_ch32_init
-                0x0000ada4                hal_dma_ch32_channel_disable
-                0x0000adfc                hal_dma_ch32_channel_poll
-                0x0000ae62                hal_dma_ch32_channel_setup
-                0x0000af38                hal_dma_ch32_channel_enable
-                0x0000af64                hal_dma_init_struct
-                0x0000af94                hal_dma_force_stop
- .text          0x0000afae      0xbc8 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
-                0x0000b164                hal_spi_bus_host_init
-                0x0000b28a                hal_spi_bus_host_deinit
-                0x0000b2f2                hal_spi_bus_host_get
-                0x0000b364                hal_spi_dev_init
-                0x0000b4b4                hal_spi_dev_hw_open
-                0x0000b54e                hal_spi_dev_hw_close
-                0x0000b6fa                spi_sync
-                0x0000b7fa                spi_slave_sync
-                0x0000b824                spi_slave_queue_tx
-                0x0000b84a                hal_spi_get_trans_result
-                0x0000b874                hal_spi_transfer_async
-                0x0000b8a2                hal_spi_transfer_poll
-                0x0000b91c                hal_spi_transfer_dma_ch32
-                0x0000bb18                hal_spi_abort_ch32
-                0x0000bb5e                hal_spi_ch32_dma_abort
- .text          0x0000bb76      0x598 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
-                0x0000bf0c                hal_uart_bus_get
-                0x0000bf24                hal_uart_xfer_begin
-                0x0000bf54                hal_uart_xfer_end
-                0x0000bf80                hal_uart_force_stop
-                0x0000bfd8                hal_uart_write_dma_ch32
-                0x0000c0f2                hal_uart_ch32_dma_abort
- .text          0x0000c10e      0xcb4 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
-                0x0000c10e                GPIO_DeInit
-                0x0000c1d0                GPIO_AFIODeInit
-                0x0000c1f2                GPIO_Init
-                0x0000c420                GPIO_StructInit
-                0x0000c450                GPIO_ReadInputDataBit
-                0x0000c48e                GPIO_ReadInputData
-                0x0000c4ae                GPIO_ReadOutputDataBit
-                0x0000c4ec                GPIO_ReadOutputData
-                0x0000c50c                GPIO_SetBits
-                0x0000c532                GPIO_ResetBits
-                0x0000c558                GPIO_WriteBit
-                0x0000c594                GPIO_Write
-                0x0000c5ba                GPIO_PinLockConfig
-                0x0000c61c                GPIO_EventOutputConfig
-                0x0000c682                GPIO_EventOutputCmd
-                0x0000c6c0                GPIO_PinRemapConfig
-                0x0000c892                GPIO_EXTILineConfig
-                0x0000c938                GPIO_ETH_MediaInterfaceConfig
-                0x0000c97c                GPIO_IPD_Unused
- .text          0x0000cdc2      0xa2a hal/libch32_periph.a(ch32v30x_spi.c.obj)
-                0x0000cdc2                SPI_I2S_DeInit
-                0x0000ce38                SPI_Init
-                0x0000cf34                I2S_Init
-                0x0000d152                SPI_StructInit
-                0x0000d1aa                I2S_StructInit
-                0x0000d1f0                SPI_Cmd
-                0x0000d24e                I2S_Cmd
-                0x0000d2ac                SPI_I2S_ITConfig
-                0x0000d342                SPI_I2S_DMACmd
-                0x0000d3b4                SPI_I2S_SendData
-                0x0000d3dc                SPI_I2S_ReceiveData
-                0x0000d3fe                SPI_NSSInternalSoftwareConfig
-                0x0000d466                SPI_SSOutputCmd
-                0x0000d4c2                SPI_DataSizeConfig
-                0x0000d522                SPI_TransmitCRC
-                0x0000d558                SPI_CalculateCRC
-                0x0000d5bc                SPI_GetCRC
-                0x0000d604                SPI_GetCRCPolynomial
-                0x0000d626                SPI_BiDirectionalLineConfig
-                0x0000d690                SPI_I2S_GetFlagStatus
-                0x0000d6d8                SPI_I2S_ClearFlag
-                0x0000d70a                SPI_I2S_GetITStatus
-                0x0000d7a6                SPI_I2S_ClearITPendingBit
- .text          0x0000d7ec      0xcaa hal/libch32_periph.a(ch32v30x_usart.c.obj)
-                0x0000d7ec                USART_DeInit
-                0x0000d924                USART_Init
-                0x0000db1a                USART_StructInit
-                0x0000db66                USART_ClockInit
-                0x0000dbf8                USART_ClockStructInit
-                0x0000dc2e                USART_Cmd
-                0x0000dc92                USART_ITConfig
-                0x0000dd5a                USART_DMACmd
-                0x0000ddcc                USART_SetAddress
-                0x0000de2a                USART_WakeUpConfig
-                0x0000de8a                USART_ReceiverWakeUpCmd
-                0x0000dee6                USART_LINBreakDetectLengthConfig
-                0x0000df40                USART_LINCmd
-                0x0000dfa4                USART_SendData
-                0x0000dfd6                USART_ReceiveData
-                0x0000e000                USART_SendBreak
-                0x0000e034                USART_SetGuardTime
-                0x0000e09a                USART_SetPrescaler
-                0x0000e0fa                USART_SmartCardCmd
-                0x0000e158                USART_SmartCardNACKCmd
-                0x0000e1b4                USART_HalfDuplexCmd
-                0x0000e210                USART_IrDAConfig
-                0x0000e268                USART_IrDACmd
-                0x0000e2c4                USART_GetFlagStatus
-                0x0000e30c                USART_ClearFlag
-                0x0000e33e                USART_GetITStatus
-                0x0000e444                USART_ClearITPendingBit
- .text          0x0000e496     0x1194 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
-                0x0000e496                RCC_DeInit
-                0x0000e52c                RCC_HSEConfig
-                0x0000e5a6                RCC_WaitForHSEStartUp
-                0x0000e606                RCC_AdjustHSICalibrationValue
-                0x0000e652                RCC_HSICmd
-                0x0000e68e                RCC_PLLConfig
-                0x0000e706                RCC_PLLCmd
-                0x0000e74a                RCC_SYSCLKConfig
-                0x0000e790                RCC_GetSYSCLKSource
-                0x0000e7b2                RCC_HCLKConfig
-                0x0000e7fa                RCC_PCLK1Config
-                0x0000e842                RCC_PCLK2Config
-                0x0000e890                RCC_ITConfig
-                0x0000e900                RCC_ADCCLKConfig
-                0x0000e94a                RCC_LSEConfig
-                0x0000e9ac                RCC_LSICmd
-                0x0000e9e8                RCC_RTCCLKConfig
-                0x0000ea10                RCC_RTCCLKCmd
-                0x0000ea50                RCC_GetClocksFreq
-                0x0000edea                RCC_AHBPeriphClockCmd
-                0x0000ee34                RCC_APB2PeriphClockCmd
-                0x0000ee7e                RCC_APB1PeriphClockCmd
-                0x0000eec8                RCC_APB2PeriphResetCmd
-                0x0000ef12                RCC_APB1PeriphResetCmd
-                0x0000ef5c                RCC_BackupResetCmd
-                0x0000ef9c                RCC_ClockSecuritySystemCmd
-                0x0000efe0                RCC_MCOConfig
-                0x0000f006                RCC_GetFlagStatus
-                0x0000f098                RCC_ClearFlag
-                0x0000f0bc                RCC_GetITStatus
-                0x0000f0f6                RCC_ClearITPendingBit
-                0x0000f11c                RCC_PREDIV1Config
-                0x0000f170                RCC_PREDIV2Config
-                0x0000f1b8                RCC_PLL2Config
-                0x0000f204                RCC_PLL2Cmd
-                0x0000f248                RCC_PLL3Config
-                0x0000f292                RCC_PLL3Cmd
-                0x0000f2d6                RCC_USBFSCLKConfig
-                0x0000f316                RCC_I2S2CLKConfig
-                0x0000f354                RCC_I2S3CLKConfig
-                0x0000f394                RCC_AHBPeriphResetCmd
-                0x0000f3de                RCC_ADCCLKADJcmd
-                0x0000f422                RCC_RNGCLKConfig
-                0x0000f462                RCC_ETH1GCLKConfig
-                0x0000f4a2                RCC_ETH1G_125Mcmd
-                0x0000f4e6                RCC_USBHSConfig
-                0x0000f526                RCC_USBHSPLLCLKConfig
-                0x0000f566                RCC_USBHSPLLCKREFCLKConfig
-                0x0000f5a6                RCC_USBHSPHYPLLALIVEcmd
-                0x0000f5ea                RCC_USBCLK48MConfig
- .text          0x0000f62a      0x6b0 hal/libch32_periph.a(ch32v30x_dma.c.obj)
-                0x0000f62a                DMA_DeInit
-                0x0000f940                DMA_Init
-                0x0000f9ec                DMA_StructInit
-                0x0000fa5a                DMA_Cmd
-                0x0000fa9e                DMA_ITConfig
-                0x0000faec                DMA_SetCurrDataCounter
-                0x0000fb12                DMA_GetCurrDataCounter
-                0x0000fb32                DMA_GetFlagStatus
-                0x0000fbae                DMA_ClearFlag
-                0x0000fc06                DMA_GetITStatus
-                0x0000fc82                DMA_ClearITPendingBit
- .text          0x0000fcda       0x10 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
-                0x0000fcda                memset
- .text          0x0000fcea       0x16 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
-                0x0000fcea                memcpy
- .text          0x0000fd00       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-strcmp.o)
-                0x0000fd00                strcmp
+                0x0000ab78                hal_wdt_feed_rtc
+                0x0000ab8a                hal_wdt_rtc_set_long_timeout
+                0x0000ab9c                hal_wdt_rtc_restore_timeout
+                0x0000abae                hal_wdt_init_twdt
+                0x0000abce                hal_wdt_subscribe
+                0x0000abee                hal_wdt_unsubscribe
+                0x0000ac0e                hal_wdt_feed_twdt
+                0x0000ac20                hal_flash_read
+                0x0000ac78                hal_flash_get_app_addr
+                0x0000ac8c                hal_flash_get_app_size
+                0x0000aca2                hal_platform_critical_hardware_lock
+                0x0000acb8                hal_platform_nmi_emergency_stamp
+ .text          0x0000acca      0x27a mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+                0x0000ad02                hal_dma_ch32_clocks_enable
+                0x0000ad1c                hal_dma_ch32_init
+                0x0000ad3a                hal_dma_ch32_channel_disable
+                0x0000ad92                hal_dma_ch32_channel_poll
+                0x0000adf8                hal_dma_ch32_channel_setup
+                0x0000aece                hal_dma_ch32_channel_enable
+                0x0000aefa                hal_dma_init_struct
+                0x0000af2a                hal_dma_force_stop
+ .text          0x0000af44      0xb06 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+                0x0000b0fa                hal_spi_bus_host_init
+                0x0000b220                hal_spi_bus_host_deinit
+                0x0000b288                hal_spi_bus_host_get
+                0x0000b2fa                hal_spi_dev_init
+                0x0000b44a                hal_spi_dev_hw_open
+                0x0000b4e4                hal_spi_dev_hw_close
+                0x0000b698                spi_sync
+                0x0000b7f2                hal_spi_transfer_dma_ch32
+                0x0000b9ec                hal_spi_abort_ch32
+                0x0000ba32                hal_spi_ch32_dma_abort
+ .text          0x0000ba4a      0x56e mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+                0x0000bdb6                hal_uart_bus_get
+                0x0000bdce                hal_uart_xfer_begin
+                0x0000be06                hal_uart_xfer_end
+                0x0000be32                hal_uart_force_stop
+                0x0000be8a                hal_uart_write_dma_ch32
+                0x0000bf9c                hal_uart_ch32_dma_abort
+ .text          0x0000bfb8      0xcb4 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+                0x0000bfb8                GPIO_DeInit
+                0x0000c07a                GPIO_AFIODeInit
+                0x0000c09c                GPIO_Init
+                0x0000c2ca                GPIO_StructInit
+                0x0000c2fa                GPIO_ReadInputDataBit
+                0x0000c338                GPIO_ReadInputData
+                0x0000c358                GPIO_ReadOutputDataBit
+                0x0000c396                GPIO_ReadOutputData
+                0x0000c3b6                GPIO_SetBits
+                0x0000c3dc                GPIO_ResetBits
+                0x0000c402                GPIO_WriteBit
+                0x0000c43e                GPIO_Write
+                0x0000c464                GPIO_PinLockConfig
+                0x0000c4c6                GPIO_EventOutputConfig
+                0x0000c52c                GPIO_EventOutputCmd
+                0x0000c56a                GPIO_PinRemapConfig
+                0x0000c73c                GPIO_EXTILineConfig
+                0x0000c7e2                GPIO_ETH_MediaInterfaceConfig
+                0x0000c826                GPIO_IPD_Unused
+ .text          0x0000cc6c      0xa2a hal/libch32_periph.a(ch32v30x_spi.c.obj)
+                0x0000cc6c                SPI_I2S_DeInit
+                0x0000cce2                SPI_Init
+                0x0000cdde                I2S_Init
+                0x0000cffc                SPI_StructInit
+                0x0000d054                I2S_StructInit
+                0x0000d09a                SPI_Cmd
+                0x0000d0f8                I2S_Cmd
+                0x0000d156                SPI_I2S_ITConfig
+                0x0000d1ec                SPI_I2S_DMACmd
+                0x0000d25e                SPI_I2S_SendData
+                0x0000d286                SPI_I2S_ReceiveData
+                0x0000d2a8                SPI_NSSInternalSoftwareConfig
+                0x0000d310                SPI_SSOutputCmd
+                0x0000d36c                SPI_DataSizeConfig
+                0x0000d3cc                SPI_TransmitCRC
+                0x0000d402                SPI_CalculateCRC
+                0x0000d466                SPI_GetCRC
+                0x0000d4ae                SPI_GetCRCPolynomial
+                0x0000d4d0                SPI_BiDirectionalLineConfig
+                0x0000d53a                SPI_I2S_GetFlagStatus
+                0x0000d582                SPI_I2S_ClearFlag
+                0x0000d5b4                SPI_I2S_GetITStatus
+                0x0000d650                SPI_I2S_ClearITPendingBit
+ .text          0x0000d696      0xcaa hal/libch32_periph.a(ch32v30x_usart.c.obj)
+                0x0000d696                USART_DeInit
+                0x0000d7ce                USART_Init
+                0x0000d9c4                USART_StructInit
+                0x0000da10                USART_ClockInit
+                0x0000daa2                USART_ClockStructInit
+                0x0000dad8                USART_Cmd
+                0x0000db3c                USART_ITConfig
+                0x0000dc04                USART_DMACmd
+                0x0000dc76                USART_SetAddress
+                0x0000dcd4                USART_WakeUpConfig
+                0x0000dd34                USART_ReceiverWakeUpCmd
+                0x0000dd90                USART_LINBreakDetectLengthConfig
+                0x0000ddea                USART_LINCmd
+                0x0000de4e                USART_SendData
+                0x0000de80                USART_ReceiveData
+                0x0000deaa                USART_SendBreak
+                0x0000dede                USART_SetGuardTime
+                0x0000df44                USART_SetPrescaler
+                0x0000dfa4                USART_SmartCardCmd
+                0x0000e002                USART_SmartCardNACKCmd
+                0x0000e05e                USART_HalfDuplexCmd
+                0x0000e0ba                USART_IrDAConfig
+                0x0000e112                USART_IrDACmd
+                0x0000e16e                USART_GetFlagStatus
+                0x0000e1b6                USART_ClearFlag
+                0x0000e1e8                USART_GetITStatus
+                0x0000e2ee                USART_ClearITPendingBit
+ .text          0x0000e340     0x1194 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+                0x0000e340                RCC_DeInit
+                0x0000e3d6                RCC_HSEConfig
+                0x0000e450                RCC_WaitForHSEStartUp
+                0x0000e4b0                RCC_AdjustHSICalibrationValue
+                0x0000e4fc                RCC_HSICmd
+                0x0000e538                RCC_PLLConfig
+                0x0000e5b0                RCC_PLLCmd
+                0x0000e5f4                RCC_SYSCLKConfig
+                0x0000e63a                RCC_GetSYSCLKSource
+                0x0000e65c                RCC_HCLKConfig
+                0x0000e6a4                RCC_PCLK1Config
+                0x0000e6ec                RCC_PCLK2Config
+                0x0000e73a                RCC_ITConfig
+                0x0000e7aa                RCC_ADCCLKConfig
+                0x0000e7f4                RCC_LSEConfig
+                0x0000e856                RCC_LSICmd
+                0x0000e892                RCC_RTCCLKConfig
+                0x0000e8ba                RCC_RTCCLKCmd
+                0x0000e8fa                RCC_GetClocksFreq
+                0x0000ec94                RCC_AHBPeriphClockCmd
+                0x0000ecde                RCC_APB2PeriphClockCmd
+                0x0000ed28                RCC_APB1PeriphClockCmd
+                0x0000ed72                RCC_APB2PeriphResetCmd
+                0x0000edbc                RCC_APB1PeriphResetCmd
+                0x0000ee06                RCC_BackupResetCmd
+                0x0000ee46                RCC_ClockSecuritySystemCmd
+                0x0000ee8a                RCC_MCOConfig
+                0x0000eeb0                RCC_GetFlagStatus
+                0x0000ef42                RCC_ClearFlag
+                0x0000ef66                RCC_GetITStatus
+                0x0000efa0                RCC_ClearITPendingBit
+                0x0000efc6                RCC_PREDIV1Config
+                0x0000f01a                RCC_PREDIV2Config
+                0x0000f062                RCC_PLL2Config
+                0x0000f0ae                RCC_PLL2Cmd
+                0x0000f0f2                RCC_PLL3Config
+                0x0000f13c                RCC_PLL3Cmd
+                0x0000f180                RCC_USBFSCLKConfig
+                0x0000f1c0                RCC_I2S2CLKConfig
+                0x0000f1fe                RCC_I2S3CLKConfig
+                0x0000f23e                RCC_AHBPeriphResetCmd
+                0x0000f288                RCC_ADCCLKADJcmd
+                0x0000f2cc                RCC_RNGCLKConfig
+                0x0000f30c                RCC_ETH1GCLKConfig
+                0x0000f34c                RCC_ETH1G_125Mcmd
+                0x0000f390                RCC_USBHSConfig
+                0x0000f3d0                RCC_USBHSPLLCLKConfig
+                0x0000f410                RCC_USBHSPLLCKREFCLKConfig
+                0x0000f450                RCC_USBHSPHYPLLALIVEcmd
+                0x0000f494                RCC_USBCLK48MConfig
+ .text          0x0000f4d4      0x6b0 hal/libch32_periph.a(ch32v30x_dma.c.obj)
+                0x0000f4d4                DMA_DeInit
+                0x0000f7ea                DMA_Init
+                0x0000f896                DMA_StructInit
+                0x0000f904                DMA_Cmd
+                0x0000f948                DMA_ITConfig
+                0x0000f996                DMA_SetCurrDataCounter
+                0x0000f9bc                DMA_GetCurrDataCounter
+                0x0000f9dc                DMA_GetFlagStatus
+                0x0000fa58                DMA_ClearFlag
+                0x0000fab0                DMA_GetITStatus
+                0x0000fb2c                DMA_ClearITPendingBit
+ .text          0x0000fb84       0x10 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memset.o)
+                0x0000fb84                memset
+ .text          0x0000fb94       0x16 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memcpy-asm.o)
+                0x0000fb94                memcpy
+ .text          0x0000fbaa       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-strcmp.o)
+                0x0000fbaa                strcmp
  *(.text.*)
  .text.vector_handler
-                0x0000fd18        0x2 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
-                0x0000fd18                EXTI2_IRQHandler
-                0x0000fd18                TIM8_TRG_COM_IRQHandler
-                0x0000fd18                TIM8_CC_IRQHandler
-                0x0000fd18                UART8_IRQHandler
-                0x0000fd18                TIM1_CC_IRQHandler
-                0x0000fd18                TIM6_IRQHandler
-                0x0000fd18                SysTick_Handler
-                0x0000fd18                PVD_IRQHandler
-                0x0000fd18                SDIO_IRQHandler
-                0x0000fd18                TIM9_BRK_IRQHandler
-                0x0000fd18                DMA2_Channel8_IRQHandler
-                0x0000fd18                CAN2_RX1_IRQHandler
-                0x0000fd18                EXTI3_IRQHandler
-                0x0000fd18                USBHS_IRQHandler
-                0x0000fd18                DMA2_Channel9_IRQHandler
-                0x0000fd18                TIM10_CC_IRQHandler
-                0x0000fd18                USBFS_IRQHandler
-                0x0000fd18                EXTI0_IRQHandler
-                0x0000fd18                I2C2_EV_IRQHandler
-                0x0000fd18                TIM10_TRG_COM_IRQHandler
-                0x0000fd18                CAN2_SCE_IRQHandler
-                0x0000fd18                ADC1_2_IRQHandler
-                0x0000fd18                Break_Point_Handler
-                0x0000fd18                SPI1_IRQHandler
-                0x0000fd18                TAMPER_IRQHandler
-                0x0000fd18                CAN2_RX0_IRQHandler
-                0x0000fd18                TIM8_UP_IRQHandler
-                0x0000fd18                Ecall_M_Mode_Handler
-                0x0000fd18                DMA2_Channel2_IRQHandler
-                0x0000fd18                DMA1_Channel4_IRQHandler
-                0x0000fd18                TIM9_UP_IRQHandler
-                0x0000fd18                USART3_IRQHandler
-                0x0000fd18                RTC_IRQHandler
-                0x0000fd18                DMA1_Channel7_IRQHandler
-                0x0000fd18                CAN1_RX1_IRQHandler
-                0x0000fd18                DVP_IRQHandler
-                0x0000fd18                UART5_IRQHandler
-                0x0000fd18                TIM4_IRQHandler
-                0x0000fd18                DMA2_Channel1_IRQHandler
-                0x0000fd18                I2C1_EV_IRQHandler
-                0x0000fd18                DMA1_Channel6_IRQHandler
-                0x0000fd18                UART4_IRQHandler
-                0x0000fd18                DMA2_Channel4_IRQHandler
-                0x0000fd18                TIM3_IRQHandler
-                0x0000fd18                RCC_IRQHandler
-                0x0000fd18                TIM1_TRG_COM_IRQHandler
-                0x0000fd18                DMA1_Channel1_IRQHandler
-                0x0000fd18                DMA2_Channel7_IRQHandler
-                0x0000fd18                EXTI15_10_IRQHandler
-                0x0000fd18                TIM7_IRQHandler
-                0x0000fd18                CAN2_TX_IRQHandler
-                0x0000fd18                TIM5_IRQHandler
-                0x0000fd18                EXTI9_5_IRQHandler
-                0x0000fd18                ETH_WKUP_IRQHandler
-                0x0000fd18                SPI2_IRQHandler
-                0x0000fd18                TIM10_BRK_IRQHandler
-                0x0000fd18                TIM9_CC_IRQHandler
-                0x0000fd18                DMA2_Channel5_IRQHandler
-                0x0000fd18                DMA1_Channel5_IRQHandler
-                0x0000fd18                EXTI4_IRQHandler
-                0x0000fd18                USB_LP_CAN1_RX0_IRQHandler
-                0x0000fd18                RNG_IRQHandler
-                0x0000fd18                USB_HP_CAN1_TX_IRQHandler
-                0x0000fd18                DMA1_Channel3_IRQHandler
-                0x0000fd18                ETH_IRQHandler
-                0x0000fd18                TIM1_UP_IRQHandler
-                0x0000fd18                WWDG_IRQHandler
-                0x0000fd18                USBHSWakeup_IRQHandler
-                0x0000fd18                DMA2_Channel11_IRQHandler
-                0x0000fd18                Ecall_U_Mode_Handler
-                0x0000fd18                DMA2_Channel6_IRQHandler
-                0x0000fd18                TIM2_IRQHandler
-                0x0000fd18                SW_Handler
-                0x0000fd18                TIM1_BRK_IRQHandler
-                0x0000fd18                DMA2_Channel10_IRQHandler
-                0x0000fd18                EXTI1_IRQHandler
-                0x0000fd18                RTCAlarm_IRQHandler
-                0x0000fd18                TIM10_UP_IRQHandler
-                0x0000fd18                TIM9_TRG_COM_IRQHandler
-                0x0000fd18                UART7_IRQHandler
-                0x0000fd18                USART2_IRQHandler
-                0x0000fd18                UART6_IRQHandler
-                0x0000fd18                I2C2_ER_IRQHandler
-                0x0000fd18                DMA1_Channel2_IRQHandler
-                0x0000fd18                TIM8_BRK_IRQHandler
-                0x0000fd18                CAN1_SCE_IRQHandler
-                0x0000fd18                FLASH_IRQHandler
-                0x0000fd18                USART1_IRQHandler
-                0x0000fd18                SPI3_IRQHandler
-                0x0000fd18                I2C1_ER_IRQHandler
-                0x0000fd18                USBWakeUp_IRQHandler
-                0x0000fd18                DMA2_Channel3_IRQHandler
+                0x0000fbc2        0x2 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x0000fbc2                EXTI2_IRQHandler
+                0x0000fbc2                TIM8_TRG_COM_IRQHandler
+                0x0000fbc2                TIM8_CC_IRQHandler
+                0x0000fbc2                UART8_IRQHandler
+                0x0000fbc2                TIM1_CC_IRQHandler
+                0x0000fbc2                TIM6_IRQHandler
+                0x0000fbc2                SysTick_Handler
+                0x0000fbc2                PVD_IRQHandler
+                0x0000fbc2                SDIO_IRQHandler
+                0x0000fbc2                TIM9_BRK_IRQHandler
+                0x0000fbc2                DMA2_Channel8_IRQHandler
+                0x0000fbc2                CAN2_RX1_IRQHandler
+                0x0000fbc2                EXTI3_IRQHandler
+                0x0000fbc2                USBHS_IRQHandler
+                0x0000fbc2                DMA2_Channel9_IRQHandler
+                0x0000fbc2                TIM10_CC_IRQHandler
+                0x0000fbc2                USBFS_IRQHandler
+                0x0000fbc2                EXTI0_IRQHandler
+                0x0000fbc2                I2C2_EV_IRQHandler
+                0x0000fbc2                TIM10_TRG_COM_IRQHandler
+                0x0000fbc2                CAN2_SCE_IRQHandler
+                0x0000fbc2                ADC1_2_IRQHandler
+                0x0000fbc2                Break_Point_Handler
+                0x0000fbc2                SPI1_IRQHandler
+                0x0000fbc2                TAMPER_IRQHandler
+                0x0000fbc2                CAN2_RX0_IRQHandler
+                0x0000fbc2                TIM8_UP_IRQHandler
+                0x0000fbc2                Ecall_M_Mode_Handler
+                0x0000fbc2                DMA2_Channel2_IRQHandler
+                0x0000fbc2                DMA1_Channel4_IRQHandler
+                0x0000fbc2                TIM9_UP_IRQHandler
+                0x0000fbc2                USART3_IRQHandler
+                0x0000fbc2                RTC_IRQHandler
+                0x0000fbc2                DMA1_Channel7_IRQHandler
+                0x0000fbc2                CAN1_RX1_IRQHandler
+                0x0000fbc2                DVP_IRQHandler
+                0x0000fbc2                UART5_IRQHandler
+                0x0000fbc2                TIM4_IRQHandler
+                0x0000fbc2                DMA2_Channel1_IRQHandler
+                0x0000fbc2                I2C1_EV_IRQHandler
+                0x0000fbc2                DMA1_Channel6_IRQHandler
+                0x0000fbc2                UART4_IRQHandler
+                0x0000fbc2                DMA2_Channel4_IRQHandler
+                0x0000fbc2                TIM3_IRQHandler
+                0x0000fbc2                RCC_IRQHandler
+                0x0000fbc2                TIM1_TRG_COM_IRQHandler
+                0x0000fbc2                DMA1_Channel1_IRQHandler
+                0x0000fbc2                DMA2_Channel7_IRQHandler
+                0x0000fbc2                EXTI15_10_IRQHandler
+                0x0000fbc2                TIM7_IRQHandler
+                0x0000fbc2                CAN2_TX_IRQHandler
+                0x0000fbc2                TIM5_IRQHandler
+                0x0000fbc2                EXTI9_5_IRQHandler
+                0x0000fbc2                ETH_WKUP_IRQHandler
+                0x0000fbc2                SPI2_IRQHandler
+                0x0000fbc2                TIM10_BRK_IRQHandler
+                0x0000fbc2                TIM9_CC_IRQHandler
+                0x0000fbc2                DMA2_Channel5_IRQHandler
+                0x0000fbc2                DMA1_Channel5_IRQHandler
+                0x0000fbc2                EXTI4_IRQHandler
+                0x0000fbc2                USB_LP_CAN1_RX0_IRQHandler
+                0x0000fbc2                RNG_IRQHandler
+                0x0000fbc2                USB_HP_CAN1_TX_IRQHandler
+                0x0000fbc2                DMA1_Channel3_IRQHandler
+                0x0000fbc2                ETH_IRQHandler
+                0x0000fbc2                TIM1_UP_IRQHandler
+                0x0000fbc2                WWDG_IRQHandler
+                0x0000fbc2                USBHSWakeup_IRQHandler
+                0x0000fbc2                DMA2_Channel11_IRQHandler
+                0x0000fbc2                Ecall_U_Mode_Handler
+                0x0000fbc2                DMA2_Channel6_IRQHandler
+                0x0000fbc2                TIM2_IRQHandler
+                0x0000fbc2                SW_Handler
+                0x0000fbc2                TIM1_BRK_IRQHandler
+                0x0000fbc2                DMA2_Channel10_IRQHandler
+                0x0000fbc2                EXTI1_IRQHandler
+                0x0000fbc2                RTCAlarm_IRQHandler
+                0x0000fbc2                TIM10_UP_IRQHandler
+                0x0000fbc2                TIM9_TRG_COM_IRQHandler
+                0x0000fbc2                UART7_IRQHandler
+                0x0000fbc2                USART2_IRQHandler
+                0x0000fbc2                UART6_IRQHandler
+                0x0000fbc2                I2C2_ER_IRQHandler
+                0x0000fbc2                DMA1_Channel2_IRQHandler
+                0x0000fbc2                TIM8_BRK_IRQHandler
+                0x0000fbc2                CAN1_SCE_IRQHandler
+                0x0000fbc2                FLASH_IRQHandler
+                0x0000fbc2                USART1_IRQHandler
+                0x0000fbc2                SPI3_IRQHandler
+                0x0000fbc2                I2C1_ER_IRQHandler
+                0x0000fbc2                USBWakeUp_IRQHandler
+                0x0000fbc2                DMA2_Channel3_IRQHandler
  .text.handle_reset
-                0x0000fd1a       0x90 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
-                0x0000fd1a                handle_reset
+                0x0000fbc4       0x90 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+                0x0000fbc4                handle_reset
  .text.__clzsi2
-                0x0000fdaa       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
-                0x0000fdaa                __clzsi2
+                0x0000fc54       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+                0x0000fc54                __clzsi2
  .text.__udivdi3
-                0x0000fde4      0x306 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
-                0x0000fde4                __udivdi3
- .text.calloc   0x000100ea        0xa D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
-                0x000100ea                calloc
+                0x0000fc8e      0x306 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+                0x0000fc8e                __udivdi3
+ .text.calloc   0x0000ff94        0xa D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-calloc.o)
+                0x0000ff94                calloc
  .text._calloc_r
-                0x000100f4       0x34 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
-                0x000100f4                _calloc_r
- .text.free     0x00010128        0x8 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
-                0x00010128                free
+                0x0000ff9e       0x34 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-callocr.o)
+                0x0000ff9e                _calloc_r
+ .text.free     0x0000ffd2        0x8 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-malloc.o)
+                0x0000ffd2                free
  .text.sbrk_aligned
-                0x00010130       0x50 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                0x0000ffda       0x50 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
  .text._malloc_r
-                0x00010180      0x116 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
-                0x00010180                _malloc_r
+                0x0001002a      0x116 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mallocr.o)
+                0x0001002a                _malloc_r
  .text.__malloc_lock
-                0x00010296        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
-                0x00010296                __malloc_lock
+                0x00010140        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                0x00010140                __malloc_lock
  .text.__malloc_unlock
-                0x00010298        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
-                0x00010298                __malloc_unlock
- .text.vprintf  0x0001029a        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
-                0x0001029a                viprintf
-                0x0001029a                vprintf
- .text._sbrk_r  0x000102a6       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
-                0x000102a6                _sbrk_r
- .text._free_r  0x000102d2       0xa2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
-                0x000102d2                _free_r
+                0x00010142        0x2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-mlock.o)
+                0x00010142                __malloc_unlock
+ .text.vprintf  0x00010144        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-vprintf.o)
+                0x00010144                viprintf
+                0x00010144                vprintf
+ .text._sbrk_r  0x00010150       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-sbrkr.o)
+                0x00010150                _sbrk_r
+ .text._free_r  0x0001017c       0xa2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-freer.o)
+                0x0001017c                _free_r
  .text.__sfputc_r
-                0x00010374       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x0001021e       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
  .text.__sfputs_r
-                0x0001039e       0x44 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
-                0x0001039e                __sfputs_r
+                0x00010248       0x44 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x00010248                __sfputs_r
  .text._vfprintf_r
-                0x000103e2      0x258 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
-                0x000103e2                _vfprintf_r
-                0x000103e2                _vfiprintf_r
+                0x0001028c      0x258 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x0001028c                _vfprintf_r
+                0x0001028c                _vfiprintf_r
  .text._printf_common
-                0x0001063a      0x112 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
-                0x0001063a                _printf_common
+                0x000104e4      0x112 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x000104e4                _printf_common
  .text._printf_i
-                0x0001074c      0x256 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
-                0x0001074c                _printf_i
- .text.std      0x000109a2       0x62 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x000105f6      0x256 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x000105f6                _printf_i
+ .text.std      0x0001084c       0x62 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
  .text.stdio_exit_handler
-                0x00010a04       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x000108ae       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
  .text.cleanup_stdio
-                0x00010a1c       0x4a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x000108c6       0x4a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
  .text.global_stdio_init.part.0
-                0x00010a66       0x42 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
- .text.__sinit  0x00010aa8       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
-                0x00010aa8                __sinit
+                0x00010910       0x42 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+ .text.__sinit  0x00010952       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x00010952                __sinit
  .text._fwalk_sglue
-                0x00010ac0       0x60 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
-                0x00010ac0                _fwalk_sglue
- .text.__sread  0x00010b20       0x30 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
-                0x00010b20                __sread
+                0x0001096a       0x60 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fwalk.o)
+                0x0001096a                _fwalk_sglue
+ .text.__sread  0x000109ca       0x30 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x000109ca                __sread
  .text.__swrite
-                0x00010b50       0x4e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
-                0x00010b50                __swrite
- .text.__sseek  0x00010b9e       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
-                0x00010b9e                __sseek
+                0x000109fa       0x4e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x000109fa                __swrite
+ .text.__sseek  0x00010a48       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x00010a48                __sseek
  .text.__sclose
-                0x00010bd8        0x6 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
-                0x00010bd8                __sclose
+                0x00010a82        0x6 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-stdio.o)
+                0x00010a82                __sclose
  .text.__swbuf_r
-                0x00010bde       0x90 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
-                0x00010bde                __swbuf_r
+                0x00010a88       0x90 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wbuf.o)
+                0x00010a88                __swbuf_r
  .text.__swsetup_r
-                0x00010c6e       0xc0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
-                0x00010c6e                __swsetup_r
- .text.memchr   0x00010d2e       0x1a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
-                0x00010d2e                memchr
+                0x00010b18       0xc0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-wsetup.o)
+                0x00010b18                __swsetup_r
+ .text.memchr   0x00010bd8       0x1a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-memchr.o)
+                0x00010bd8                memchr
  .text._close_r
-                0x00010d48       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
-                0x00010d48                _close_r
+                0x00010bf2       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-closer.o)
+                0x00010bf2                _close_r
  .text._lseek_r
-                0x00010d72       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
-                0x00010d72                _lseek_r
- .text._read_r  0x00010da0       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
-                0x00010da0                _read_r
+                0x00010c1c       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-lseekr.o)
+                0x00010c1c                _lseek_r
+ .text._read_r  0x00010c4a       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-readr.o)
+                0x00010c4a                _read_r
  .text._write_r
-                0x00010dce       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
-                0x00010dce                _write_r
+                0x00010c78       0x2e D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-writer.o)
+                0x00010c78                _write_r
  .text.__sflush_r
-                0x00010dfc      0x126 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
-                0x00010dfc                __sflush_r
+                0x00010ca6      0x126 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                0x00010ca6                __sflush_r
  .text._fflush_r
-                0x00010f22       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
-                0x00010f22                _fflush_r
+                0x00010dcc       0x3a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fflush.o)
+                0x00010dcc                _fflush_r
  .text.__swhatbuf_r
-                0x00010f5c       0x56 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
-                0x00010f5c                __swhatbuf_r
+                0x00010e06       0x56 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                0x00010e06                __swhatbuf_r
  .text.__smakebuf_r
-                0x00010fb2       0x82 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
-                0x00010fb2                __smakebuf_r
+                0x00010e5c       0x82 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-makebuf.o)
+                0x00010e5c                __smakebuf_r
  .text._fstat_r
-                0x00011034       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
-                0x00011034                _fstat_r
+                0x00010ede       0x2c D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-fstatr.o)
+                0x00010ede                _fstat_r
  .text._isatty_r
-                0x00011060       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
-                0x00011060                _isatty_r
- .text._close   0x0001108a        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
-                0x0001108a                _close
- .text._fstat   0x00011096        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
-                0x00011096                _fstat
- .text._isatty  0x000110a2        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
-                0x000110a2                _isatty
- .text._lseek   0x000110ae        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
-                0x000110ae                _lseek
- .text._read    0x000110ba        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
-                0x000110ba                _read
- .text._sbrk    0x000110c6       0x22 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
-                0x000110c6                _sbrk
- .text._write   0x000110e8        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
-                0x000110e8                _write
+                0x00010f0a       0x2a D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-isattyr.o)
+                0x00010f0a                _isatty_r
+ .text._close   0x00010f34        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(close.o)
+                0x00010f34                _close
+ .text._fstat   0x00010f40        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(fstat.o)
+                0x00010f40                _fstat
+ .text._isatty  0x00010f4c        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(isatty.o)
+                0x00010f4c                _isatty
+ .text._lseek   0x00010f58        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(lseek.o)
+                0x00010f58                _lseek
+ .text._read    0x00010f64        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(read.o)
+                0x00010f64                _read
+ .text._sbrk    0x00010f70       0x22 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(sbrk.o)
+                0x00010f70                _sbrk
+ .text._write   0x00010f92        0xc D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
+                0x00010f92                _write
  *(.rodata)
- .rodata        0x000110f4       0x10 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
-                0x000110f4                AHBPrescTable
- .rodata        0x00011104       0x57 mini_tree/libmini_tree.a(osal_freertos.c.obj)
- *fill*         0x0001115b        0x1 
- .rodata        0x0001115c        0x5 mini_tree/libmini_tree.a(tasks.c.obj)
- *fill*         0x00011161        0x3 
- .rodata        0x00011164       0x62 mini_tree/libmini_tree.a(board_device.c.obj)
- *fill*         0x000111c6        0x2 
- .rodata        0x000111c8      0x2f7 mini_tree/libmini_tree.a(board_driver.c.obj)
- *fill*         0x000114bf        0x1 
- .rodata        0x000114c0      0x674 mini_tree/libmini_tree.a(board_devtable.c.obj)
- .rodata        0x00011b34       0x80 mini_tree/libmini_tree.a(board_probe.c.obj)
- .rodata        0x00011bb4      0x1bb mini_tree/libmini_tree.a(event_bus.c.obj)
- *fill*         0x00011d6f        0x1 
- .rodata        0x00011d70       0x23 mini_tree/libmini_tree.a(production_log.c.obj)
- *fill*         0x00011d93        0x1 
- .rodata        0x00011d94      0x166 mini_tree/libmini_tree.a(system_init.cpp.obj)
- *fill*         0x00011efa        0x2 
- .rodata        0x00011efc      0x50f mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
- *fill*         0x0001240b        0x1 
- .rodata        0x0001240c      0x1c4 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
- .rodata        0x000125d0       0x28 mini_tree/libmini_tree.a(safe_state.c.obj)
- .rodata        0x000125f8       0x1c mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
- .rodata        0x00012614       0x10 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ *fill*         0x00010f9e        0x2 
+ .rodata        0x00010fa0       0x10 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x00010fa0                AHBPrescTable
+ .rodata        0x00010fb0       0x57 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ *fill*         0x00011007        0x1 
+ .rodata        0x00011008        0x5 mini_tree/libmini_tree.a(tasks.c.obj)
+ *fill*         0x0001100d        0x3 
+ .rodata        0x00011010       0x62 mini_tree/libmini_tree.a(board_device.c.obj)
+ *fill*         0x00011072        0x2 
+ .rodata        0x00011074      0x2f7 mini_tree/libmini_tree.a(board_driver.c.obj)
+ *fill*         0x0001136b        0x1 
+ .rodata        0x0001136c      0x674 mini_tree/libmini_tree.a(board_devtable.c.obj)
+ .rodata        0x000119e0       0x80 mini_tree/libmini_tree.a(board_probe.c.obj)
+ .rodata        0x00011a60      0x1bb mini_tree/libmini_tree.a(event_bus.c.obj)
+ *fill*         0x00011c1b        0x1 
+ .rodata        0x00011c1c       0x23 mini_tree/libmini_tree.a(production_log.c.obj)
+ *fill*         0x00011c3f        0x1 
+ .rodata        0x00011c40      0x166 mini_tree/libmini_tree.a(system_init.cpp.obj)
+ *fill*         0x00011da6        0x2 
+ .rodata        0x00011da8      0x50f mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
+ *fill*         0x000122b7        0x1 
+ .rodata        0x000122b8      0x1c4 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
+ .rodata        0x0001247c       0x28 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .rodata        0x000124a4       0x1c mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+ .rodata        0x000124c0       0x10 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
  *(.rodata*)
  .rodata.str1.4
-                0x00012624       0x51 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+                0x000124d0       0x51 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
                                  0x18 (size before relaxing)
- *fill*         0x00012675        0x3 
+ *fill*         0x00012521        0x3 
  .rodata.__clz_tab
-                0x00012678      0x100 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
-                0x00012678                __clz_tab
+                0x00012524      0x100 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+                0x00012524                __clz_tab
  .rodata._vfprintf_r.str1.4
-                0x00012778        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
+                0x00012624        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf.o)
                                  0x13 (size before relaxing)
  .rodata._printf_i.str1.4
-                0x00012778        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x00012624        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
                                  0x25 (size before relaxing)
  .rodata._printf_i
-                0x00012778       0x58 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
+                0x00012624       0x58 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-nano-vfprintf_i.o)
  *(.gnu.linkonce.t.*)
-                0x000127d0                        . = ALIGN (0x4)
+                0x0001267c                        . = ALIGN (0x4)
 
-.entry          0x000127d0       0x20
- .entry         0x000127d0       0x20 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
-                0x000127d0                ch307_node_main
+.entry          0x0001267c       0x20
+ .entry         0x0001267c       0x20 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                0x0001267c                ch307_node_main
 
-.rela.dyn       0x000127f0        0x0
- .rela.init     0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
- .rela.vector   0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+.rela.dyn       0x0001269c        0x0
+ .rela.init     0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.vector   0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .rela.text.handle_reset
-                0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
- .rela.srodata  0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
- .rela.text     0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
- .rela.rodata   0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.srodata  0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.text     0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+ .rela.rodata   0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .rela.text._vfprintf_r
-                0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .rela.text._sbrk
-                0x000127f0        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+                0x0001269c        0x0 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
 
-.fini           0x000127f0        0x0
+.fini           0x0001269c        0x0
  *(SORT_NONE(.fini))
-                0x000127f0                        . = ALIGN (0x4)
+                0x0001269c                        . = ALIGN (0x4)
                 [!provide]                        PROVIDE (_etext = .)
                 [!provide]                        PROVIDE (_eitcm = .)
 
-.preinit_array  0x000127f0        0x0
+.preinit_array  0x0001269c        0x0
                 [!provide]                        PROVIDE (__preinit_array_start = .)
  *(.preinit_array)
                 [!provide]                        PROVIDE (__preinit_array_end = .)
 
-.init_array     0x000127f0        0xc
+.init_array     0x0001269c        0xc
                 [!provide]                        PROVIDE (__init_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
  .init_array.00150
-                0x000127f0        0x4 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+                0x0001269c        0x4 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
  .init_array.00250
-                0x000127f4        0x4 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                0x000126a0        0x4 mini_tree/libmini_tree.a(osal_freertos.c.obj)
  .init_array.00251
-                0x000127f8        0x4 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+                0x000126a4        0x4 mini_tree/libmini_tree.a(osal_freertos.c.obj)
  *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
                 [!provide]                        PROVIDE (__init_array_end = .)
 
-.fini_array     0x000127fc        0x0
+.fini_array     0x000126a8        0x0
                 [!provide]                        PROVIDE (__fini_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
  *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
@@ -2012,15 +2006,15 @@ END GROUP
  *(SORT_BY_NAME(.dtors.*))
  *(.dtors)
 
-.dalign         0x20000000        0x0 load address 0x000127fc
+.dalign         0x20000000        0x0 load address 0x000126a8
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        PROVIDE (_data_vma = .)
 
-.dlalign        0x000127fc        0x0
-                0x000127fc                        . = ALIGN (0x4)
-                0x000127fc                        PROVIDE (_data_lma = .)
+.dlalign        0x000126a8        0x0
+                0x000126a8                        . = ALIGN (0x4)
+                0x000126a8                        PROVIDE (_data_lma = .)
 
-.data           0x20000000       0xc8 load address 0x000127fc
+.data           0x20000000       0xc8 load address 0x000126a8
  *(.gnu.linkonce.r.*)
  *(.data .data.*)
  .data._impure_data
@@ -2063,7 +2057,7 @@ END GROUP
                 0x200000c8                        . = ALIGN (0x4)
                 0x200000c8                        PROVIDE (_edata = .)
 
-.bss            0x200000e0     0x26b8 load address 0x000128c4
+.bss            0x200000e0     0x2658 load address 0x00012770
                 0x200000e0                        . = ALIGN (0x4)
                 0x200000e0                        PROVIDE (_sbss = .)
  *(.sbss*)
@@ -2102,17 +2096,17 @@ END GROUP
  *fill*         0x20002141        0x3 
  .bss           0x20002144       0x48 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
  .bss           0x2000218c        0x4 mini_tree/libmini_tree.a(safe_state.c.obj)
- .bss           0x20002190       0x68 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
- *fill*         0x200021f8        0x8 
- .bss           0x20002200      0x460 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
- .bss.__sf      0x20002660      0x138 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
-                0x20002660                __sf
+ .bss           0x20002190        0x4 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+ *fill*         0x20002194        0xc 
+ .bss           0x200021a0      0x460 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+ .bss.__sf      0x20002600      0x138 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libg_nano.a(libc_a-findfp.o)
+                0x20002600                __sf
  *(.gnu.linkonce.b.*)
  *(COMMON*)
-                0x20002798                        . = ALIGN (0x4)
-                0x20002798                        PROVIDE (_ebss = .)
+                0x20002738                        . = ALIGN (0x4)
+                0x20002738                        PROVIDE (_ebss = .)
                 [!provide]                        PROVIDE (_end = _ebss)
-                0x20002798                        PROVIDE (end = .)
+                0x20002738                        PROVIDE (end = .)
 
 .stack          0x20007c00      0x400
                 [!provide]                        PROVIDE (_heap_end = .)
@@ -2124,48 +2118,48 @@ END GROUP
                 0x20008000                        PROVIDE (__freertos_irq_stack_top = _eusrstack)
 OUTPUT(ch307_node elf32-littleriscv)
 
-.debug_info     0x00000000    0x12966
+.debug_info     0x00000000    0x1271d
  .debug_info    0x00000000      0x2f2 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_info    0x000002f2       0x23 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_info    0x00000315       0xa0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
  .debug_info    0x000003b5      0x4a8 CMakeFiles/ch307_node.dir/SRC/User/spi.c.obj
  .debug_info    0x0000085d      0x466 CMakeFiles/ch307_node.dir/SRC/User/usart.c.obj
  .debug_info    0x00000cc3      0x132 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
- .debug_info    0x00000df5      0x7c4 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
- .debug_info    0x000015b9     0x17d7 mini_tree/libmini_tree.a(osal_freertos.c.obj)
- .debug_info    0x00002d90     0x2229 mini_tree/libmini_tree.a(tasks.c.obj)
- .debug_info    0x00004fb9     0x1430 mini_tree/libmini_tree.a(queue.c.obj)
- .debug_info    0x000063e9      0x2ab mini_tree/libmini_tree.a(list.c.obj)
- .debug_info    0x00006694      0x4d5 mini_tree/libmini_tree.a(heap_4.c.obj)
- .debug_info    0x00006b69      0x221 mini_tree/libmini_tree.a(port.c.obj)
- .debug_info    0x00006d8a       0x23 mini_tree/libmini_tree.a(portASM.S.obj)
- .debug_info    0x00006dad     0x16b2 mini_tree/libmini_tree.a(board_device.c.obj)
- .debug_info    0x0000845f      0x122 mini_tree/libmini_tree.a(board_dma.c.obj)
- .debug_info    0x00008581      0x468 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
- .debug_info    0x000089e9      0xc9a mini_tree/libmini_tree.a(board_driver.c.obj)
- .debug_info    0x00009683      0x666 mini_tree/libmini_tree.a(board_devtable.c.obj)
- .debug_info    0x00009ce9      0x7dc mini_tree/libmini_tree.a(board_probe.c.obj)
- .debug_info    0x0000a4c5      0x71e mini_tree/libmini_tree.a(event_bus.c.obj)
- .debug_info    0x0000abe3      0x274 mini_tree/libmini_tree.a(production_log.c.obj)
- .debug_info    0x0000ae57      0x123 mini_tree/libmini_tree.a(printf_output.c.obj)
- .debug_info    0x0000af7a      0x9d6 mini_tree/libmini_tree.a(system_init.cpp.obj)
- .debug_info    0x0000b950      0xa0b mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
- .debug_info    0x0000c35b      0xa6b mini_tree/libmini_tree.a(system_wdt.cpp.obj)
- .debug_info    0x0000cdc6      0x14f mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_info    0x0000cf15      0x3f1 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_info    0x0000d306      0x7d6 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
- .debug_info    0x0000dadc      0xea1 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
- .debug_info    0x0000e97d      0xb4e mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
- .debug_info    0x0000f4cb      0x71b hal/libch32_periph.a(ch32v30x_gpio.c.obj)
- .debug_info    0x0000fbe6      0x92f hal/libch32_periph.a(ch32v30x_spi.c.obj)
- .debug_info    0x00010515      0x9a1 hal/libch32_periph.a(ch32v30x_usart.c.obj)
- .debug_info    0x00010eb6      0xbca hal/libch32_periph.a(ch32v30x_rcc.c.obj)
- .debug_info    0x00011a80      0x43c hal/libch32_periph.a(ch32v30x_dma.c.obj)
- .debug_info    0x00011ebc      0x168 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_info    0x00012024      0x850 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_info    0x00012874       0xf2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_info    0x00000df5      0x7c5 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_info    0x000015ba     0x1805 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_info    0x00002dbf     0x2229 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_info    0x00004fe8     0x1430 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_info    0x00006418      0x2ab mini_tree/libmini_tree.a(list.c.obj)
+ .debug_info    0x000066c3      0x4d5 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_info    0x00006b98      0x221 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_info    0x00006db9       0x23 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_info    0x00006ddc     0x16d2 mini_tree/libmini_tree.a(board_device.c.obj)
+ .debug_info    0x000084ae      0x123 mini_tree/libmini_tree.a(board_dma.c.obj)
+ .debug_info    0x000085d1      0x467 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
+ .debug_info    0x00008a38      0xc98 mini_tree/libmini_tree.a(board_driver.c.obj)
+ .debug_info    0x000096d0      0x651 mini_tree/libmini_tree.a(board_devtable.c.obj)
+ .debug_info    0x00009d21      0x7d4 mini_tree/libmini_tree.a(board_probe.c.obj)
+ .debug_info    0x0000a4f5      0x71a mini_tree/libmini_tree.a(event_bus.c.obj)
+ .debug_info    0x0000ac0f      0x275 mini_tree/libmini_tree.a(production_log.c.obj)
+ .debug_info    0x0000ae84      0x124 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_info    0x0000afa8      0x9d4 mini_tree/libmini_tree.a(system_init.cpp.obj)
+ .debug_info    0x0000b97c      0xa05 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
+ .debug_info    0x0000c381      0xa64 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
+ .debug_info    0x0000cde5      0x150 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_info    0x0000cf35      0x44e mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_info    0x0000d383      0x6eb mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+ .debug_info    0x0000da6e      0xd0b mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+ .debug_info    0x0000e779      0xb09 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+ .debug_info    0x0000f282      0x71b hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+ .debug_info    0x0000f99d      0x92f hal/libch32_periph.a(ch32v30x_spi.c.obj)
+ .debug_info    0x000102cc      0x9a1 hal/libch32_periph.a(ch32v30x_usart.c.obj)
+ .debug_info    0x00010c6d      0xbca hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ .debug_info    0x00011837      0x43c hal/libch32_periph.a(ch32v30x_dma.c.obj)
+ .debug_info    0x00011c73      0x168 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_info    0x00011ddb      0x850 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_info    0x0001262b       0xf2 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_abbrev   0x00000000     0x462c
+.debug_abbrev   0x00000000     0x468f
  .debug_abbrev  0x00000000      0x19b CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_abbrev  0x0000019b       0x12 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_abbrev  0x000001ad       0x4b CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
@@ -2180,31 +2174,31 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_abbrev  0x000012d0      0x1f7 mini_tree/libmini_tree.a(heap_4.c.obj)
  .debug_abbrev  0x000014c7       0xe3 mini_tree/libmini_tree.a(port.c.obj)
  .debug_abbrev  0x000015aa       0x12 mini_tree/libmini_tree.a(portASM.S.obj)
- .debug_abbrev  0x000015bc      0x318 mini_tree/libmini_tree.a(board_device.c.obj)
- .debug_abbrev  0x000018d4       0xc6 mini_tree/libmini_tree.a(board_dma.c.obj)
- .debug_abbrev  0x0000199a      0x1c6 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
- .debug_abbrev  0x00001b60      0x2b3 mini_tree/libmini_tree.a(board_driver.c.obj)
- .debug_abbrev  0x00001e13      0x192 mini_tree/libmini_tree.a(board_devtable.c.obj)
- .debug_abbrev  0x00001fa5      0x192 mini_tree/libmini_tree.a(board_probe.c.obj)
- .debug_abbrev  0x00002137      0x2e8 mini_tree/libmini_tree.a(event_bus.c.obj)
- .debug_abbrev  0x0000241f      0x171 mini_tree/libmini_tree.a(production_log.c.obj)
- .debug_abbrev  0x00002590       0xbd mini_tree/libmini_tree.a(printf_output.c.obj)
- .debug_abbrev  0x0000264d      0x298 mini_tree/libmini_tree.a(system_init.cpp.obj)
- .debug_abbrev  0x000028e5      0x2d1 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
- .debug_abbrev  0x00002bb6      0x29c mini_tree/libmini_tree.a(system_wdt.cpp.obj)
- .debug_abbrev  0x00002e52       0xf7 mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_abbrev  0x00002f49      0x1ba mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_abbrev  0x00003103      0x281 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
- .debug_abbrev  0x00003384      0x39b mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
- .debug_abbrev  0x0000371f      0x2d0 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
- .debug_abbrev  0x000039ef      0x217 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
- .debug_abbrev  0x00003c06      0x1ce hal/libch32_periph.a(ch32v30x_spi.c.obj)
- .debug_abbrev  0x00003dd4      0x1d0 hal/libch32_periph.a(ch32v30x_usart.c.obj)
- .debug_abbrev  0x00003fa4      0x204 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
- .debug_abbrev  0x000041a8      0x188 hal/libch32_periph.a(ch32v30x_dma.c.obj)
- .debug_abbrev  0x00004330       0xd9 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_abbrev  0x00004409      0x1ad D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_abbrev  0x000045b6       0x76 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_abbrev  0x000015bc      0x317 mini_tree/libmini_tree.a(board_device.c.obj)
+ .debug_abbrev  0x000018d3       0xc6 mini_tree/libmini_tree.a(board_dma.c.obj)
+ .debug_abbrev  0x00001999      0x1d8 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
+ .debug_abbrev  0x00001b71      0x2b3 mini_tree/libmini_tree.a(board_driver.c.obj)
+ .debug_abbrev  0x00001e24      0x1a4 mini_tree/libmini_tree.a(board_devtable.c.obj)
+ .debug_abbrev  0x00001fc8      0x1a4 mini_tree/libmini_tree.a(board_probe.c.obj)
+ .debug_abbrev  0x0000216c      0x2e8 mini_tree/libmini_tree.a(event_bus.c.obj)
+ .debug_abbrev  0x00002454      0x171 mini_tree/libmini_tree.a(production_log.c.obj)
+ .debug_abbrev  0x000025c5       0xce mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_abbrev  0x00002693      0x2aa mini_tree/libmini_tree.a(system_init.cpp.obj)
+ .debug_abbrev  0x0000293d      0x2e3 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
+ .debug_abbrev  0x00002c20      0x2ae mini_tree/libmini_tree.a(system_wdt.cpp.obj)
+ .debug_abbrev  0x00002ece      0x108 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_abbrev  0x00002fd6      0x1d6 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_abbrev  0x000031ac      0x242 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+ .debug_abbrev  0x000033ee      0x36f mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+ .debug_abbrev  0x0000375d      0x2f5 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+ .debug_abbrev  0x00003a52      0x217 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+ .debug_abbrev  0x00003c69      0x1ce hal/libch32_periph.a(ch32v30x_spi.c.obj)
+ .debug_abbrev  0x00003e37      0x1d0 hal/libch32_periph.a(ch32v30x_usart.c.obj)
+ .debug_abbrev  0x00004007      0x204 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ .debug_abbrev  0x0000420b      0x188 hal/libch32_periph.a(ch32v30x_dma.c.obj)
+ .debug_abbrev  0x00004393       0xd9 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x0000446c      0x1ad D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x00004619       0x76 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
 .debug_loclists
                 0x00000000      0xd87
@@ -2297,7 +2291,7 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_aranges
                 0x000004f8       0x18 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_line     0x00000000    0x11787
+.debug_line     0x00000000    0x1167b
  .debug_line    0x00000000      0x528 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_line    0x00000528      0x11a CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
  .debug_line    0x00000642       0x70 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
@@ -2325,97 +2319,97 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_line    0x0000b351      0x223 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
  .debug_line    0x0000b574      0x4b7 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
  .debug_line    0x0000ba2b      0x105 mini_tree/libmini_tree.a(safe_state.c.obj)
- .debug_line    0x0000bb30      0x24e mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_line    0x0000bd7e      0x3eb mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
- .debug_line    0x0000c169      0xcee mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
- .debug_line    0x0000ce57      0x6a3 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
- .debug_line    0x0000d4fa      0xb13 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
- .debug_line    0x0000e00d      0x857 hal/libch32_periph.a(ch32v30x_spi.c.obj)
- .debug_line    0x0000e864      0x9d8 hal/libch32_periph.a(ch32v30x_usart.c.obj)
- .debug_line    0x0000f23c     0x1210 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
- .debug_line    0x0001044c      0x6dc hal/libch32_periph.a(ch32v30x_dma.c.obj)
- .debug_line    0x00010b28       0xef D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
- .debug_line    0x00010c17      0xb27 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
- .debug_line    0x0001173e       0x49 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_line    0x0000bb30      0x26e mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+ .debug_line    0x0000bd9e      0x347 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+ .debug_line    0x0000c0e5      0xc82 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+ .debug_line    0x0000cd67      0x687 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+ .debug_line    0x0000d3ee      0xb13 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+ .debug_line    0x0000df01      0x857 hal/libch32_periph.a(ch32v30x_spi.c.obj)
+ .debug_line    0x0000e758      0x9d8 hal/libch32_periph.a(ch32v30x_usart.c.obj)
+ .debug_line    0x0000f130     0x1210 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ .debug_line    0x00010340      0x6dc hal/libch32_periph.a(ch32v30x_dma.c.obj)
+ .debug_line    0x00010a1c       0xef D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_line    0x00010b0b      0xb27 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_line    0x00011632       0x49 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
 
-.debug_str      0x00000000     0x5cd8
- .debug_str     0x00000000     0x5cd8 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
+.debug_str      0x00000000     0x5bd3
+ .debug_str     0x00000000     0x5bd3 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
                                 0x29e (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/SRC/Startup/startup_ch32v30x_D8C.S.obj
                                  0x93 (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
                                 0x153 (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/SRC/User/spi.c.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/SRC/User/spi.c.obj
                                 0x443 (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/SRC/User/usart.c.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/SRC/User/usart.c.obj
                                 0x411 (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/app/src/freeRTOS.cpp.obj
                                 0x1eb (size before relaxing)
- .debug_str     0x00005cd8        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
+ .debug_str     0x00005bd3        0x0 CMakeFiles/ch307_node.dir/app/src/main.cpp.obj
                                 0x39a (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(osal_freertos.c.obj)
                                 0xd74 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(tasks.c.obj)
                                0x1257 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(queue.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(queue.c.obj)
                                 0xb20 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(list.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(list.c.obj)
                                 0x251 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(heap_4.c.obj)
                                 0x4a0 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(port.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(port.c.obj)
                                 0x289 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(portASM.S.obj)
                                  0xa5 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(board_device.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(board_device.c.obj)
                                 0xa3b (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(board_dma.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(board_dma.c.obj)
                                 0x16a (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(dev_lifecycle.c.obj)
                                 0x30b (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(board_driver.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(board_driver.c.obj)
                                 0x813 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(board_devtable.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(board_devtable.c.obj)
                                 0x574 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(board_probe.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(board_probe.c.obj)
                                 0x60a (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(event_bus.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(event_bus.c.obj)
                                 0x51c (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(production_log.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(production_log.c.obj)
                                 0x21b (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(printf_output.c.obj)
                                 0x168 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(system_init.cpp.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(system_init.cpp.obj)
                                 0x5b8 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(system_scrubber.cpp.obj)
                                 0x48a (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
                                 0x593 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(safe_state.c.obj)
                                 0x20b (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
-                                0x36a (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
-                                0x673 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
-                                0x7f6 (size before relaxing)
- .debug_str     0x00005cd8        0x0 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
-                                0x7f2 (size before relaxing)
- .debug_str     0x00005cd8        0x0 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
+                                0x377 (size before relaxing)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+                                0x5c8 (size before relaxing)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+                                0x73b (size before relaxing)
+ .debug_str     0x00005bd3        0x0 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+                                0x7a3 (size before relaxing)
+ .debug_str     0x00005bd3        0x0 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
                                 0x51e (size before relaxing)
- .debug_str     0x00005cd8        0x0 hal/libch32_periph.a(ch32v30x_spi.c.obj)
+ .debug_str     0x00005bd3        0x0 hal/libch32_periph.a(ch32v30x_spi.c.obj)
                                 0x5fe (size before relaxing)
- .debug_str     0x00005cd8        0x0 hal/libch32_periph.a(ch32v30x_usart.c.obj)
+ .debug_str     0x00005bd3        0x0 hal/libch32_periph.a(ch32v30x_usart.c.obj)
                                 0x667 (size before relaxing)
- .debug_str     0x00005cd8        0x0 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ .debug_str     0x00005bd3        0x0 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
                                 0x84e (size before relaxing)
- .debug_str     0x00005cd8        0x0 hal/libch32_periph.a(ch32v30x_dma.c.obj)
+ .debug_str     0x00005bd3        0x0 hal/libch32_periph.a(ch32v30x_dma.c.obj)
                                 0x362 (size before relaxing)
- .debug_str     0x00005cd8        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_str     0x00005bd3        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
                                 0x21b (size before relaxing)
- .debug_str     0x00005cd8        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
+ .debug_str     0x00005bd3        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_udivdi3.o)
                                 0x2b1 (size before relaxing)
- .debug_str     0x00005cd8        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
+ .debug_str     0x00005bd3        0x0 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clz.o)
                                 0x1fe (size before relaxing)
 
 .debug_line_str
@@ -2966,7 +2960,7 @@ OUTPUT(ch307_node elf32-littleriscv)
  .riscv.attributes
                 0x00001aee       0x66 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0/../../../../riscv32-wch-elf/lib\libnosys.a(write.o)
 
-.debug_frame    0x00000000     0x52a4
+.debug_frame    0x00000000     0x5164
  .debug_frame   0x00000000       0x74 CMakeFiles/ch307_node.dir/SRC/Core/system_ch32v30x.c.obj
  .debug_frame   0x00000074       0x30 CMakeFiles/ch307_node.dir/SRC/User/ch32v30x_it.c.obj
  .debug_frame   0x000000a4       0x2c CMakeFiles/ch307_node.dir/SRC/User/spi.c.obj
@@ -2993,15 +2987,15 @@ OUTPUT(ch307_node elf32-littleriscv)
  .debug_frame   0x000030c8      0x1a0 mini_tree/libmini_tree.a(system_wdt.cpp.obj)
  .debug_frame   0x00003268       0xa4 mini_tree/libmini_tree.a(safe_state.c.obj)
  .debug_frame   0x0000330c      0x284 mini_tree/libmini_tree.a(hal_ch32v307.c.obj)
- .debug_frame   0x00003590      0x1c8 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
- .debug_frame   0x00003758      0x3d4 mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
- .debug_frame   0x00003b2c      0x2b8 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
- .debug_frame   0x00003de4      0x308 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
- .debug_frame   0x000040ec      0x3a8 hal/libch32_periph.a(ch32v30x_spi.c.obj)
- .debug_frame   0x00004494      0x448 hal/libch32_periph.a(ch32v30x_usart.c.obj)
- .debug_frame   0x000048dc      0x7e0 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
- .debug_frame   0x000050bc      0x1c8 hal/libch32_periph.a(ch32v30x_dma.c.obj)
- .debug_frame   0x00005284       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
+ .debug_frame   0x00003590      0x178 mini_tree/libmini_tree.a(hal_dma_ch32.c.obj)
+ .debug_frame   0x00003708      0x30c mini_tree/libmini_tree.a(hal_spi_ch32.c.obj)
+ .debug_frame   0x00003a14      0x290 mini_tree/libmini_tree.a(hal_uart_ch32.c.obj)
+ .debug_frame   0x00003ca4      0x308 hal/libch32_periph.a(ch32v30x_gpio.c.obj)
+ .debug_frame   0x00003fac      0x3a8 hal/libch32_periph.a(ch32v30x_spi.c.obj)
+ .debug_frame   0x00004354      0x448 hal/libch32_periph.a(ch32v30x_usart.c.obj)
+ .debug_frame   0x0000479c      0x7e0 hal/libch32_periph.a(ch32v30x_rcc.c.obj)
+ .debug_frame   0x00004f7c      0x1c8 hal/libch32_periph.a(ch32v30x_dma.c.obj)
+ .debug_frame   0x00005144       0x20 D:/MounRiver_Studio2/resources/app/resources/win32/components/WCH/Toolchain/RISC-V Embedded GCC15/bin/../lib/gcc/riscv32-wch-elf/15.2.0\libgcc.a(_clzsi2.o)
 
 .debug_rnglists
                 0x00000000      0x1a7

@@ -63,7 +63,6 @@ struct hal_uart_dev {
     struct hal_uart_config_t        cfg;
     int                             hw_open;
     int                             pool_idx;
-    struct osal_mutex*              hal_mutex;
     bool                            hw_inited;
     void*                           uart_queue;  /* 平台私有 (ESP32: QueueHandle_t, st/ch: NULL) */
     volatile uint8_t                status;

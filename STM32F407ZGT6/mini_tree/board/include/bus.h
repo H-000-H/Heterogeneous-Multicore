@@ -121,8 +121,8 @@ struct bus_controller_ops {
  */
 struct bus_controller {
     bus_type_t                          type;       /* 总线类型 (BUS_TYPE_SPI 等) */
-    const struct bus_ops*              ops;        /* client 级 ops (legacy, 可 NULL) */
-    const struct bus_controller_ops*    ctlr_ops;   /* host 级 ops (可 NULL, 老驱动兼容) */
+    const struct bus_ops*              ops;        /* client 级 ops */
+    const struct bus_controller_ops*    ctlr_ops;   /* host 级 ops */
     void*                               hw_ctx;     /* host 私有上下文 (struct xxx_bus_host*) */
 };
 
@@ -143,16 +143,6 @@ struct bus_client {
 /*===========================================================================================================================================================*/
 
 /**
- * @brief 绑定 controller (legacy, 不带 ctlr_ops)
- *
- * 内部调用 bus_controller_bind_full(dev, type, ops, NULL, hw_ctx).
- * 老驱动兼容, 新驱动应直接用 bus_controller_bind_full.
- */
-int  bus_controller_bind(struct device* dev, bus_type_t type,
-                         const struct bus_ops* ops, void* hw_ctx)
-    COMPAT_WARN_UNUSED_RESULT;
-
-/**
  * @brief 绑定 controller (full, 带 ctlr_ops)
  *
  * 将 host device 注册为总线控制器, 存入 s_controllers[device_id].
@@ -161,7 +151,7 @@ int  bus_controller_bind(struct device* dev, bus_type_t type,
  * @param dev       controller device (host)
  * @param type      总线类型 (BUS_TYPE_SPI 等)
  * @param ops       client 级 ops (可 NULL, 由 controller_ops.client_register 内部设置)
- * @param ctlr_ops  host 级 ops (可 NULL, 老驱动兼容)
+ * @param ctlr_ops  host 级 ops
  * @param hw_ctx    host 私有上下文 (struct xxx_bus_host*)
  *
  * @return 成功返回 VFS_OK, 失败返回 VFS_ERR_*

@@ -71,7 +71,6 @@ struct hal_uart_dev
     struct hal_uart_config_t        cfg;
     int                             hw_open;
     int                             pool_idx;
-    struct osal_mutex*              hal_mutex;
     bool                            hw_inited;
     QueueHandle_t                   uart_queue;
     volatile uint8_t                status;
@@ -114,7 +113,7 @@ const struct hal_uart_bus* hal_uart_bus_get(void);
 
                                                             /*强制停止 API*/
 /*===========================================================================================================================================================*/
-int  hal_uart_force_stop(void)COMPAT_WARN_UNUSED_RESULT;
+int  hal_uart_force_stopCOMPAT_IGNORE_RESULT(COMPAT_WARN_UNUSED_RESULT);
 /*===========================================================================================================================================================*/
 
 #ifdef __cplusplus

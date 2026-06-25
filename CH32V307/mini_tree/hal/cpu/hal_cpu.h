@@ -13,6 +13,7 @@
 #define HAL_CPU_H
 
 #include <stdint.h>
+#include "compiler_compat.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -119,7 +120,7 @@ static inline void hal_irq_restore(uint32_t mask)
 #else
 
 static inline uint32_t hal_irq_disable_all(void) { uint32_t m; __asm__ volatile("" : "=r"(m)); return m; }
-static inline void hal_irq_restore(uint32_t mask) { (void)mask; }
+static inline void hal_irq_restore(uint32_t mask) { COMPAT_IGNORE_RESULT(mask); }
 
 #endif
 /*===========================================================================================================================================================*/

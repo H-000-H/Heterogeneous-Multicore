@@ -241,7 +241,7 @@ int hal_dma_stm32_stream_disable(int dts_id, uint32_t timeout_ms)
     if (idx < 0 || !s_dma_inited[idx])
         return VFS_ERR_NODEV;
 
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     HAL_DMA_Abort(&s_dma_handles[idx]);
     return VFS_OK;
 }

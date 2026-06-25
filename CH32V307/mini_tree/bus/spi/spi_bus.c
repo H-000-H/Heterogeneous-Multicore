@@ -18,8 +18,9 @@
  *   - impl 函数实现具体逻辑, wrapper 函数转发 (保持 API 兼容)
  *
  * 引用计数 (atomic_int):
- *   - spi_bus_ops_open/close: atomic_fetch_add/sub
- *   - spi_bus_open/close (legacy): 同上
+ *   - spi_client_register_impl: atomic_fetch_add (client 注册时 +1)
+ *   - spi_client_unregister_impl: atomic_fetch_sub (client 注销时 -1)
+ *   - bus_ops open/close (spi_bus_open/close): 只触 HAL open/close, 不改 ref_count
  *   - host_deinit: atomic_load 检查 > 0 拒绝销毁
  *
  * 异步传输关键点:
@@ -156,10 +157,10 @@ static int spi_bus_ops_read(void* ctx, void* data, size_t len,
 
 static int spi_bus_ops_ioctl(void* ctx, int cmd, void* arg, size_t arg_len)
 {
-    (void)ctx;
-    (void)cmd;
-    (void)arg;
-    (void)arg_len;
+    COMPAT_IGNORE_RESULT(ctx);
+    COMPAT_IGNORE_RESULT(cmd);
+    COMPAT_IGNORE_RESULT(arg);
+    COMPAT_IGNORE_RESULT(arg_len);
     return VFS_ERR_INVAL;
 }
 
@@ -428,8 +429,7 @@ int spi_bus_open(struct device* dev)
                                            client->cfg.cs_pin & 0xFFFF);
     dev_cfg.queue_size     = client->cfg.queue_size > 0 ? client->cfg.queue_size : 4;
 
-    hal_spi_dev_init(&client->hal_dev, (int)(client - s_spi_clients),
-                     client->host->hal_host, &dev_cfg);
+    hal_spi_dev_init(&client->hal_dev, (int)(client - s_spi_clients),client->host->hal_host, &dev_cfg);
     ret = hal_spi_dev_hw_open(&client->hal_dev);
     if (ret != VFS_OK)
         return ret;
@@ -457,11 +457,9 @@ int spi_bus_close(struct device* dev)
 
                                                               /* Transfer API */
 /*===========================================================================================================================================================*/
-int spi_bus_transfer(struct device* dev, const uint8_t* tx, uint8_t* rx,
-                     size_t len, uint32_t timeout_ms)
+int spi_bus_transfer(struct device* dev,const uint8_t* tx, uint8_t* rx,size_t len,uint32_t timeout_ms)
 {
     struct spi_bus_client* client;
-    int                    role;
 
     if (!dev || len == 0)
         return VFS_ERR_INVAL;
@@ -469,171 +467,44 @@ int spi_bus_transfer(struct device* dev, const uint8_t* tx, uint8_t* rx,
     client = spi_client_from_device(dev);
     if (!client || !client->hw_open)
         return VFS_ERR_NODEV;
-
-    role = spi_bus_host_role(dev);
-    if (role == SPI_BUS_ROLE_SLAVE)
-        return spi_slave_sync(&client->hal_dev, tx, rx, len, timeout_ms);
 
     return spi_sync(&client->hal_dev, tx, rx, len, timeout_ms);
 }
 
 /*===========================================================================================================================================================*/
-                                                              /* Async transfer (master only) */
+                                                              /* Async / Slave API (st/ch 不支持) */
 /*===========================================================================================================================================================*/
-/* callback 桥接: HAL callback 传 hal_spi_dev*, 转换为 struct device* 调用户 cb
- *
- * 生命周期: async 提交时分配 → ISR callback 触发时使用 → callback 返回时释放(in_use=0)
- * 必须静态分配: callback 在 ISR 中异步触发, 栈帧早已销毁 */
-struct spi_async_bridge {
-    struct device* dev;
-    void (*cb)(struct device* dev, const void* trans, void* userdata);
-    void* userdata;
-    uint8_t in_use;
-};
-static struct spi_async_bridge s_bridge_pool[DEV_ID_COUNT][HAL_SPI_MAX_ASYNC];
-
-static struct spi_async_bridge* spi_bridge_alloc(struct device* dev)
+int spi_bus_transfer_async(struct device* dev,const uint8_t* tx, uint8_t* rx,size_t len,void (*cb)(struct device* dev,const void* trans,void* userdata),void* userdata)
 {
-    struct spi_bus_client* client;
-    int idx;
-    int i;
-
-    client = spi_client_from_device(dev);
-    if (!client)
-        return NULL;
-    idx = (int)(client - s_spi_clients);
-
-    for (i = 0; i < HAL_SPI_MAX_ASYNC; i++)
-    {
-        if (!s_bridge_pool[idx][i].in_use)
-        {
-            s_bridge_pool[idx][i].in_use = 1;
-            return &s_bridge_pool[idx][i];
-        }
-    }
-    return NULL;
-}
-
-static void spi_async_hal_cb(struct hal_spi_dev* hal_dev,
-                             const void* trans, void* userdata)
-{
-    struct spi_async_bridge* bridge = (struct spi_async_bridge*)userdata;
-    if (!bridge)
-        return;
-
-    if (bridge->cb)
-        bridge->cb(bridge->dev, trans, bridge->userdata);
-
-    /* ISR 安全: 单字节写, 释放 bridge 供下次 async 复用 */
-    bridge->in_use = 0;
-}
-
-int spi_bus_transfer_async(struct device* dev,
-                           const uint8_t* tx, uint8_t* rx,
-                           size_t len,
-                           void (*cb)(struct device* dev,
-                                      const void* trans,
-                                      void* userdata),
-                           void* userdata)
-{
-    struct spi_bus_client* client;
-    struct spi_async_bridge* bridge;
-
-    if (!dev || len == 0)
-        return VFS_ERR_INVAL;
-
-    client = spi_client_from_device(dev);
-    if (!client || !client->hw_open)
-        return VFS_ERR_NODEV;
-
-    if (spi_bus_host_role(dev) != SPI_BUS_ROLE_MASTER)
-        return VFS_ERR_INVAL;
-
-    if (!cb)
-        return hal_spi_transfer_async(&client->hal_dev, tx, rx, len, NULL, NULL);
-
-    bridge = spi_bridge_alloc(dev);
-    if (!bridge)
-        return VFS_ERR_BUSY;
-
-    bridge->dev      = dev;
-    bridge->cb       = cb;
-    bridge->userdata = userdata;
-
-    return hal_spi_transfer_async(&client->hal_dev, tx, rx, len,
-                                 spi_async_hal_cb, bridge);
+    COMPAT_IGNORE_RESULT(dev); COMPAT_IGNORE_RESULT(tx); COMPAT_IGNORE_RESULT(rx);
+    COMPAT_IGNORE_RESULT(len); COMPAT_IGNORE_RESULT(cb); COMPAT_IGNORE_RESULT(userdata);
+    return VFS_ERR_NOTSUPP;
 }
 
 int spi_bus_transfer_poll(struct device* dev, uint32_t timeout_ms)
 {
-    struct spi_bus_client* client;
-
-    if (!dev)
-        return VFS_ERR_INVAL;
-
-    client = spi_client_from_device(dev);
-    if (!client || !client->hw_open)
-        return VFS_ERR_NODEV;
-
-    if (spi_bus_host_role(dev) != SPI_BUS_ROLE_MASTER)
-        return VFS_ERR_INVAL;
-
-    return hal_spi_transfer_poll(&client->hal_dev, timeout_ms);
+    COMPAT_IGNORE_RESULT(dev); COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
 }
 
-int spi_bus_slave_sync(struct device* dev, const uint8_t* tx, uint8_t* rx,
-                       size_t len, uint32_t timeout_ms)
+int spi_bus_slave_sync(struct device* dev, const uint8_t* tx, uint8_t* rx,size_t len,uint32_t timeout_ms)
 {
-    struct spi_bus_client* client;
-
-    if (!dev || len == 0 || (!tx && !rx))
-        return VFS_ERR_INVAL;
-
-    client = spi_client_from_device(dev);
-    if (!client || !client->hw_open)
-        return VFS_ERR_NODEV;
-
-    if (spi_bus_host_role(dev) != SPI_BUS_ROLE_SLAVE)
-        return VFS_ERR_INVAL;
-
-    return spi_slave_sync(&client->hal_dev, tx, rx, len, timeout_ms);
+    COMPAT_IGNORE_RESULT(dev); COMPAT_IGNORE_RESULT(tx); COMPAT_IGNORE_RESULT(rx);
+    COMPAT_IGNORE_RESULT(len); COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
 }
 
-int spi_bus_slave_queue_tx(struct device* dev, const uint8_t* data, size_t len,
-                           uint32_t timeout_ms)
+int spi_bus_slave_queue_tx(struct device* dev, const uint8_t* data, size_t len,uint32_t timeout_ms)
 {
-    struct spi_bus_client* client;
-
-    if (!dev || !data || len == 0)
-        return VFS_ERR_INVAL;
-
-    client = spi_client_from_device(dev);
-    if (!client || !client->hw_open)
-        return VFS_ERR_NODEV;
-
-    if (spi_bus_host_role(dev) != SPI_BUS_ROLE_SLAVE)
-        return VFS_ERR_INVAL;
-
-    return spi_slave_queue_tx(&client->hal_dev, data, len, timeout_ms);
+    COMPAT_IGNORE_RESULT(dev); COMPAT_IGNORE_RESULT(data); COMPAT_IGNORE_RESULT(len);
+    COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
 }
 
-int spi_bus_slave_get_trans_result(struct device* dev, uint8_t* rx_data,
-                                   size_t rx_cap, size_t* trans_len,
-                                   uint32_t timeout_ms)
+int spi_bus_slave_get_trans_result(struct device* dev, uint8_t* rx_data,size_t rx_cap, size_t* trans_len,uint32_t timeout_ms)
 {
-    struct spi_bus_client* client;
-
-    if (!dev)
-        return VFS_ERR_INVAL;
-
-    client = spi_client_from_device(dev);
-    if (!client || !client->hw_open)
-        return VFS_ERR_NODEV;
-
-    if (spi_bus_host_role(dev) != SPI_BUS_ROLE_SLAVE)
-        return VFS_ERR_INVAL;
-
-    return hal_spi_get_trans_result(&client->hal_dev, rx_data, rx_cap,
-                                     trans_len, timeout_ms);
+    COMPAT_IGNORE_RESULT(dev); COMPAT_IGNORE_RESULT(rx_data); COMPAT_IGNORE_RESULT(rx_cap);
+    COMPAT_IGNORE_RESULT(trans_len); COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
 }
 /*===========================================================================================================================================================*/

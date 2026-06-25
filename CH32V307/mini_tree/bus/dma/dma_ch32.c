@@ -42,7 +42,7 @@ static int bus_dma_ch32_request(struct bus_dma_chan* chan)
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
     return VFS_OK;
 
@@ -54,7 +54,7 @@ static void bus_dma_ch32_release(struct bus_dma_chan* chan)
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
 }
 
@@ -64,9 +64,9 @@ static int bus_dma_ch32_submit(struct bus_dma_chan* chan, const bus_dma_xfer_t* 
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
-    (void)xfer;
+    COMPAT_IGNORE_RESULT(xfer);
 
     return VFS_ERR_NODEV;
 
@@ -78,9 +78,9 @@ static int bus_dma_ch32_wait(struct bus_dma_chan* chan, uint32_t timeout_ms)
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
 
     return VFS_OK;
 
@@ -92,7 +92,7 @@ static int bus_dma_ch32_abort(struct bus_dma_chan* chan)
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
     return VFS_OK;
 
@@ -104,7 +104,7 @@ static int bus_dma_ch32_busy(struct bus_dma_chan* chan)
 
 {
 
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 
     return 0;
 

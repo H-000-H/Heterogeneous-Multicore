@@ -29,7 +29,7 @@ static int bus_dma_stm32_request(struct bus_dma_chan* chan)
 
 static void bus_dma_stm32_release(struct bus_dma_chan* chan)
 {
-    (void)chan;
+    COMPAT_IGNORE_RESULT(chan);
 }
 
 static hal_dma_stm32_dir_t to_hal_dir(bus_dma_dir_t dir)

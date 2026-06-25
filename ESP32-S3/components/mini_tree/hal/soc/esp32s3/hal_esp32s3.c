@@ -53,21 +53,21 @@ IRAM_ATTR void hal_cpu_emergency_stop_all_cores(void)
 /* ── Storage stubs (最小构建, 无持久化) ── */
 bool hal_storage_init(void)           { return false; }
 bool hal_storage_erase_all(void)       { return false; }
-bool hal_storage_read_flag(uint8_t* f) { (void)f; return false; }
-bool hal_storage_write_flag(uint8_t f) { (void)f; return false; }
+bool hal_storage_read_flag(uint8_t* f) { COMPAT_IGNORE_RESULT(f); return false; }
+bool hal_storage_write_flag(uint8_t f) { COMPAT_IGNORE_RESULT(f); return false; }
 bool hal_storage_read_blob(uint8_t slot, uint8_t* buf, size_t* len)
-{ (void)slot; (void)buf; (void)len; return false; }
+{ COMPAT_IGNORE_RESULT(slot); COMPAT_IGNORE_RESULT(buf); COMPAT_IGNORE_RESULT(len); return false; }
 bool hal_storage_write_blob(uint8_t slot, const uint8_t* buf, size_t len)
-{ (void)slot; (void)buf; (void)len; return false; }
+{ COMPAT_IGNORE_RESULT(slot); COMPAT_IGNORE_RESULT(buf); COMPAT_IGNORE_RESULT(len); return false; }
 
 /* ── Flash stub (最小构建, 无巡检) ── */
 bool hal_flash_read(uint32_t addr, uint8_t* buf, size_t len)
-{ (void)addr; (void)buf; (void)len; return false; }
+{ COMPAT_IGNORE_RESULT(addr); COMPAT_IGNORE_RESULT(buf); COMPAT_IGNORE_RESULT(len); return false; }
 uint32_t hal_flash_get_app_addr(void) { return 0; }
 uint32_t hal_flash_get_app_size(void) { return 0; }
 
 /* ── WDT ── */
-bool hal_wdt_init_rtc(uint32_t timeout_ms) { (void)timeout_ms; return false; }
+bool hal_wdt_init_rtc(uint32_t timeout_ms) { COMPAT_IGNORE_RESULT(timeout_ms); return false; }
 void hal_wdt_feed_rtc(void) {}
 void hal_wdt_rtc_set_long_timeout(void) {}
 void hal_wdt_rtc_restore_timeout(void) {}

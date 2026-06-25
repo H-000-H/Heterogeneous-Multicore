@@ -1,5 +1,8 @@
 /*
  * CH32V307 DMA 引擎 — 仅 channel 配置/启停/轮询
+ *
+ * 设计原则: HAL 层无锁。DMA 通道为独占资源, 通道间寄存器独立无共享状态。
+ * 并发保护由 VFS 层 io_mutex 提供 (每个设备实例独立锁)。
  */
 #include "hal_dma.h"
 #include "hal_dma_ch32.h"
@@ -9,8 +12,6 @@
 
 #include "ch32v30x_rcc.h"
 
-static struct osal_mutex* s_dma_mutex;
-static uint8_t           s_dma_mutex_storage[OSAL_MUTEX_STORAGE_SIZE];
 static int                 s_dma_engine_ready;
 
 extern void hal_spi_ch32_dma_abort(void);
@@ -26,29 +27,10 @@ void hal_dma_ch32_clocks_enable(void)
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
-int hal_dma_ch32_lock(void)
-{
-    if (!s_dma_engine_ready)
-    {
-        if (osal_mutex_create_static(&s_dma_mutex, s_dma_mutex_storage,
-                                     sizeof(s_dma_mutex_storage)) != 0)
-            return VFS_ERR_IO;
-        s_dma_engine_ready = 1;
-    }
-    return osal_mutex_lock(s_dma_mutex, OSAL_LOCK_TIMEOUT_DEFAULT_MS) == 0 ? VFS_OK : VFS_ERR_BUSY;
-}
-
-void hal_dma_ch32_unlock(void)
-{
-    if (s_dma_mutex)
-        (void)osal_mutex_unlock(s_dma_mutex);
-}
-
 void hal_dma_ch32_init(void)
 {
     hal_dma_ch32_clocks_enable();
-    COMPAT_IGNORE_RESULT(hal_dma_ch32_lock());
-    hal_dma_ch32_unlock();
+    s_dma_engine_ready = 1;
 }
 
 int hal_dma_ch32_channel_disable(DMA_Channel_TypeDef* channel, uint32_t timeout_ms)

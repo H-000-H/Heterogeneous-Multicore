@@ -106,7 +106,7 @@ static inline int hal_dma_config_block(struct hal_dma_chan* chan,
 {
     HAL_DMA_ASSERT_BLOCK(len, width);
     HAL_DMA_ASSERT_BLOCK_MIN(len, 32);
-    (void)width;
+    COMPAT_IGNORE_RESULT(width);
     return chan->config(chan, src, dst, len);
 }
 /*===========================================================================================================================================================*/

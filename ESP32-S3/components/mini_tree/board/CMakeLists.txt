@@ -52,7 +52,6 @@ add_custom_command(
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${BOARD_DT_BINDINGS_DIR}/uart/uart-parameter.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft/fft_spi_drv.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/flash/w25q64_spi_drv.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/bus/spi_bus.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/slave/spi_slave_client.c"

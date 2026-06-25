@@ -51,7 +51,7 @@ void hal_cpu_emergency_stop_all_cores(void)
 
 bool hal_wdt_init_rtc(uint32_t timeout_ms)
 {
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     return false;
 }
 
@@ -61,19 +61,19 @@ void hal_wdt_rtc_restore_timeout(void) {}
 
 bool hal_wdt_init_twdt(uint32_t timeout_ms)
 {
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     return false;
 }
 
 bool hal_wdt_subscribe(void* task_handle)
 {
-    (void)task_handle;
+    COMPAT_IGNORE_RESULT(task_handle);
     return false;
 }
 
 bool hal_wdt_unsubscribe(void* task_handle)
 {
-    (void)task_handle;
+    COMPAT_IGNORE_RESULT(task_handle);
     return false;
 }
 

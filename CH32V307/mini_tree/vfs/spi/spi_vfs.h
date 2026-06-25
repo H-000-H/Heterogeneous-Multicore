@@ -86,10 +86,6 @@ int spi_vfs_transfer(struct device* dev,
                      size_t len, uint32_t timeout_ms)
     COMPAT_WARN_UNUSED_RESULT;
 
-/** @brief SPI Slave VFS 设备 probe */
-int spi_slave_vfs_probe(struct device* dev) COMPAT_WARN_UNUSED_RESULT;
-/** @brief SPI Slave VFS 设备 remove */
-int spi_slave_vfs_remove(struct device* dev);
 /*===========================================================================================================================================================*/
 
 #ifdef __cplusplus

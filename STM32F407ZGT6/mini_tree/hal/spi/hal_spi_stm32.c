@@ -315,42 +315,7 @@ int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
     return stm32_spi_transfer_poll(dev->ctlr, tx, rx, len, timeout_ms);
 }
 
-/* ===== Slave / Async API (不支持) ===== */
-int spi_slave_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
-                   size_t len, uint32_t timeout_ms)
-{
-    (void)dev; (void)tx; (void)rx; (void)len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int spi_slave_queue_tx(struct hal_spi_dev* dev, const uint8_t* data, size_t len,
-                       uint32_t timeout_ms)
-{
-    (void)dev; (void)data; (void)len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_get_trans_result(struct hal_spi_dev* dev, uint8_t* rx_data, size_t rx_cap,
-                             size_t* trans_len, uint32_t timeout_ms)
-{
-    (void)dev; (void)rx_data; (void)rx_cap; (void)trans_len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_transfer_async(struct hal_spi_dev* dev,
-                           const uint8_t* tx, uint8_t* rx,
-                           size_t len, hal_spi_callback_t cb,
-                           void* userdata)
-{
-    (void)dev; (void)tx; (void)rx; (void)len; (void)cb; (void)userdata;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_transfer_poll(struct hal_spi_dev* dev, uint32_t timeout_ms)
-{
-    (void)dev; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
+/* ===== Slave / Async API: st/ch 不支持, bus 层直接返回 NOTSUPP ===== */
 
 /* ===== DMA 传输 (保留原接口, 供 bus 层选用) ===== */
 static void hal_spi_dma_isr(struct bus_dma_chan* chan, void* user_data)

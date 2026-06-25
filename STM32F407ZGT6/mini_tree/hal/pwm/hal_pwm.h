@@ -38,15 +38,15 @@ void hal_pwm_init_struct(struct hal_pwm_channel* pwm);
 /* 定时器寄存器直写 (硬实时环用; 平台 soc 层实现, 默认 stub) */
 static inline void hal_pwm_set_duty_reg(uint32_t tim_base, int channel, uint32_t duty)
 {
-    (void)tim_base;
-    (void)channel;
-    (void)duty;
+    COMPAT_IGNORE_RESULT(tim_base);
+    COMPAT_IGNORE_RESULT(channel);
+    COMPAT_IGNORE_RESULT(duty);
 }
 
 static inline void hal_pwm_set_period_reg(uint32_t tim_base, uint32_t period)
 {
-    (void)tim_base;
-    (void)period;
+    COMPAT_IGNORE_RESULT(tim_base);
+    COMPAT_IGNORE_RESULT(period);
 }
 /*===========================================================================================================================================================*/
 

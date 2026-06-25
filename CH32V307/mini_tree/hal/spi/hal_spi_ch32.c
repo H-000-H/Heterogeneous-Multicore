@@ -236,7 +236,7 @@ static int ch32_spi_transfer_poll(struct hal_spi_bus_host* host,
     uint32_t                  start;
     size_t                    i;
 
-    (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(timeout_ms);
     if (!host || len == 0)
         return VFS_ERR_INVAL;
 
@@ -300,42 +300,7 @@ int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
     return ch32_spi_transfer_poll(dev->ctlr, tx, rx, len, timeout_ms);
 }
 
-/* ===== Slave / Async API (不支持) ===== */
-int spi_slave_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
-                   size_t len, uint32_t timeout_ms)
-{
-    (void)dev; (void)tx; (void)rx; (void)len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int spi_slave_queue_tx(struct hal_spi_dev* dev, const uint8_t* data, size_t len,
-                       uint32_t timeout_ms)
-{
-    (void)dev; (void)data; (void)len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_get_trans_result(struct hal_spi_dev* dev, uint8_t* rx_data, size_t rx_cap,
-                             size_t* trans_len, uint32_t timeout_ms)
-{
-    (void)dev; (void)rx_data; (void)rx_cap; (void)trans_len; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_transfer_async(struct hal_spi_dev* dev,
-                           const uint8_t* tx, uint8_t* rx,
-                           size_t len, hal_spi_callback_t cb,
-                           void* userdata)
-{
-    (void)dev; (void)tx; (void)rx; (void)len; (void)cb; (void)userdata;
-    return VFS_ERR_NOTSUPP;
-}
-
-int hal_spi_transfer_poll(struct hal_spi_dev* dev, uint32_t timeout_ms)
-{
-    (void)dev; (void)timeout_ms;
-    return VFS_ERR_NOTSUPP;
-}
+/* ===== Slave / Async API: st/ch 不支持, bus 层直接返回 NOTSUPP ===== */
 
 /* ===== DMA 传输 (保留原接口, 供 bus 层选用) ===== */
 static void ch32_spi_dma_abort(SPI_TypeDef* spi)
@@ -361,7 +326,7 @@ int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
     hal_dma_ch32_xfer_t       tx_cfg;
     int                       ret;
 
-    (void)dma_tx; (void)dma_rx; (void)timeout_ms;
+    COMPAT_IGNORE_RESULT(dma_tx); COMPAT_IGNORE_RESULT(dma_rx); COMPAT_IGNORE_RESULT(timeout_ms);
 
     if (!host || len == 0)
         return VFS_ERR_INVAL;
@@ -374,10 +339,6 @@ int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
         return VFS_ERR_INVAL;
 
     spi = priv->spi;
-
-    ret = hal_dma_ch32_lock();
-    if (ret != VFS_OK)
-        return ret;
 
     hal_dma_ch32_clocks_enable();
 
@@ -430,7 +391,6 @@ int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
 
 out:
     ch32_spi_dma_abort(spi);
-    hal_dma_ch32_unlock();
     return ret;
 }
 
