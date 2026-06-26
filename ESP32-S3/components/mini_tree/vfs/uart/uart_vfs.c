@@ -54,7 +54,7 @@ static const char* const    kHostTag = "uart_host_vfs";
 pre_execution(150)
 static void uart_host_vfs_pool_init(void)
 {
-    osal_pool_init(&s_host_pool_ctrl, s_host_used, UART_HOST_VFS_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_host_pool_ctrl, s_host_used, UART_HOST_VFS_COUNT));
 }
 
 static int uart_host_vfs_parse_dts(struct device* dev,
@@ -133,7 +133,7 @@ static int uart_host_vfs_probe(struct device* dev)
     return VFS_OK;
 
 err_bus:
-    uart_bus_host_deinit(dev);
+    COMPAT_IGNORE_RESULT(uart_bus_host_deinit(dev));
 err_pool:
     osal_pool_release(&s_host_pool_ctrl, pool_idx);
     return ret;
@@ -182,7 +182,7 @@ static const char* const      kTag = "uart_vfs";
 pre_execution(160)
 static void uart_vfs_pool_init(void)
 {
-    osal_pool_init(&s_uart_vfs_pool_ctrl, s_uart_vfs_used, UART_VFS_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_uart_vfs_pool_ctrl, s_uart_vfs_used, UART_VFS_COUNT));
 }
 
 static struct uart_vfs_client* uart_vfs_from_ops(const struct file_operations* ops)

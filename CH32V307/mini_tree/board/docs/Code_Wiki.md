@@ -229,9 +229,8 @@ app_main (main.cpp)
   - `dt_config_gen.h`: `DTC_GEN_COUNT_*` 等宏
 - `genconfig.py`: 把 Kconfig → C 头文件 `config.h`。
 - `menuconfig.py`: 文本菜单配置器。
-- `gen_uvprojx.py`: Keil 工程生成（其它平台用）。
 - `post_build_crc.py`: 链接后计算 scrubber CRC 基线。
-- `convert_struct_typedef.py / p2s.py`: 辅助脚本。
+- `convert_struct_typedef.py`: 辅助脚本。
 
 ---
 

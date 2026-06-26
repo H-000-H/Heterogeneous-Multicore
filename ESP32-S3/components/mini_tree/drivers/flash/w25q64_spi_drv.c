@@ -56,7 +56,7 @@ static const char* const kTag = "w25q64";
 pre_execution(160)
 static void w25q64_pool_boot_init(void)
 {
-    osal_pool_init(&s_w25q64_pool_ctrl, s_w25q64_used, W25Q64_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_w25q64_pool_ctrl, s_w25q64_used, W25Q64_COUNT));
 }
 
 static struct w25q64_device* w25q64_get_drvdata(struct device* dev)

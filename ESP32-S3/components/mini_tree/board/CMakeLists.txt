@@ -37,7 +37,6 @@ add_custom_command(
     COMMAND ${Python3_EXECUTABLE}
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
             "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/ws2812"
-            "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/fft"
             "${CMAKE_CURRENT_SOURCE_DIR}/../drivers/flash"
             "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi"
             "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/gpio"

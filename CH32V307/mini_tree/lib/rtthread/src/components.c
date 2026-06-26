@@ -142,15 +142,7 @@ void rt_application_init(void);
 void rt_hw_board_init(void);
 int rtthread_startup(void);
 
-#ifdef __ARMCC_VERSION
-extern int $Super$$main(void);
-/* re-define main function */
-int $Sub$$main(void)
-{
-    rtthread_startup();
-    return 0;
-}
-#elif defined(__ICCARM__)
+#if defined(__ICCARM__)
 /* __low_level_init will auto called by IAR cstartup */
 extern void __iar_data_init3(void);
 int __low_level_init(void)
@@ -197,14 +189,9 @@ static void main_thread_entry(void *parameter)
     rt_hw_secondary_cpu_up();
 #endif /* RT_USING_SMP */
     /* invoke system main function */
-#ifdef __ARMCC_VERSION
-    {
-        extern int $Super$$main(void);
-        $Super$$main(); /* for ARMCC. */
-    }
-#elif defined(__ICCARM__) || defined(__GNUC__) || defined(__TASKING__) || defined(__TI_COMPILER_VERSION__)
+#if defined(__ICCARM__) || defined(__GNUC__) || defined(__TASKING__) || defined(__TI_COMPILER_VERSION__)
     main();
-#endif /* __ARMCC_VERSION */
+#endif
 }
 
 /**

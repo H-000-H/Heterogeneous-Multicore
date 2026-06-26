@@ -14,10 +14,14 @@ from pathlib import Path
 from typing import List
 
 # kconfiglib ships as a single module (pip); namespace packages expose symbols in .core
+# ESP-IDF v6.x 使用 esp_kconfiglib 分支, kconfiglib 仅 re-export Kconfig 但不含 BOOL/HEX/INT/STRING 常量
 try:
     from kconfiglib import Kconfig, BOOL, HEX, INT, STRING
 except ImportError:
-    from kconfiglib.core import Kconfig, BOOL, HEX, INT, STRING
+    try:
+        from kconfiglib.core import Kconfig, BOOL, HEX, INT, STRING
+    except ImportError:
+        from esp_kconfiglib.core import Kconfig, BOOL, HEX, INT, STRING
 try:
     from kconfiglib import TRISTATE
     _BOOL_TYPES = (BOOL, TRISTATE)
@@ -26,7 +30,11 @@ except ImportError:
         from kconfiglib.core import TRISTATE
         _BOOL_TYPES = (BOOL, TRISTATE)
     except ImportError:
-        _BOOL_TYPES = (BOOL,)
+        try:
+            from esp_kconfiglib.core import TRISTATE
+            _BOOL_TYPES = (BOOL, TRISTATE)
+        except ImportError:
+            _BOOL_TYPES = (BOOL,)
 
 
 def _atomic_write(path: Path, content: str) -> None:

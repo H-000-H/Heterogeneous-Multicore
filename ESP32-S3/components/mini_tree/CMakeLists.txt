@@ -171,7 +171,6 @@ idf_component_register(
         "system_c/include"
         "system_cpp/include"
         "drivers/ws2812"
-        "drivers/fft"
         "drivers/flash"
         "vfs/gpio"
         "algorithm/buffer"
@@ -225,7 +224,6 @@ add_custom_command(
     COMMAND ${Python3_EXECUTABLE}
             "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/ws2812"
-            "${CMAKE_CURRENT_LIST_DIR}/drivers/fft"
             "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"

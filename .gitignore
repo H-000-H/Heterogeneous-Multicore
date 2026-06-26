@@ -17,4 +17,24 @@ dependencies.lock
 *.swp
 
 # 过滤临时或日志文件
+*.log# 编译构建目录
+build-ninja/
+build/
+_build/
+# Clangd LSP缓存
+.cache/
+# Python字节码
+__pycache__/
+*.pyc
+# VSCode工作区
+*.code-workspace
+# CMake生成文件
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+*.ninja
+*.ninja_deps
+*.ninja_log
+*.elf *.map *.lst
+# 日志、临时文档
 *.log

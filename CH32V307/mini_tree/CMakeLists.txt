@@ -279,7 +279,6 @@ target_include_directories(mini_tree
         "${CMAKE_CURRENT_LIST_DIR}/system_cpp/include"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/ws2812"
-        "${CMAKE_CURRENT_LIST_DIR}/drivers/fft"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/uart"
         "${KCONFIG_GEN_DIR}"

@@ -8,22 +8,15 @@
   "configurePresets": [
     {
       "name": "esp-idf",
-      "displayName": "ESP-IDF (esp32s3)",
+      "displayName": "ESP-IDF (esp32s3) - 三端通用，依赖已激活的 IDF 环境",
+      "description": "需先激活 ESP-IDF 环境：Linux/macOS 运行 export.sh，Windows 运行 export.bat/export.ps1。不硬编码任何平台路径，IDF_PATH/IDF_TOOLS_PATH 等由激活脚本注入 shell 环境。",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_MAKE_PROGRAM": "D:/Espressif_vscode/tools/ninja/1.12.1/ninja.exe"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
       "environment": {
-        "IDF_PATH": "D:/Espressif_vscode/frameworks/esp-idf-v5.5.2",
-        "IDF_TOOLS_PATH": "D:/Espressif_vscode",
-        "IDF_PYTHON_ENV_PATH": "D:/Espressif_vscode/python_env/idf5.5_py3.11_env",
-        "IDF_TARGET": "esp32s3",
-        "ESP_ROM_ELF_DIR": "D:/Espressif_vscode/tools/esp-rom-elfs/20241011/",
-        "PYTHON": "D:/Espressif_vscode/python_env/idf5.5_py3.11_env/Scripts/python.exe",
-        "PYTHON_DEPS_CHECKED": "1",
-        "PATH": "D:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/espcoredump;D:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/partition_table;D:/Espressif_vscode/frameworks/esp-idf-v5.5.2/components/app_update;D:/Espressif_vscode/tools/xtensa-esp-elf-gdb/16.3_20250913/xtensa-esp-elf-gdb/bin;D:/Espressif_vscode/tools/xtensa-esp-elf/esp-14.2.0_20251107/xtensa-esp-elf/bin;D:/Espressif_vscode/tools/esp-clang/esp-19.1.2_20250312/esp-clang/bin;D:/Espressif_vscode/tools/cmake/3.30.2/bin;D:/Espressif_vscode/tools/ninja/1.12.1;D:/Espressif_vscode/tools/idf-exe/1.0.3;D:/Espressif_vscode/tools/openocd-esp32/v0.12.0-esp32-20250707/openocd-esp32/bin;D:/Espressif_vscode/python_env/idf5.5_py3.11_env/Scripts"
+        "IDF_TARGET": "esp32s3"
       }
     }
   ],

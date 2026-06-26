@@ -224,7 +224,7 @@ static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(150)
 static void osal_mutex_pool_boot_init(void)
 {
-    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE));
 }
 
 /* ── 获取现在时间 ── */
@@ -385,7 +385,7 @@ static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(151)
 static void osal_sem_pool_boot_init(void)
 {
-    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE));
 }
 
 static int osal_sem_init_binary(struct osal_sem* sem)

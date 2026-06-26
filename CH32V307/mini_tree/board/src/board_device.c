@@ -666,7 +666,7 @@ int hal_pin_probe(const struct device* dev, const char* port_key, const char* pi
     if (device_get_prop_int(dev, pin_key, &pin))
         return VFS_ERR_INVAL;
 
-#if COMPAT_CFG_ENABLED(HAL_GPIO_PORT_ENUM)
+#if !COMPAT_HAVE_KCONFIG || defined(CONFIG_HAL_GPIO_PORT_ENUM)
     if (port_key)
         COMPAT_IGNORE_RESULT(device_get_prop_int(dev, port_key, &port));
 #else

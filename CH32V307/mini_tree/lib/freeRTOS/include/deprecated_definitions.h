@@ -105,10 +105,6 @@
     #include "../../Source/portable/Rowley/MSP430F449/portmacro.h"
 #endif
 
-#ifdef ARM7_LPC21xx_KEIL_RVDS
-    #include "..\..\Source\portable\RVDS\ARM7_LPC21xx\portmacro.h"
-#endif
-
 #ifdef SAM7_GCC
     #include "../../Source/portable/GCC/ARM7_AT91SAM7S/portmacro.h"
 #endif

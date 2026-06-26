@@ -229,8 +229,7 @@ config COMPILER_GNU_EXTENSIONS
     default y
     help
       Enable GNU statement expressions and builtins in compiler_compat.h.
-      Keil 5 (armcc) is always excluded regardless of this option.
-      Keil 6 (armclang), GCC, and Clang are supported.
+      Supported by GCC and Clang.
 
 config COMPILER_WARN_UNUSED_RESULT
     bool "Warn on ignored function results (COMPAT_WARN_UNUSED_RESULT)"
@@ -239,7 +238,6 @@ config COMPILER_WARN_UNUSED_RESULT
     help
       Annotate critical APIs so the compiler warns when return values
       are discarded. Use COMPAT_IGNORE_RESULT() to silence intentionally.
-      Keil 5 (armcc) never enables this attribute.
 
 endmenu
 

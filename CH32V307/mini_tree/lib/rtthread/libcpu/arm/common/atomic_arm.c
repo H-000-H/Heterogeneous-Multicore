@@ -22,18 +22,7 @@
  \param [in]    ptr  Pointer to data
  \return        value of type uint8_t at (*ptr)
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#ifndef __LDREXB
-#define __LDREXB        (uint8_t)__builtin_arm_ldrex
-#endif
-#define __LDREXB_PRIV(ptr)                                                     ((rt_atomic8_t)__LDREXB((volatile uint8_t *)(ptr)))
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __LDREXB_PRIV(ptr)                                                     ((rt_atomic8_t ) __ldrex(ptr))
-#else
-#define __LDREXB_PRIV(ptr)       _Pragma("push") _Pragma("diag_suppress 3731") ((rt_atomic8_t ) __ldrex(ptr))  _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic8_t __LDREXB_PRIV(volatile rt_atomic8_t *ptr)
 {
     return __iar_builtin_LDREXB((volatile unsigned char *)ptr);
@@ -60,18 +49,7 @@ __attribute__((always_inline)) static inline rt_atomic8_t __LDREXB_PRIV(volatile
  \return          0  Function succeeded
  \return          1  Function failed
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#ifndef __STREXB
-#define __STREXB        (uint32_t)__builtin_arm_strex
-#endif
-#define __STREXB_PRIV(value, ptr)                                              ((rt_atomic_t)__STREXB((uint8_t)(value), (volatile uint8_t *)(ptr)))
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __STREXB_PRIV(value, ptr)                                              __strex(value, ptr)
-#else
-#define __STREXB_PRIV(value, ptr) _Pragma("push") _Pragma("diag_suppress 3731") __strex(value, ptr) _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic_t __STREXB_PRIV(rt_atomic8_t value, volatile rt_atomic8_t *ptr)
 {
     return __iar_builtin_STREXB(value, (volatile unsigned char *)ptr);
@@ -92,18 +70,7 @@ __attribute__((always_inline)) static inline rt_atomic_t __STREXB_PRIV(rt_atomic
  \param [in]    ptr  Pointer to data
  \return        value of type uint16_t at (*ptr)
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#ifndef __LDREXH
-#define __LDREXH        (uint16_t)__builtin_arm_ldrex
-#endif
-#define __LDREXH_PRIV(ptr)                                                     ((rt_atomic16_t)__LDREXH((volatile uint16_t *)(ptr)))
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __LDREXH_PRIV(ptr)                                                     ((rt_atomic16_t ) __ldrex(ptr))
-#else
-#define __LDREXH_PRIV(ptr)       _Pragma("push") _Pragma("diag_suppress 3731") ((rt_atomic16_t ) __ldrex(ptr))  _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic16_t __LDREXH_PRIV(volatile rt_atomic16_t *ptr)
 {
     return __iar_builtin_LDREXH((volatile unsigned short *)ptr);
@@ -130,18 +97,7 @@ __attribute__((always_inline)) static inline rt_atomic16_t __LDREXH_PRIV(volatil
  \return          0  Function succeeded
  \return          1  Function failed
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#ifndef __STREXH
-#define __STREXH        (uint32_t)__builtin_arm_strex
-#endif
-#define __STREXH_PRIV(value, ptr)                                              ((rt_atomic_t)__STREXH((uint16_t)(value), (volatile uint16_t *)(ptr)))
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __STREXH_PRIV(value, ptr)                                              __strex(value, ptr)
-#else
-#define __STREXH_PRIV(value, ptr) _Pragma("push") _Pragma("diag_suppress 3731") __strex(value, ptr) _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic_t __STREXH_PRIV(rt_atomic16_t value, volatile rt_atomic16_t *ptr)
 {
     return __iar_builtin_STREXH(value, (volatile unsigned short *)ptr);
@@ -162,15 +118,7 @@ __attribute__((always_inline)) static inline rt_atomic_t __STREXH_PRIV(rt_atomic
  \param [in]    ptr  Pointer to data
  \return        value of type uint32_t at (*ptr)
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#define __LDREXW        (rt_atomic_t)__builtin_arm_ldrex
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __LDREXW(ptr)                                                        ((rt_atomic_t ) __ldrex(ptr))
-#else
-#define __LDREXW(ptr)          _Pragma("push") _Pragma("diag_suppress 3731") ((rt_atomic_t ) __ldrex(ptr))  _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic_t __LDREXW(volatile rt_atomic_t *ptr)
 {
     return __iar_builtin_LDREX((volatile unsigned int *)ptr);
@@ -193,15 +141,7 @@ __attribute__((always_inline))     static inline rt_atomic_t __LDREXW(volatile r
  \return          0  Function succeeded
  \return          1  Function failed
  */
-#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050) /* ARM Compiler V6 */
-#define __STREXW        (rt_atomic_t)__builtin_arm_strex
-#elif defined(__ARMCC_VERSION)          /* ARM Compiler V5 */
-#if __ARMCC_VERSION < 5060020
-#define __STREXW(value, ptr)                                                 __strex(value, ptr)
-#else
-#define __STREXW(value, ptr)   _Pragma("push") _Pragma("diag_suppress 3731") __strex(value, ptr)        _Pragma("pop")
-#endif
-#elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic_t __STREXW(rt_atomic_t value, volatile rt_atomic_t *ptr)
 {
     return __STREX(value, (unsigned int *)ptr);

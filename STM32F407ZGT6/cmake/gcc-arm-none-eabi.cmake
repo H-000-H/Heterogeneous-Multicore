@@ -5,15 +5,44 @@ set(CMAKE_C_COMPILER_ID GNU)
 set(CMAKE_CXX_COMPILER_ID GNU)
 
 # Some default GCC settings
-# arm-none-eabi- must be part of path environment
 set(TOOLCHAIN_PREFIX                arm-none-eabi-)
 
-set(CMAKE_C_COMPILER                ${TOOLCHAIN_PREFIX}gcc)
-set(CMAKE_ASM_COMPILER              ${CMAKE_C_COMPILER})
-set(CMAKE_CXX_COMPILER              ${TOOLCHAIN_PREFIX}g++)
-set(CMAKE_LINKER                    ${TOOLCHAIN_PREFIX}g++)
-set(CMAKE_OBJCOPY                   ${TOOLCHAIN_PREFIX}objcopy)
-set(CMAKE_SIZE                      ${TOOLCHAIN_PREFIX}size)
+# ── 三端自动探测编译器位置 ──
+# Docker /opt → Linux 标准路径 → Windows 标准路径 → PATH
+# 注意：含括号的 Windows 环境变量名需在 $ENV{} 中转义
+find_program(_ARM_NONE_EABI_GCC
+        NAMES "${TOOLCHAIN_PREFIX}gcc"
+        HINTS
+                "$ENV{ARM_NONE_EABI_TOOLCHAIN_DIR}/bin"
+                "/opt/toolchains/gcc-arm-none-eabi/bin"
+                "/opt/gcc-arm-none-eabi/bin"
+                "/usr"
+                "/usr/local"
+                "C:/ST/STM32CubeCLT/GNU-tools-for-STM32/bin"
+                "C:/ST/STM32CubeCLT_1.20.0/GNU-tools-for-STM32/bin"
+                "$ENV{ProgramFiles}/ST/STM32CubeCLT/GNU-tools-for-STM32/bin"
+                "C:/Program Files (x86)/GNU Tools Arm Embedded"
+                "C:/Program Files/GNU Arm Embedded Toolchain"
+                "$ENV{ProgramFiles}/GNU Arm Embedded Toolchain"
+                "$ENV{ProgramFiles\(x86\)}/GNU Tools Arm Embedded"
+        DOC "arm-none-eabi-gcc 交叉编译器路径"
+        REQUIRED)
+
+get_filename_component(_ARM_NONE_EABI_BINDIR "${_ARM_NONE_EABI_GCC}" DIRECTORY)
+
+# 使用 find_program 找每个工具, 自动处理 Windows .exe 后缀
+find_program(_ARM_NONE_EABI_GPP     NAMES "${TOOLCHAIN_PREFIX}g++"      HINTS "${_ARM_NONE_EABI_BINDIR}" REQUIRED)
+find_program(_ARM_NONE_EABI_OBJCOPY NAMES "${TOOLCHAIN_PREFIX}objcopy"  HINTS "${_ARM_NONE_EABI_BINDIR}" REQUIRED)
+find_program(_ARM_NONE_EABI_SIZE    NAMES "${TOOLCHAIN_PREFIX}size"     HINTS "${_ARM_NONE_EABI_BINDIR}" REQUIRED)
+find_program(_ARM_NONE_EABI_OBJDUMP NAMES "${TOOLCHAIN_PREFIX}objdump"  HINTS "${_ARM_NONE_EABI_BINDIR}" REQUIRED)
+
+set(CMAKE_C_COMPILER                "${_ARM_NONE_EABI_GCC}")
+set(CMAKE_ASM_COMPILER              "${CMAKE_C_COMPILER}")
+set(CMAKE_CXX_COMPILER              "${_ARM_NONE_EABI_GPP}")
+set(CMAKE_LINKER                    "${_ARM_NONE_EABI_GPP}")
+set(CMAKE_OBJCOPY                   "${_ARM_NONE_EABI_OBJCOPY}" CACHE INTERNAL "")
+set(CMAKE_SIZE                      "${_ARM_NONE_EABI_SIZE}" CACHE INTERNAL "")
+set(CMAKE_OBJDUMP                   "${_ARM_NONE_EABI_OBJDUMP}" CACHE INTERNAL "")
 
 set(CMAKE_EXECUTABLE_SUFFIX_ASM     ".elf")
 set(CMAKE_EXECUTABLE_SUFFIX_C       ".elf")

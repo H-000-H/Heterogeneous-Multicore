@@ -48,7 +48,7 @@ static uint8_t s_ws2812_mutex_storage[WS2812_COUNT][OSAL_MUTEX_STORAGE_SIZE] COM
 pre_execution(160)
 static void ws2812_pool_boot_init(void)
 {
-    osal_pool_init(&s_ws2812_pool_ctrl, s_ws2812_used, WS2812_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_ws2812_pool_ctrl, s_ws2812_used, WS2812_COUNT));
 }
 
 enum {

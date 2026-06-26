@@ -122,7 +122,7 @@ if(FREERTOS_NEED_PTHREADS)
     target_link_libraries(freertos_kernel PRIVATE Threads::Threads rt)
 endif()
 
-# ── ARM 端口对齐要求 (ARMCLANG 不支持 -mno-unaligned-access) ──
-if(FREERTOS_PORT MATCHES "^GCC_ARM_" AND NOT CMAKE_C_COMPILER_ID STREQUAL "ARMClang")
+# ── ARM 端口对齐要求 ──
+if(FREERTOS_PORT MATCHES "^GCC_ARM_")
     target_compile_options(freertos_kernel PRIVATE -mthumb -mno-unaligned-access)
 endif()

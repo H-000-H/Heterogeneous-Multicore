@@ -65,8 +65,13 @@ SECTIONS
 		. = ALIGN(4);
 	} >FLASH AT>FLASH
 
+	/* newlib-nano 的 __libc_fini_array 引用 _fini 符号; -nostartfiles 跳过
+	 * 标准 crt 时该符号缺失, 这里 PROVIDE 一个空地址满足链接 (C++ 析构
+	 * 走 .fini_array 段, 不依赖 _fini 函数体)。 */
+	PROVIDE( _fini = . );
+
 	PROVIDE( _etext = . );
-	PROVIDE( _eitcm = . );	
+	PROVIDE( _eitcm = . );
 
 	.preinit_array  :
 	{

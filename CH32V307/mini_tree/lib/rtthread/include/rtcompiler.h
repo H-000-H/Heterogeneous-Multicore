@@ -12,21 +12,7 @@
 
 #include <rtconfig.h>
 
-#if defined(__ARMCC_VERSION)        /* ARM Compiler */
-#define rt_section(x)               __attribute__((section(x)))
-#define rt_used                     __attribute__((used))
-#define rt_align(n)                 __attribute__((aligned(n)))
-#if __ARMCC_VERSION >= 6010050
-#define rt_packed(declare)          declare __attribute__((packed))
-#else
-#define rt_packed(declare)          __packed declare
-#endif
-#define rt_weak                     __attribute__((weak))
-#define rt_typeof                   __typeof
-#define rt_noreturn
-#define rt_inline                   static __inline
-#define rt_always_inline            rt_inline
-#elif defined (__IAR_SYSTEMS_ICC__) /* for IAR Compiler */
+#if defined (__IAR_SYSTEMS_ICC__) /* for IAR Compiler */
 #define rt_section(x)               @ x
 #define rt_used                     __root
 #define PRAGMA(x)                   _Pragma(#x)
@@ -106,6 +92,6 @@
 #define rt_always_inline            rt_inline
 #else                              /* Unkown Compiler */
     #error not supported tool chain
-#endif /* __ARMCC_VERSION */
+#endif /* compiler selection */
 
 #endif /* __RT_COMPILER_H__ */

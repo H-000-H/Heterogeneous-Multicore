@@ -363,20 +363,7 @@ void rt_hw_cpu_reset(void)
  * @return return the index of the first bit set. If value is 0, then this function
  * shall return 0.
  */
-#if defined(__CC_ARM)
-__asm int __rt_ffs(int value)
-{
-    CMP     r0, #0x00
-    BEQ     exit
-
-    RBIT    r0, r0
-    CLZ     r0, r0
-    ADDS    r0, r0, #0x01
-
-exit
-    BX      lr
-}
-#elif defined(__clang__)
+#if defined(__clang__)
 int __rt_ffs(int value)
 {
     __asm volatile(

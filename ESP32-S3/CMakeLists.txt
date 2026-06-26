@@ -9,7 +9,7 @@ if(NOT DEFINED ENV{IDF_PATH} OR "$ENV{IDF_PATH}" STREQUAL "")
 endif()
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(mini-tree-rt-treadtest)
+project(esp32-s3)
 
 # GCC 14.2 (-Og) ICE on esp_lcd/rgb/esp_lcd_panel_rgb.c (RTL pass: ira).
 # Keep project at Debug; only raise optimization for this IDF component.

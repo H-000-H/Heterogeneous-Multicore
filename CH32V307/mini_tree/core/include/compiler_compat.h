@@ -13,7 +13,7 @@
 
 /* ── 编译器兼容抽象层 ──
  *
- * 统一 GCC / Clang / ARMCLANG (AC6) 的 __attribute__ 与内置函数差异。
+ * 统一 GCC / Clang 的 __attribute__ 与内置函数差异。
  * Kconfig 选项见 Compiler Compatibility 菜单 (tools/genconfig.py)。
  */
 
@@ -36,13 +36,36 @@
 #define COMPAT_CFG_ENABLED(sym) \
     ((!COMPAT_HAVE_KCONFIG) || defined(CONFIG_##sym))
 
-#define COMPAT_GNU_EXT_OK \
-    (COMPAT_CFG_ENABLED(COMPILER_GNU_EXTENSIONS) && \
-     (defined(__GNUC__) || defined(__clang__)) && \
-     !defined(COMPAT_ARM_COMPILER_5))
+/* COMPAT_GNU_EXT_OK / COMPAT_WUR_ATTR_OK 通过嵌套 #if 计算为字面量 0/1,
+ * 避免 defined 出现在宏展开中触发 -Wexpansion-to-defined 警告。
+ * (COMPAT_CFG_ENABLED 仍保留给少量 C 源文件在 #if 中直接使用) */
+#if (defined(__GNUC__) || defined(__clang__))
+#  if COMPAT_HAVE_KCONFIG
+#    ifdef CONFIG_COMPILER_GNU_EXTENSIONS
+#      define COMPAT_GNU_EXT_OK 1
+#    else
+#      define COMPAT_GNU_EXT_OK 0
+#    endif
+#  else
+#    define COMPAT_GNU_EXT_OK 1
+#  endif
+#else
+#  define COMPAT_GNU_EXT_OK 0
+#endif
 
-#define COMPAT_WUR_ATTR_OK \
-    (COMPAT_CFG_ENABLED(COMPILER_WARN_UNUSED_RESULT) && COMPAT_GNU_EXT_OK)
+#if COMPAT_GNU_EXT_OK
+#  if COMPAT_HAVE_KCONFIG
+#    ifdef CONFIG_COMPILER_WARN_UNUSED_RESULT
+#      define COMPAT_WUR_ATTR_OK 1
+#    else
+#      define COMPAT_WUR_ATTR_OK 0
+#    endif
+#  else
+#    define COMPAT_WUR_ATTR_OK 1
+#  endif
+#else
+#  define COMPAT_WUR_ATTR_OK 0
+#endif
 /*===========================================================================================================================================================*/
 
                                                             /*属性与内置宏*/
@@ -171,13 +194,6 @@ enum
 #define COMPAT_MAGIC(x) COMPAT_MAGIC_##x
 /*===========================================================================================================================================================*/
 
-                                                            /*ARM Compiler 5 检测*/
-/*===========================================================================================================================================================*/
-#if defined(__CC_ARM) && (!defined(__ARMCC_VERSION) || (__ARMCC_VERSION < 6000000))
-#define COMPAT_ARM_COMPILER_5 1
-#endif
-/*===========================================================================================================================================================*/
-
                                                             /*warn_unused_result / nodiscard*/
 /*===========================================================================================================================================================*/
 #if COMPAT_WUR_ATTR_OK
@@ -243,6 +259,7 @@ enum
 #if COMPAT_GNU_EXT_OK
 #undef unlikely
 #undef likely
+#undef unreachable
 #define unlikely(x) __builtin_expect(!!(x),0)
 #define likely(x)   __builtin_expect(!!(x),1)
 #define unreachable()  __builtin_unreachable()
@@ -327,5 +344,29 @@ typedef enum
     LSB ,
 }Endianness;
 /*===========================================================================================================================================================*/
-
+// =================================================================
+// ETL __underlying_type 内建支持检测
+// =================================================================
+// 老 GCC (如 RISC-V 8.2.0) 不提供 __has_builtin (GCC 10 才引入), ETL 的
+// determine_builtin_support.h 因此把 ETL_USING_BUILTIN_UNDERLYING_TYPE 默认
+// 置 0, 导致 etl::underlying_type 退化为需要用户手动特化的版本, 实例化时
+// 触发 "No user defined specialisation" static_assert。
+//
+// __underlying_type 自 GCC 4.7 / Clang 3.x 起即为内建。本头通过 osal.h 在
+// system_cmd.hpp 引入 ETL 头之前被包含, 这里显式声明可用, 让 ETL 走内建
+// 特化路径 (template <typename T, bool = is_enum<T>::value>), 自动适配所有枚举。
+//
+// 注意: 之前尝试用偏特化
+//   template <typename T>
+//   struct underlying_type<typename std::enable_if<std::is_enum<T>::value, T>::type> {...};
+// 捕获所有枚举, 但 enable_if<...>::type 是非推导上下文, T 无法从
+// underlying_type<EnumT> 中推导, 编译器报 "template parameters not
+// deducible in partial specialization"。改用 ETL 内建路径才是正解。
+#ifdef __cplusplus
+#if !defined(ETL_USING_BUILTIN_UNDERLYING_TYPE) && !defined(ETL_USE_TYPE_TRAITS_BUILTINS)
+#  if defined(__clang__) || (defined(__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 407))
+#    define ETL_USING_BUILTIN_UNDERLYING_TYPE 1
+#  endif
+#endif
+#endif
 #endif /* COMPILER_COMPAT_H */

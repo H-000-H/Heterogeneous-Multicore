@@ -57,7 +57,7 @@ static const char* const   kHostTag = "spi_vfs_host";
 pre_execution(150)
 static void spi_host_vfs_pool_init(void)
 {
-    osal_pool_init(&s_host_pool_ctrl, s_host_used, SPI_HOST_VFS_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_host_pool_ctrl, s_host_used, SPI_HOST_VFS_COUNT));
 }
 
 static int spi_host_vfs_parse_dts(struct device* dev,
@@ -131,7 +131,7 @@ static int spi_host_vfs_probe_impl(struct device* dev, int bus_role)
     return VFS_OK;
 
 err_bus:
-    spi_bus_host_deinit(dev);
+    COMPAT_IGNORE_RESULT(spi_bus_host_deinit(dev));
 err_pool:
     osal_pool_release(&s_host_pool_ctrl, pool_idx);
     return ret;
@@ -205,7 +205,7 @@ static const char* const    kClientTag = "spi_vfs_client";
 pre_execution(160)
 static void spi_vfs_client_pool_init(void)
 {
-    osal_pool_init(&s_client_pool_ctrl, s_client_used, SPI_VFS_CLIENT_COUNT);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_client_pool_ctrl, s_client_used, SPI_VFS_CLIENT_COUNT));
 }
 
 static struct spi_vfs_client* spi_vfs_client_from_ops(const struct file_operations* ops)

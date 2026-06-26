@@ -66,7 +66,7 @@ int hal_gpio_dts_resolve(uint32_t dts_port, uint32_t dts_pin, int *hw_gpio_out)
     if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
         return VFS_ERR_INVAL;
 
-#if COMPAT_CFG_ENABLED(HAL_PIN_MAP_LINEAR)
+#if !COMPAT_HAVE_KCONFIG || defined(CONFIG_HAL_PIN_MAP_LINEAR)
     *hw_gpio_out = (int)((dts_port << 4) | dts_pin);
 #else
     *hw_gpio_out = (int)dts_pin;

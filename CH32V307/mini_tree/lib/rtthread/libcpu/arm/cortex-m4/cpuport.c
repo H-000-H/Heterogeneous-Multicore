@@ -24,8 +24,7 @@
 #define DBG_LVL           DBG_INFO
 #include <rtdbg.h>
 
-#if               /* ARMCC */ (  (defined ( __CC_ARM ) && defined ( __TARGET_FPU_VFP ))    \
-                  /* Clang */ || (defined ( __clang__ ) && defined ( __VFP_FP__ ) && !defined(__SOFTFP__)) \
+#if               /* Clang */ ( (defined ( __clang__ ) && defined ( __VFP_FP__ ) && !defined(__SOFTFP__)) \
                   /* IAR */   || (defined ( __ICCARM__ ) && defined ( __ARMVFP__ ))        \
                   /* GNU */   || (defined ( __GNUC__ ) && defined ( __VFP_FP__ ) && !defined(__SOFTFP__)) )
 #define USE_FPU   1
@@ -447,10 +446,7 @@ void rt_hw_cpu_reset(void)
  */
 rt_inline rt_uint32_t rt_hw_get_ipsr(void)
 {
-#if defined(__CC_ARM)
-    register uint32_t __regIPSR __asm("ipsr");
-    return(__regIPSR);
-#elif defined(__clang__)
+#if defined(__clang__)
     uint32_t result;
     __asm volatile ("MRS %0, ipsr" : "=r" (result) );
     return(result);
@@ -515,10 +511,7 @@ rt_uint8_t rt_interrupt_get_nest(void)
  */
 rt_inline rt_uint32_t rt_hw_get_primask_value(void)
 {
-#if defined(__CC_ARM)
-    register uint32_t __regPRIMASK __asm("primask");
-    return (__regPRIMASK);
-#elif defined(__clang__)
+#if defined(__clang__)
     uint32_t result;
     __asm volatile ("MRS %0, primask" : "=r" (result));
     return result;
@@ -556,20 +549,7 @@ rt_bool_t rt_hw_interrupt_is_disabled(void)
  * @return return the index of the first bit set. If value is 0, then this function
  * shall return 0.
  */
-#if defined(__CC_ARM)
-__asm int __rt_ffs(int value)
-{
-    CMP     r0, #0x00
-    BEQ     exit
-
-    RBIT    r0, r0
-    CLZ     r0, r0
-    ADDS    r0, r0, #0x01
-
-exit
-    BX      lr
-}
-#elif defined(__clang__)
+#if defined(__clang__)
 int __rt_ffs(int value)
 {
     __asm volatile(

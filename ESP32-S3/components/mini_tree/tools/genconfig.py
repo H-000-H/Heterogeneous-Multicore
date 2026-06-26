@@ -18,7 +18,11 @@ from kconfiglib import Kconfig
 try:
     from kconfiglib import BOOL, HEX, INT, STRING
 except ImportError:
-    from kconfiglib.core import BOOL, HEX, INT, STRING
+    try:
+        from kconfiglib.core import BOOL, HEX, INT, STRING
+    except ImportError:
+        # ESP-IDF 的 kconfiglib 是 esp_kconfiglib 的 shim，常量位于 esp_kconfiglib.core
+        from esp_kconfiglib.core import BOOL, HEX, INT, STRING
 
 try:
     from kconfiglib import TRISTATE

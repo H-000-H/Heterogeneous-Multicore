@@ -22,7 +22,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <freertos/FreeRTOS.h>
-#include <FreeRTOS/queue.h>
+#include <freertos/queue.h>
 #ifdef __cplusplus
 extern "C"
 {

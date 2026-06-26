@@ -12,11 +12,7 @@
 #include <stdint.h>
 
 /* define compiler specific symbols */
-#if defined ( __CC_ARM   )
-  #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */
-  #define __INLINE         __inline                                   /*!< inline keyword for ARM Compiler       */
-
-#elif defined ( __ICCARM__ )
+#if defined ( __ICCARM__ )
   #define __ASM           __asm                                       /*!< asm keyword for IAR Compiler          */
   #define __INLINE        inline                                      /*!< inline keyword for IAR Compiler. Only avaiable in High optimization mode! */
 

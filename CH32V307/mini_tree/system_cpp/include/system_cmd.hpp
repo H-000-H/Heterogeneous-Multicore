@@ -20,6 +20,7 @@
 #ifndef CONFIG_OSAL_NULL
 #include <etl/map.h>
 #include <etl/string.h>
+#include <etl/type_traits.h>
 #endif
 #ifndef SYS_CMD_MAX_NAME_LEN
 #define SYS_CMD_MAX_NAME_LEN    16

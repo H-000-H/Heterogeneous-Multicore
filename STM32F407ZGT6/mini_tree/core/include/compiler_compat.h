@@ -13,7 +13,7 @@
 
 /* ── 编译器兼容抽象层 ──
  *
- * 统一 GCC / Clang / ARMCLANG (AC6) 的 __attribute__ 与内置函数差异。
+ * 统一 GCC / Clang 的 __attribute__ 与内置函数差异。
  * Kconfig 选项见 Compiler Compatibility 菜单 (tools/genconfig.py)。
  */
 
@@ -36,13 +36,36 @@
 #define COMPAT_CFG_ENABLED(sym) \
     ((!COMPAT_HAVE_KCONFIG) || defined(CONFIG_##sym))
 
-#define COMPAT_GNU_EXT_OK \
-    (COMPAT_CFG_ENABLED(COMPILER_GNU_EXTENSIONS) && \
-     (defined(__GNUC__) || defined(__clang__)) && \
-     !defined(COMPAT_ARM_COMPILER_5))
+/* COMPAT_GNU_EXT_OK / COMPAT_WUR_ATTR_OK 通过嵌套 #if 计算为字面量 0/1,
+ * 避免 defined 出现在宏展开中触发 -Wexpansion-to-defined 警告。
+ * (COMPAT_CFG_ENABLED 仍保留给少量 C 源文件在 #if 中直接使用) */
+#if (defined(__GNUC__) || defined(__clang__))
+#  if COMPAT_HAVE_KCONFIG
+#    ifdef CONFIG_COMPILER_GNU_EXTENSIONS
+#      define COMPAT_GNU_EXT_OK 1
+#    else
+#      define COMPAT_GNU_EXT_OK 0
+#    endif
+#  else
+#    define COMPAT_GNU_EXT_OK 1
+#  endif
+#else
+#  define COMPAT_GNU_EXT_OK 0
+#endif
 
-#define COMPAT_WUR_ATTR_OK \
-    (COMPAT_CFG_ENABLED(COMPILER_WARN_UNUSED_RESULT) && COMPAT_GNU_EXT_OK)
+#if COMPAT_GNU_EXT_OK
+#  if COMPAT_HAVE_KCONFIG
+#    ifdef CONFIG_COMPILER_WARN_UNUSED_RESULT
+#      define COMPAT_WUR_ATTR_OK 1
+#    else
+#      define COMPAT_WUR_ATTR_OK 0
+#    endif
+#  else
+#    define COMPAT_WUR_ATTR_OK 1
+#  endif
+#else
+#  define COMPAT_WUR_ATTR_OK 0
+#endif
 /*===========================================================================================================================================================*/
 
                                                             /*属性与内置宏*/
@@ -171,13 +194,6 @@ enum
 #define COMPAT_MAGIC(x) COMPAT_MAGIC_##x
 /*===========================================================================================================================================================*/
 
-                                                            /*ARM Compiler 5 检测*/
-/*===========================================================================================================================================================*/
-#if defined(__CC_ARM) && (!defined(__ARMCC_VERSION) || (__ARMCC_VERSION < 6000000))
-#define COMPAT_ARM_COMPILER_5 1
-#endif
-/*===========================================================================================================================================================*/
-
                                                             /*warn_unused_result / nodiscard*/
 /*===========================================================================================================================================================*/
 #if COMPAT_WUR_ATTR_OK
@@ -243,6 +259,7 @@ enum
 #if COMPAT_GNU_EXT_OK
 #undef unlikely
 #undef likely
+#undef unreachable
 #define unlikely(x) __builtin_expect(!!(x),0)
 #define likely(x)   __builtin_expect(!!(x),1)
 #define unreachable()  __builtin_unreachable()
