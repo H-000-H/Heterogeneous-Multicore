@@ -1,0 +1,141 @@
+CompileFlags:
+  CompilationDatabase: build/Debug
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -D__ARM_ARCH_7EM__=1
+    - -isystem
+    - /usr/lib/arm-none-eabi/include
+    - -isystem
+    - /usr/lib/gcc/arm-none-eabi/14.2.1/include-fixed
+    - -isystem
+    - /usr/lib/gcc/arm-none-eabi/14.2.1/include
+  Remove: [-f*, -W*]
+
+Diagnostics:
+  UnusedIncludes: None
+
+---
+If:
+  PathMatch: .*mini_tree[/\\].*\.(c|cpp|S)$
+CompileFlags:
+  CompilationDatabase: build/Debug
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/Espressif/esp32s3/managed_components/marcel-cd__etlcpp/etl/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/core/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/osal/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/system_c/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/system_cpp/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/build/Debug/generated/kconfig/mini_tree
+
+---
+If:
+  PathMatch: .*hal[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+
+---
+If:
+  PathMatch: .*board[/\\]include[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -I../../core/include
+    - -I../../osal/include
+    - -I../../../build/Debug/generated/board/mini_tree
+    - -I../../../build/Debug/generated/kconfig/mini_tree
+
+---
+If:
+  PathMatch: .*osal[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -I../../core/include
+
+---
+If:
+  PathMatch: .*vfs[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -I.
+    - -I../../board/include
+    - -I../../core/include
+    - -I../../osal/include
+    - -I../../hal/gpio
+    - -I../../bus/spi
+    - -I../../bus/uart
+    - -I../../../build/Debug/generated/board/mini_tree
+    - -I../../../build/Debug/generated/kconfig/mini_tree
+
+---
+If:
+  PathMatch: .*[/\\]app[/\\].*\.(c|cpp|h|S)$
+CompileFlags:
+  CompilationDatabase: build/Debug
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/Espressif/esp32s3/managed_components/marcel-cd__etlcpp/etl/include
+
+---
+If:
+  PathMatch: .*[/\\]Core[/\\].*\.(c|cpp|h|S)$
+CompileFlags:
+  CompilationDatabase: build/Debug
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+
+---
+If:
+  PathMatch: .*[/\\]Drivers[/\\].*\.h$
+CompileFlags:
+  CompilationDatabase: None
+  Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -std=gnu17
+    - -x
+    - c-header
+    - -DSTM32F407xx
+    - -DUSE_HAL_DRIVER
+    - -DUSE_FULL_LL_DRIVER
+    - -I.
+    - -I../../app/inc
+    - -I../../Core/Inc

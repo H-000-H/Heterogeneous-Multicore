@@ -1,0 +1,101 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+
+ * STM32F407 SPI — 仅主机模式
+
+ *
+
+ * Bindings:
+
+ *   stm32,spi-master / stm32,spi-host  — bus/spi/spi_bus.c
+
+ *   heterogeneous,w25q64-master        — drivers/flash/w25q64_spi_drv.c
+
+ *
+
+ * 时钟/GPIO：由 CubeMX MX_SPIx_Init() 在 main pre_execution 钩子完成，
+
+ * mini_tree 不重复配置 RCC。
+
+ */
+
+
+
+#include "stm32f407.dtsi"
+
+#include "stm32f407-dma.dtsi"
+
+#include <dt-bindings/spi/spi-parameter.h>
+
+#include <dt-bindings/hw/hw-instance.h>
+
+#include <dt-bindings/gpio/gpio-ctl.h>
+
+
+
+&soc {
+
+	spi_cap: spi-cap {
+		compatible = "stm32,spi-platform-cap";
+		mini-tree,platform;
+		host-max = <3>;			/* SPI1/2/3 */
+		max-xfer = <512>;
+	};
+
+	spi1: spi@0 {
+
+		compatible = "stm32,spi-master";
+
+		reg = <0>;
+
+		#address-cells = <1>;
+
+		#size-cells = <0>;
+
+		host-id = <SPI_DEFAULT_HOST_ID>;
+		hw-instance = <DTS_HW_SPI1>;
+		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
+		dma-tx = <&dma_spi1_tx>;
+		dma-rx = <&dma_spi1_rx>;
+
+		mosi-port = <DTS_GPIOA>;
+
+		mosi-pin = <DTS_GPIO_PIN_7>;
+
+		miso-port = <DTS_GPIOA>;
+
+		miso-pin = <DTS_GPIO_PIN_6>;
+
+		sclk-port = <DTS_GPIOA>;
+
+		sclk-pin = <DTS_GPIO_PIN_5>;
+
+		status = "disabled";
+
+
+
+		w25q64_master: w25q64@0 {
+
+			compatible = "heterogeneous,w25q64-master";
+
+			reg = <0>;
+
+			spi-mode = <SPI_DEFAULT_MODE>;
+
+			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
+
+			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
+
+			cs-port = <DTS_GPIOA>;
+
+			cs-pin = <DTS_GPIO_PIN_4>;
+
+			status = "disabled";
+
+		};
+
+	};
+
+};
+

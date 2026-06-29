@@ -1,0 +1,18 @@
+CompileFlags:
+  CompilationDatabase: build
+  Remove: [-f*, -m*]
+  # 让 clangd 使用与实际编译器一致的 C++ 标准和异常设置,
+  # 减少 Clang/GCC 头文件差异导致的误报
+  Add:
+    - -Wno-ignored-attributes
+    - -ferror-limit=0
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None
+
+Index:
+  # 背景: clangd (Clang) 解析 #include_next <pthread.h> 时 preamble 构建失败,
+  # 导致 ETL 模板中的 _Noreturn=[[noreturn]] 属性误报为 attribute_not_type_attr.
+  # 实际编译器 xtensa-esp32s3-elf-g++ (GCC 15.2) 无此问题.
+  Standard: c++26

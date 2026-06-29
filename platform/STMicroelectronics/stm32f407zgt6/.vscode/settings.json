@@ -1,0 +1,17 @@
+{
+  "clangd.path": "/home/ning/.espressif/tools/esp-clang/esp-20.1.1_20250829/esp-clang/bin/clangd",
+  "clangd.arguments": [
+    "--query-driver=**/arm-none-eabi-*,/opt/wch-toolchain/bin/*-elf-*,/home/ning/.espressif/tools/**/bin/*-elf-*,**/riscv*",
+    "--compile-commands-dir=build/Debug",
+    "--header-insertion=never",
+    "--background-index",
+    "--clang-tidy=false"
+  ],
+  "clangd.checkUpdates": false,
+  "clangd.onConfigChanged": "restart",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "cortex-debug.gdbPath": "/usr/bin/gdb-multiarch",
+  "cortex-debug.openocdPath": "/usr/bin/openocd",
+  "cortex-debug.objdumpPath": "/usr/bin/arm-none-eabi-objdump",
+  "cortex-debug.nmPath": "/usr/bin/arm-none-eabi-nm"
+}

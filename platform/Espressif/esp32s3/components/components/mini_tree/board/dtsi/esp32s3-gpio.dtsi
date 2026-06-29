@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * ESP32-S3 GPIO — SoC default parameters
+ *
+ * Board-specific port/pin/mode/pull in board *.dts &gpio_pin { }.
+ * Bindings:
+ *   esp32,gpio           — GPIO 控制器 (平台节点, 无 DRIVER_REGISTER)
+ *   heterogeneous,gpio   — 单引脚配置实例 → hal_gpio.c
+ *
+ * 板级示例:
+ *   &gpio_btn {
+ *       gpio-pin = <0>;
+ *       gpio-mode = <DTS_GPIO_MODE_INPUT>;
+ *       gpio-pull = <DTS_GPIO_PULL_UP>;
+ *       gpio-intr = <DTS_GPIO_INTR_FALLING>;
+ *       status = "okay";
+ *   };
+ */
+
+#include "esp32s3.dtsi"
+#include <dt-bindings/gpio/gpio-ctl.h>
+
+&soc {
+	gpio: gpio@0 {
+		compatible = "esp32,gpio";
+		reg = <0>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		status = "okay";
+	};
+
+	gpios_pin: gpios-pin@0 {
+		compatible = "heterogeneous,gpios";
+		reg = <0>;
+		gpio-port = <DTS_GPIOZERO>;
+		gpio-pin = <0>;
+		gpio-mode = <DTS_GPIO_DEFAULT_OUTPUT>;
+		gpio-pull = <DTS_GPIO_DEFAULT_OUTPUT_PULL>;
+		gpio-intr = <DTS_GPIO_DEFAULT_INTR>;
+		default-level = <DTS_GPIO_DEFAULT_LEVEL>;
+		status = "disabled";
+	};
+};

@@ -55,3 +55,4 @@ dependencies.lock
 *.sln
 *.swp
 *.code-workspace
+platform/NXP/imx6ull/target_env/nfsroot/

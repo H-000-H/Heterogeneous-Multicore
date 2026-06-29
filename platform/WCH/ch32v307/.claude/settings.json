@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/18514/**)",
+      "Read(//d//**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c/Users/18514/AppData/**)",
+      "Read(//c/Users/18514/.platformio/**)"
+    ]
+  }
+}

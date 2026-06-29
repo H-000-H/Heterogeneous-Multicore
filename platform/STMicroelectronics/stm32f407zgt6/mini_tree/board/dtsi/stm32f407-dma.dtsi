@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * STM32F407 DMA 通道描述
+ *
+ * compatible = "stm32,dma-channel"
+ * reg        = HAL 查找 ID (见 dt-bindings/dma/dma-parameter.h)
+ * controller / stream / channel 由 HAL DMA 引擎解析
+ */
+
+#include <dt-bindings/dma/dma-parameter.h>
+
+&soc {
+	dma_spi1_rx: dma@spi1-rx {
+		compatible = "stm32,dma-channel";
+		mini-tree,platform;
+		reg = <DTS_DMA_ID_SPI1_RX>;
+		controller = <DTS_DMA_CTRL_DMA2>;
+		stream = <DTS_DMA_STREAM_0>;
+		channel = <DTS_DMA_CH_3>;
+		status = "okay";
+	};
+
+	dma_spi1_tx: dma@spi1-tx {
+		compatible = "stm32,dma-channel";
+		mini-tree,platform;
+		reg = <DTS_DMA_ID_SPI1_TX>;
+		controller = <DTS_DMA_CTRL_DMA2>;
+		stream = <DTS_DMA_STREAM_3>;
+		channel = <DTS_DMA_CH_3>;
+		status = "okay";
+	};
+
+	dma_uart4_tx: dma@uart4-tx {
+		compatible = "stm32,dma-channel";
+		mini-tree,platform;
+		reg = <DTS_DMA_ID_UART4_TX>;
+		controller = <DTS_DMA_CTRL_DMA1>;
+		stream = <DTS_DMA_STREAM_4>;
+		channel = <DTS_DMA_CH_4>;
+		status = "okay";
+	};
+};

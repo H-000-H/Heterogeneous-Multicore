@@ -1,0 +1,54 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32 (ST-Link + OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/STM32F407ZGT6.elf",
+            "servertype": "openocd",
+            "serverpath": "/usr/bin/openocd",
+            "searchDir": [
+                "/usr/share/openocd/scripts"
+            ],
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "device": "STM32F407ZG",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "raw",
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug STM32 (J-Link)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/STM32F407ZGT6.elf",
+            "servertype": "jlink",
+            "device": "STM32F407ZG",
+            "interface": "swd",
+            "runToEntryPoint": "main",
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Attach STM32 (ST-Link + OpenOCD)",
+            "type": "cortex-debug",
+            "request": "attach",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/STM32F407ZGT6.elf",
+            "servertype": "openocd",
+            "serverpath": "/usr/bin/openocd",
+            "searchDir": [
+                "/usr/share/openocd/scripts"
+            ],
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "device": "STM32F407ZG"
+        }
+    ]
+}

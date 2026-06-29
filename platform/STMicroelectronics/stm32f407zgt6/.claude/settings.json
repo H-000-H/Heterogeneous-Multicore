@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:/Users/18514/AppData/Local/Arm/Packs/STMicroelectronics/STM32F4xx_DFP/\" 2>/dev/null || echo \"NOT FOUND at 18514\")",
+      "Read(//c/Users/18514/AppData/Local/Arm/Packs/STMicroelectronics/**)",
+      "Read(//c/Users/18514/AppData/Local/Arm/**)",
+      "Read(//c/Users/18514/AppData/Local/**)",
+      "Read(//c/Users/18514/.vscode/**)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c/Users/18514/**)",
+      "Read(//c//**)",
+      "Read(//d//**)",
+      "Bash(find \"C:/\" -maxdepth 4 -path \"*/SEGGER/*\" -name \"*.exe\" 2>/dev/null | head -20)"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Espressif ESP32-S3-DevKitC-1 board
+ *
+ * dtc-lite 推荐布局 (无序全解耦版):
+ *   1. /dts-v1/
+ *   2. #include SoC + IP dtsi（可集中放在文件头）
+ *   3. / { model, compatible, aliases }
+ *   4. &label { 板级引脚 / gpio / status = "okay" }
+ *
+ * 常量宏在 board/dt-bindings/，由 IP dtsi #include；板级只覆写实例参数。
+ */
+
+/dts-v1/;
+
+#include "esp32s3.dtsi"
+#include "esp32s3-gpio.dtsi"
+#include "esp32s3-ws2812.dtsi"
+#include "esp32s3-spi.dtsi"
+#include "esp32s3-uart.dtsi"
+
+/chosen {
+	tick-rate = <1000>;
+	heap-size = <32768>;
+};
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	model = "Espressif ESP32-S3-DevKitC-1";
+	compatible = "espressif,esp32-s3-devkitc-1", "espressif,esp32s3";
+
+	aliases {
+		led0 = &ws2812;
+	};
+};
+
+&ws2812 {
+	gpio = <48>;
+	num-leds = <1>;
+	status = "okay";
+};
+
+&spi1 {
+	status = "okay";
+	mosi-port = <DTS_GPIOZERO>;
+	mosi-pin = <11>;
+	miso-port = <DTS_GPIOZERO>;
+	miso-pin = <13>;
+	sclk-port = <DTS_GPIOZERO>;
+	sclk-pin = <12>;
+	max-trans-buffer = <2048>;/* 从机的一次传输最大宽度 */
+};
+
+&spi2 {
+	status 		="disabled";
+	mosi-port 	=<DTS_GPIOZERO>;
+	mosi-pin 	=<14>;
+	miso-port	=<DTS_GPIOZERO>;
+	miso-pin	=<15>;
+	sclk-port	=<DTS_GPIOZERO>;
+	sclk-pin	=<16>;
+	max-trans-buffer=<512>;/* 一个扇区大小 */
+};
+
+&fft_slave {
+	status = "okay";
+	cs-port = <DTS_GPIOZERO>;
+	cs-pin = <10>;
+};
+
+&w25q64_master{
+	status ="disabled";
+	cs-port = <DTS_GPIOZERO>;
+	cs-pin =<20>;
+};
+
+&gpios_pin {
+	status = "okay";
+};
+
+&uart1 {
+	status 		 = "okay";
+	rx-port		 = <DTS_UART_RX_PORT>;
+	rx-pin		 = <DTS_UART_RX_PIN>;
+	tx-port 	 = <DTS_UART_TX_PORT>;
+	tx-pin		 = <DTS_UART_TX_PIN>;
+	max-trans-buffer = <1024>;
+	uart-trans-baund = <DTS_UART_BAUD >;
+	stop-bit	 =<0>;
+	parity		 =<0>;
+	data-bit	 =<0>;
+};

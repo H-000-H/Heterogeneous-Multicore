@@ -1,0 +1,21 @@
+{
+  "clangd.path": "/home/ning/.espressif/tools/esp-clang/esp-20.1.1_20250829/esp-clang/bin/clangd",
+  "clangd.arguments": [
+    "--query-driver=/opt/wch-toolchain/bin/*,**/arm-none-eabi-*,/home/ning/.espressif/tools/**/bin/*-elf-*,**/riscv*",
+    "--compile-commands-dir=build/Debug",
+    "--header-insertion=never",
+    "--background-index",
+    "--clang-tidy=false"
+  ],
+  "clangd.checkUpdates": false,
+  "clangd.onConfigChanged": "restart",
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "cmake.configureOnOpen": true,
+  "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
+  "cmake.useCMakePresets": "always",
+  "cmake.configureArgs": [],
+  "cmake.buildArgs": [],
+  "cmake.buildToolArgs": [],
+  "cmake.parallelJobs": 0,
+  "cmake.buildBeforeRun": true
+}
