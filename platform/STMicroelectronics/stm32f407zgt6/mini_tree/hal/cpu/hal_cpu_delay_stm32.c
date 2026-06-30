@@ -1,3 +1,9 @@
+/*
+ * CPU 延时 — STM32 DWT/SysTick 实现
+ *
+ * Cortex-M3+ 使用 DWT->CYCCNT 周期计数, M0 退化为 SysTick 倒计数
+ * hal_delay_cycles 直读 DWT, hal_delay_ms 复用 hal_delay_us
+ */
 #include "hal_cpu_delay.h"
 #include "stm32f4xx.h"
 

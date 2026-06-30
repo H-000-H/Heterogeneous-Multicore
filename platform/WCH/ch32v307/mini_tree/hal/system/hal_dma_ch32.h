@@ -1,3 +1,9 @@
+/*
+ * DMA HAL — CH32 平台 DMA 通道辅助接口
+ *
+ * 封装 DMA_Channel_TypeDef 通道禁用/轮询/配置/使能
+ * 定义 hal_dma_ch32_xfer_t 统一描述源/目的/方向/长度与完成标志
+ */
 #ifndef HAL_DMA_CH32_H
 #define HAL_DMA_CH32_H
 

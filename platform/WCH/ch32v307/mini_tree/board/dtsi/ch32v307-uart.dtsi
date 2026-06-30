@@ -3,19 +3,23 @@
  * CH32V307 UART
  *
  * Bindings:
- *   ch32,uart1 — vfs/uart/vfs-uart.c
+ *   uart               — bus/uart/uart_bus.c
+ *   uart-client        — vfs/uart/uart_vfs.c
  *
- * 时钟/GPIO：由 MounRiver MX_USART1_Init() 在 main pre_execution 钩子完成；
- * host-id 0 映射 USART1 (PA9 TX, PA10 RX)。
+ * 硬件直投: 所有属性值用 WCH 厂商标准外设头宏, dtc-lite 经 cpp 展开后 VFS 原样
+ * 透传给 HAL, HAL 用标准外设库零翻译灌入寄存器。mini_tree 自行配置 RCC + GPIO,
+ * 不依赖 MounRiver MX_USART1_Init()。
+ *   uart-base/uart-clk: USART 外设基址 + 时钟使能位 (USART1 挂 APB2, 其余挂 APB1)
+ *   tx/rx-port/pin/clk/af: GPIO 端口基址 + 位掩码 + 时钟 + 模式
+ *     (TX = GPIO_Mode_AF_PP, RX = GPIO_Mode_IN_FLOATING, CH32 无独立 AF 选择)
+ *   data-width/parity/stop-bits: USART_WordLength_* / USART_Parity_* / USART_StopBits_* 宏值
  */
-
 #include "ch32v307.dtsi"
-#include <dt-bindings/uart/uart-parameter.h>
-#include <dt-bindings/gpio/gpio-ctl.h>
+#include <ch32v30x.h>
 
 &soc {
 	uart_cap: uart-cap {
-		compatible = "ch32,uart-platform-cap";
+		compatible = "uart-platform-cap";
 		mini-tree,platform;
 		host-max = <1>;
 		max-xfer = <512>;
@@ -23,17 +27,25 @@
 	};
 
 	uart1: uart@0 {
-		compatible = "ch32,uart1";
+		compatible = "uart";
 		reg = <0>;
-		host-id = <0>;
-		tx-port = <DTS_GPIOA>;
-		tx-pin = <DTS_GPIO_PIN_9>;
-		rx-port = <DTS_GPIOA>;
-		rx-pin = <DTS_GPIO_PIN_10>;
-		uart-trans-baund = <115200>;
-		data-bit = <8>;
-		stop-bit = <0>;
-		parity = <0>;
+		uart-base = <USART1_BASE>;
+		uart-clk  = <RCC_APB2Periph_USART1>;
+		uart-baud = <115200>;
+		data-width = <USART_WordLength_8b>;
+		parity     = <USART_Parity_No>;
+		stop-bits  = <USART_StopBits_1>;
+
+		tx-port = <GPIOA_BASE>;
+		tx-pin  = <GPIO_Pin_9>;
+		tx-clk  = <RCC_APB2Periph_GPIOA>;
+		tx-af   = <GPIO_Mode_AF_PP>;
+
+		rx-port = <GPIOA_BASE>;
+		rx-pin  = <GPIO_Pin_10>;
+		rx-clk  = <RCC_APB2Periph_GPIOA>;
+		rx-af   = <GPIO_Mode_IN_FLOATING>;
+
 		status = "okay";
 	};
 };

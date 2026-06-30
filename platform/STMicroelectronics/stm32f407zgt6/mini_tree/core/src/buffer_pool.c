@@ -1,3 +1,9 @@
+/*
+ * Buffer Pool — 预分配定长缓冲区池实现
+ *
+ * 位图 + 原子 CAS 实现 O(1) 无锁分配/释放, ISR 安全
+ * ARMv6-M 无 LDREX/STREX 退化到关中断原子; 内存 32 字节对齐保证 DMA 安全
+ */
 #include "buffer_pool.h"
 #include "osal.h"
 #include "compiler_compat.h"

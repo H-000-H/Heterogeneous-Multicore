@@ -1,3 +1,11 @@
+/*
+ * board_driver.c — 板级驱动核心实现
+ *
+ * board_driver_probe_all: 3 趟 deferred probe, 按依赖拓扑顺序匹配驱动,
+ *   失败按 criticality 分级 (FATAL 触发 OSAL_PANIC, WARNING 告警, IGNORE 静默).
+ * board_driver_remove_all: 逆 probe 顺序卸载, 失败保留 ERROR 状态.
+ * 实现 IEC 61508 安全停机子系统 (safety pin + 回调 + emergency_stop_all_cores).
+ */
 #include "config.h"
 #include "driver.h"
 #include "VFS.h"
@@ -28,8 +36,8 @@ static volatile int s_shutdown_entered = 0;
 
 struct safety_pin
 {
-    hal_pin_t pin;
-    int       safe_level;
+    int pin;
+    int safe_level;
 };
 
 static struct safety_pin g_safety_pins[BOARD_MAX_SAFETY_PINS];
@@ -38,7 +46,7 @@ static int          g_safety_pin_count;
 static safety_shutdown_fn_t g_safety_cbs[BOARD_SAFETY_MAX_CALLBACKS];
 static int                  g_safety_cb_count;
 
-void board_safety_add_pin(hal_pin_t pin, int safe_level)
+void board_safety_add_pin(int pin, int safe_level)
 {
     if (g_safety_pin_count < BOARD_MAX_SAFETY_PINS)
     {
@@ -69,7 +77,7 @@ static int board_safety_hw_probe(struct device* dev)
         snprintf(level_prop, sizeof(level_prop), "safe_level_%d", idx);
         if (device_get_prop_int(dev, pin_prop, &pin) != VFS_OK) break;
         device_get_prop_int(dev, level_prop, &safe_level);
-        board_safety_add_pin(hal_pin_make(HAL_GPIO_PORT_DEFAULT, (uint16_t)pin), safe_level);
+        board_safety_add_pin(pin, safe_level);
         idx++;
     }
     DRV_LOGI(kTag, "safety-hw: %d shutdown pins registered", g_safety_pin_count);
@@ -89,7 +97,7 @@ DRIVER_REGISTER(board_safety_hw, "board,safety-hw",
 
 #else /* !CONFIG_SAFETY_SHUTDOWN */
 
-void board_safety_add_pin(hal_pin_t pin, int safe_level)
+void board_safety_add_pin(int pin, int safe_level)
 {
     (void)pin; (void)safe_level;
 }
@@ -229,7 +237,6 @@ void system_safety_hardware_shutdown(const char* reason)
 
 void board_register_all_drivers(void)
 {
-    board_driver_force_link();
 }
 
 int board_driver_probe_all(void)

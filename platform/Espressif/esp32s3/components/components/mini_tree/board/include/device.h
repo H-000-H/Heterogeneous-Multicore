@@ -1,3 +1,10 @@
+/*
+ * device.h — 板级设备模型核心头文件
+ *
+ * 定义编译期 device_node (dtc-lite 生成的只读 DTS 节点) 与运行时 device 实例,
+ * 含 file_operations VFS 操作表、device_status/criticality 状态机枚举.
+ * 声明设备查找、属性读取 (reg/irq/prop)、VFS 便捷包装 (持锁 open/read/write 等).
+ */
 #ifndef BOARD_DEVICE_H
 #define BOARD_DEVICE_H
 
@@ -169,10 +176,6 @@ int device_get_prop_bool(const struct device* dev, const char* key, int* val)
 
                                                             /*引脚探测与基本信息*/
 /*===========================================================================================================================================================*/
-/* 从 DTS 属性读取 port + pin → hal_pin_t (port_key 可省略, 默认 0) */
-int hal_pin_probe(const struct device* dev, const char* port_key, const char* pin_key,
-                  hal_pin_t* out) COMPAT_WARN_UNUSED_RESULT;
-
 const char* device_get_name(const struct device* dev);
 const char* device_get_compatible(const struct device* dev);
 enum device_status device_get_status(const struct device* dev);

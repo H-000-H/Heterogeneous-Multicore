@@ -1,5 +1,11 @@
+/*
+ * dev_lifecycle.c — 设备 I/O 生命周期状态机实现
+ *
+ * open/close/io_begin 持 io_lock 进入并校验 LIVE 状态, REMOVING 状态返回 NODEV.
+ * remove_drain 轮询等待 opens==0 且 io_active==0, 成功返回时持有 io_lock.
+ * remove_finish 释放 io_lock 并重置状态, 不 destroy mutex (由驱动自行销毁).
+ */
 #include "dev_lifecycle.h"
-
 #include "osal.h"
 #include "compiler_compat_poison.h"
 

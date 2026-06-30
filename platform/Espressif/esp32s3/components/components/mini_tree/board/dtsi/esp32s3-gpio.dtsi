@@ -1,24 +1,22 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 /*
  * ESP32-S3 GPIO — SoC default parameters
  *
- * Board-specific port/pin/mode/pull in board *.dts &gpio_pin { }.
+ * Board-specific pin/mode/pull in board *.dts &gpios_pin { }.
  * Bindings:
  *   esp32,gpio           — GPIO 控制器 (平台节点, 无 DRIVER_REGISTER)
- *   heterogeneous,gpio   — 单引脚配置实例 → hal_gpio.c
+ *   heterogeneous,gpios  — 单引脚配置实例 → vfs/gpio/vfs-gpio.c
  *
- * 板级示例:
- *   &gpio_btn {
- *       gpio-pin = <0>;
- *       gpio-mode = <DTS_GPIO_MODE_INPUT>;
- *       gpio-pull = <DTS_GPIO_PULL_UP>;
- *       gpio-intr = <DTS_GPIO_INTR_FALLING>;
- *       status = "okay";
- *   };
+ * 硬件直投: gpio-port=0/gpio-pin/gpio-clk=0/gpio-mode/gpio-pull 直接用 ESP-IDF 枚举值
+ * (gpio_num_t / gpio_mode_t / gpio_pull_mode_t), dtc-lite 用 cpp 跑 ESP-IDF 头
+ * 提取 enum 常量后链式展开。VFS probe 原样透传给 HAL, 对象内 pin
+ * 即 SoC GPIO 编号, 零查表零计算。ESP32 port/clk_periph 固定 0
+ * (单端口, gpio_config 内部处理时钟)。
  */
 
 #include "esp32s3.dtsi"
-#include <dt-bindings/gpio/gpio-ctl.h>
+#include <driver/gpio.h>
+#include <hal/gpio_types.h>
 
 &soc {
 	gpio: gpio@0 {
@@ -32,10 +30,11 @@
 	gpios_pin: gpios-pin@0 {
 		compatible = "heterogeneous,gpios";
 		reg = <0>;
-		gpio-port = <DTS_GPIOZERO>;
-		gpio-pin = <0>;
-		gpio-mode = <DTS_GPIO_DEFAULT_OUTPUT>;
-		gpio-pull = <DTS_GPIO_DEFAULT_OUTPUT_PULL>;
+		gpio-port = <0>;
+		gpio-pin  = <0>;
+		gpio-clk  = <0>;
+		gpio-mode = <GPIO_MODE_OUTPUT>;
+		gpio-pull = <GPIO_FLOATING>;
 		gpio-intr = <DTS_GPIO_DEFAULT_INTR>;
 		default-level = <DTS_GPIO_DEFAULT_LEVEL>;
 		status = "disabled";

@@ -1,93 +1,65 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-
 /*
-
  * CH32V307 SPI — 仅主机模式
-
  *
-
  * Bindings:
-
- *   ch32,spi-master / ch32,spi-host  — bus/spi/spi_bus.c
-
+ *   spi-master / spi-host            — bus/spi/spi_bus.c
  *   heterogeneous,w25q64-master      — drivers/flash/w25q64_spi_drv.c
-
  *
-
- * 时钟/GPIO：由 MounRiver/Cube 生成代码在板级 init 中完成。
-
+ * 硬件直投: 所有属性值用厂商宏, dtc-lite 经 cpp 展开后 VFS 原样透传给 HAL,
+ * HAL 用标准外设库零翻译灌入寄存器。mini_tree 自行配置 RCC + GPIO AF, 不依赖 MounRiver。
+ *   spi-base/spi-clk: SPI 外设基址 + 时钟使能位
+ *   mosi/miso/sclk-port/pin/clk/af: GPIO 端口基址 + 位掩码 + 时钟 + GPIOMode_TypeDef
+ *   cs-port/pin/clk: CS 引脚 (GPIO 输出, 由叶子驱动控制电平)
  */
-
-
-
 #include "ch32v307.dtsi"
-
+#include <ch32v30x.h>
 #include <dt-bindings/spi/spi-parameter.h>
-
-#include <dt-bindings/gpio/gpio-ctl.h>
-
-
 
 &soc {
 
 	spi_cap: spi-cap {
-		compatible = "ch32,spi-platform-cap";
+		compatible = "spi-platform-cap";
 		mini-tree,platform;
 		host-max = <1>;
 		max-xfer = <512>;
 	};
 
 	spi1: spi@0 {
-
-		compatible = "ch32,spi-master";
-
+		compatible = "spi-master";
 		reg = <0>;
-
 		#address-cells = <1>;
-
 		#size-cells = <0>;
-
-		host-id = <SPI_DEFAULT_HOST_ID>;
-
+		spi-base = <SPI1_BASE>;
+		spi-clk  = <RCC_APB2Periph_SPI1>;
 		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
 
-		mosi-port = <DTS_GPIOA>;
+		mosi-port = <GPIOA_BASE>;
+		mosi-pin  = <GPIO_Pin_7>;
+		mosi-clk  = <RCC_APB2Periph_GPIOA>;
+		mosi-af   = <GPIO_Mode_AF_PP>;
 
-		mosi-pin = <DTS_GPIO_PIN_7>;
+		miso-port = <GPIOA_BASE>;
+		miso-pin  = <GPIO_Pin_6>;
+		miso-clk  = <RCC_APB2Periph_GPIOA>;
+		miso-af   = <GPIO_Mode_AF_PP>;
 
-		miso-port = <DTS_GPIOA>;
-
-		miso-pin = <DTS_GPIO_PIN_6>;
-
-		sclk-port = <DTS_GPIOA>;
-
-		sclk-pin = <DTS_GPIO_PIN_5>;
+		sclk-port = <GPIOA_BASE>;
+		sclk-pin  = <GPIO_Pin_5>;
+		sclk-clk  = <RCC_APB2Periph_GPIOA>;
+		sclk-af   = <GPIO_Mode_AF_PP>;
 
 		status = "disabled";
-
-
-
 		w25q64_master: w25q64@0 {
-
 			compatible = "heterogeneous,w25q64-master";
-
 			reg = <0>;
-
 			spi-mode = <SPI_DEFAULT_MODE>;
-
 			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
-
 			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
-
-			cs-port = <DTS_GPIOA>;
-
-			cs-pin = <DTS_GPIO_PIN_4>;
-
+			cs-port = <GPIOA_BASE>;
+			cs-pin  = <GPIO_Pin_4>;
+			cs-clk  = <RCC_APB2Periph_GPIOA>;
 			status = "disabled";
-
 		};
-
 	};
-
 };
-

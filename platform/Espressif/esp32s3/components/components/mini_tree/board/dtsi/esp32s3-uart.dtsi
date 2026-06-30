@@ -1,20 +1,55 @@
-#include <dt-bindings\uart\uart-parameter.h>
+// SPDX-License-Identifier: Apache-2.0
+/*
+ * ESP32-S3 UART
+ *
+ * Bindings (统一 compatible, 无平台前缀):
+ *   uart         — bus/uart/uart_bus.c (host)
+ *   uart-client  — vfs/uart/uart_vfs.c (client)
+ *
+ * 硬件直投: ESP32 无 port/clk/af 概念, pin 为 SoC gpio_num_t (扁平 int),
+ *   port/clk/af 字段固定为 0, 由 VFS 原样透传给 HAL,
+ *   HAL 用 ESP-IDF driver 零翻译灌入 uart_config_t。
+ *   uart-base:    uart_port_t (UART_NUM_0/1/2)
+ *   uart-baud:    波特率 (如 115200)
+ *   data-width:   uart_word_length_t (UART_DATA_*_BITS)
+ *   parity:       uart_parity_t (UART_PARITY_*)
+ *   stop-bits:    uart_stop_bits_t (UART_STOP_BITS_*)
+ *   tx-pin/rx-pin: SoC GPIO 编号 (扁平 int)
+ */
+
+#include "esp32s3.dtsi"
+#include <driver/uart.h>
+
 &soc {
 	uart_cap: uart-cap {
-		compatible = "esp32,uart-platform-cap";
+		compatible = "uart-platform-cap";
 		mini-tree,platform;
 		host-max = <3>;
 		max-xfer = <512>;
 	};
 
-	uart1: uart@0{
-		compatible = "esp32,uart1";
+	uart1: uart@0 {
+		compatible = "uart";
 		reg = <0>;
 		#address-cells = <0>;
 		#size-cells = <0>;
-		host-id = <DTS_SPI_DEFAULT_HOST_ID>;
-		status = "disabled";
+		uart-base  = <UART_NUM_1>;
+		uart-clk   = <0>;
+		uart-baud  = <115200>;
+		data-width = <UART_DATA_8_BITS>;
+		parity     = <UART_PARITY_DISABLE>;
+		stop-bits  = <UART_STOP_BITS_1>;
 
+		tx-port = <0>;
+		tx-pin  = <43>;
+		tx-clk  = <0>;
+		tx-af   = <0>;
+
+		rx-port = <0>;
+		rx-pin  = <44>;
+		rx-clk  = <0>;
+		rx-af   = <0>;
+
+		status = "okay";
 	};
 };
-

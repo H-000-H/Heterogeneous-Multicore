@@ -1,3 +1,10 @@
+/*
+ * m_buffer — 无锁 SPSC 环形缓冲区
+ *
+ * 单生产者单消费者, acquire/release 内存序, SMP 安全 (Xtensa/Cortex-A 验证)。
+ * Cache line padding 隔离 w_ptr/r_ptr, 杜绝 false-sharing。
+ * 禁止多生产者或多消费者并发访问 (无外部锁)。
+ */
 #ifndef M_BUFFER_H
 #define M_BUFFER_H
 #ifdef __cplusplus

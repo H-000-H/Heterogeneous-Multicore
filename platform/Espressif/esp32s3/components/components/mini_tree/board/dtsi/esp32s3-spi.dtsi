@@ -1,12 +1,16 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 /*
  * ESP32-S3 SPI — SoC default parameters (Linux-style bus + functional child)
  *
- * Board-specific pins / status in board *.dts &spi1 { } / &fft_slave { }.
- * 引脚: <signal>-port + <signal>-pin (见 hal_if/gpio/hal_gpio.h, gpio-ctl.h).
- * Bindings:
- *   esp32,spi                        — vfs/spi/bus/spi_bus.c (Slave 总线)
- *   esp32,spi-master                 — vfs/spi/bus/spi_bus.c (Master 总线)
+ * Board-specific status in board *.dts &spi1 { } / &fft_slave { }.
+ * 硬件直投: ESP32 无 port/clk/af 概念, pin 为 SoC gpio_num_t (扁平 int),
+ *   port/clk/af 字段固定为 0, 由 VFS 原样透传给 HAL, ESP-IDF 内部处理时钟。
+ *   spi-base:  spi_host_device_t (SPI2_HOST=2 / SPI3_HOST=3)
+ *   mosi/miso/sclk-pin: SoC GPIO 编号
+ *   cs-pin:    SoC GPIO 编号 (client 节点)
+ * Bindings (统一 compatible, 无平台前缀):
+ *   spi-slave                        — vfs/spi/bus/spi_bus.c (Slave 总线)
+ *   spi-master                       — vfs/spi/bus/spi_bus.c (Master 总线)
  *   heterogeneous,spi-master-client  — vfs/spi/spi_vfs.c (Master 通用 client)
  *   heterogeneous,fft-spi-slave      — vfs/spi/spi_vfs.c (Slave 通用 client)
  *   winbond,w25q64                   — drivers/flash/w25q64_spi_drv.c (Flash 叶子设备)
@@ -17,18 +21,35 @@
 
 &soc {
 	spi_cap: spi-cap {
-		compatible = "esp32,spi-platform-cap";
+		compatible = "spi-platform-cap";
 		mini-tree,platform;
 		host-max = <3>;
 	};
 
 	spi1: spi@0 {
-		compatible = "esp32,spi";
+		compatible = "spi-slave";
 		reg = <0>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-		host-id = <DTS_SPI_DEFAULT_HOST_ID>;
-		dma-chan = <DTS_SPI_DEFAULT_DMA_CHAN>;
+		spi-base  = <DTS_SPI_DEFAULT_HOST_ID>;
+		spi-clk   = <0>;
+		dma-chan  = <DTS_SPI_DEFAULT_DMA_CHAN>;
+
+		mosi-port = <0>;
+		mosi-pin  = <11>;
+		mosi-clk  = <0>;
+		mosi-af   = <0>;
+
+		miso-port = <0>;
+		miso-pin  = <13>;
+		miso-clk  = <0>;
+		miso-af   = <0>;
+
+		sclk-port = <0>;
+		sclk-pin  = <12>;
+		sclk-clk  = <0>;
+		sclk-af   = <0>;
+
 		status = "disabled";
 
 		fft_slave: fft@0 {
@@ -37,18 +58,38 @@
 			spi-mode = <DTS_SPI_DEFAULT_MODE>;
 			spi-max-frequency = <DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
 			queue-size = <DTS_SPI_DEFAULT_QUEUE_SIZE>;
+			cs-port = <0>;
+			cs-pin  = <10>;
+			cs-clk  = <0>;
 			status = "disabled";
 		};
 	};
 
-	spi2: spi@1{
-		compatible = "esp32,spi-master";
+	spi2: spi@1 {
+		compatible = "spi-master";
 		reg = <1>;
-		#address-cells =<1>;
-		#size-cells    =<0>;
-		host-id	       =<DTS_SPI_FLASH_HOST_ID>;
-		dma-chan       =<DTS_SPI_DEFAULT_DMA_CHAN>;
-		status 	       ="disabled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		spi-base  = <DTS_SPI_FLASH_HOST_ID>;
+		spi-clk   = <0>;
+		dma-chan  = <DTS_SPI_DEFAULT_DMA_CHAN>;
+
+		mosi-port = <0>;
+		mosi-pin  = <14>;
+		mosi-clk  = <0>;
+		mosi-af   = <0>;
+
+		miso-port = <0>;
+		miso-pin  = <15>;
+		miso-clk  = <0>;
+		miso-af   = <0>;
+
+		sclk-port = <0>;
+		sclk-pin  = <16>;
+		sclk-clk  = <0>;
+		sclk-af   = <0>;
+
+		status = "disabled";
 
 		spi_master: spi-master@0 {
 			compatible = "heterogeneous,spi-master-client";
@@ -56,6 +97,9 @@
 			spi-mode = <DTS_SPI_DEFAULT_MODE>;
 			spi-max-frequency = <DTS_SPI_DEFAULT_MAX_FREQUENCY_HZ>;
 			queue-size = <DTS_SPI_DEFAULT_QUEUE_SIZE>;
+			cs-port = <0>;
+			cs-pin  = <20>;
+			cs-clk  = <0>;
 			status = "disabled";
 
 			w25q64_master: w25q64@0 {

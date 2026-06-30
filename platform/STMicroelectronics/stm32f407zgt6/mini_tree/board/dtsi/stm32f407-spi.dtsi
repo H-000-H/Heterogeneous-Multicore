@@ -1,101 +1,71 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-
 /*
-
  * STM32F407 SPI — 仅主机模式
-
  *
-
  * Bindings:
-
- *   stm32,spi-master / stm32,spi-host  — bus/spi/spi_bus.c
-
+ *   spi-master / spi-host              — bus/spi/spi_bus.c
  *   heterogeneous,w25q64-master        — drivers/flash/w25q64_spi_drv.c
-
  *
-
- * 时钟/GPIO：由 CubeMX MX_SPIx_Init() 在 main pre_execution 钩子完成，
-
- * mini_tree 不重复配置 RCC。
-
+ * 硬件直投: 所有属性值用厂商宏, dtc-lite 经 cpp 展开后 VFS 原样透传给 HAL,
+ * HAL 用 LL 库零翻译灌入寄存器。mini_tree 自行配置 RCC + GPIO AF, 不依赖 CubeMX。
+ *   spi-base/spi-clk: SPI 外设基址 + 时钟使能位
+ *   mosi/miso/sclk-port/pin/clk/af: GPIO 端口基址 + 位掩码 + 时钟 + AF 编号
+ *   cs-port/pin/clk: CS 引脚 (GPIO 输出, 由叶子驱动控制电平)
  */
-
-
-
 #include "stm32f407.dtsi"
-
 #include "stm32f407-dma.dtsi"
-
+#include <stm32f4xx.h>
+#include <stm32f4xx_hal_gpio.h>
+#include <stm32f4xx_hal_gpio_ex.h>
+#include <stm32f4xx_ll_bus.h>
 #include <dt-bindings/spi/spi-parameter.h>
-
-#include <dt-bindings/hw/hw-instance.h>
-
-#include <dt-bindings/gpio/gpio-ctl.h>
-
-
 
 &soc {
 
 	spi_cap: spi-cap {
-		compatible = "stm32,spi-platform-cap";
+		compatible = "spi-platform-cap";
 		mini-tree,platform;
 		host-max = <3>;			/* SPI1/2/3 */
 		max-xfer = <512>;
 	};
 
 	spi1: spi@0 {
-
-		compatible = "stm32,spi-master";
-
+		compatible = "spi-master";
 		reg = <0>;
-
 		#address-cells = <1>;
-
 		#size-cells = <0>;
-
-		host-id = <SPI_DEFAULT_HOST_ID>;
-		hw-instance = <DTS_HW_SPI1>;
+		spi-base = <SPI1_BASE>;
+		spi-clk  = <LL_APB2_GRP1_PERIPH_SPI1>;
 		dma-chan = <SPI_DEFAULT_DMA_CHAN>;
 		dma-tx = <&dma_spi1_tx>;
 		dma-rx = <&dma_spi1_rx>;
 
-		mosi-port = <DTS_GPIOA>;
+		mosi-port = <GPIOA_BASE>;
+		mosi-pin  = <GPIO_PIN_7>;
+		mosi-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
+		mosi-af   = <GPIO_AF5_SPI1>;
 
-		mosi-pin = <DTS_GPIO_PIN_7>;
+		miso-port = <GPIOA_BASE>;
+		miso-pin  = <GPIO_PIN_6>;
+		miso-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
+		miso-af   = <GPIO_AF5_SPI1>;
 
-		miso-port = <DTS_GPIOA>;
-
-		miso-pin = <DTS_GPIO_PIN_6>;
-
-		sclk-port = <DTS_GPIOA>;
-
-		sclk-pin = <DTS_GPIO_PIN_5>;
+		sclk-port = <GPIOA_BASE>;
+		sclk-pin  = <GPIO_PIN_5>;
+		sclk-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
+		sclk-af   = <GPIO_AF5_SPI1>;
 
 		status = "disabled";
-
-
-
 		w25q64_master: w25q64@0 {
-
 			compatible = "heterogeneous,w25q64-master";
-
 			reg = <0>;
-
 			spi-mode = <SPI_DEFAULT_MODE>;
-
 			spi-max-frequency = <SPI_DEFAULT_MAX_FREQUENCY_HZ>;
-
 			queue-size = <SPI_DEFAULT_QUEUE_SIZE>;
-
-			cs-port = <DTS_GPIOA>;
-
-			cs-pin = <DTS_GPIO_PIN_4>;
-
+			cs-port = <GPIOA_BASE>;
+			cs-pin  = <GPIO_PIN_4>;
+			cs-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
 			status = "disabled";
-
 		};
-
 	};
-
 };
-

@@ -1,15 +1,37 @@
 CompileFlags:
   CompilationDatabase: build
   Remove: [-f*, -m*]
-  # 让 clangd 使用与实际编译器一致的 C++ 标准和异常设置,
-  # 减少 Clang/GCC 头文件差异导致的误报
+  # clang 19 的 xtensa triple parser 损坏 (Debian 打包问题), 无法识别
+  # 'xtensa-esp32s3-unknown-elf'。改用 arm-none-eabi 作为静态分析 target
+  # (同为 32 位 bare-metal, 类型大小/对齐与 xtensa 兼容)。
+  # 实际编译仍由 xtensa-esp32s3-elf-gcc 执行, 不受影响。
+  # 系统头文件 (picolibc/gcc builtins) 手动指定, 替代 --query-driver (仅 CLI).
+  # xtensa/include/xtensa/config: GCC 相对 include 回溯行为兼容 (../hal.h)
   Add:
+    - --target=arm-none-eabi
+    - -mcpu=cortex-m4
+    - -D__XTENSA__=1
+    - -D__xtensa__=1
     - -Wno-ignored-attributes
+    - -Wno-atomic-alignment
     - -ferror-limit=0
+    - -isystem
+    - /home/ning/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/picolibc/include
+    - -isystem
+    - /home/ning/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include
+    - -isystem
+    - /home/ning/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include-fixed
+    - -isystem
+    - /home/ning/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include
+    - -I
+    - /home/ning/esp-idf/components/xtensa/include/xtensa/config
 
 Diagnostics:
   UnusedIncludes: None
   MissingIncludes: None
+  # GCC 允许 _Atomic(bool) 用于 atomic_store/load, clang 19 不允许 (误报).
+  # 实际编译用 xtensa-esp32s3-elf-gcc, 不受此限制.
+  Suppress: [atomic_op_needs_trivial_copy]
 
 Index:
   # 背景: clangd (Clang) 解析 #include_next <pthread.h> 时 preamble 构建失败,

@@ -3,21 +3,26 @@
  * STM32F407 UART
  *
  * Bindings:
- *   stm32,uart1 — bus/uart/uart_bus.c
+ *   uart               — bus/uart/uart_bus.c
+ *   uart-client        — vfs/uart/uart_vfs.c
  *
- * 时钟/GPIO：由 CubeMX MX_UART4_Init() 在 main pre_execution 钩子完成；
- * host-id 0 映射 UART4 (PA1 RX, PC10 TX)。
+ * 硬件直投: 所有属性值用厂商宏, dtc-lite 经 cpp 展开后 VFS 原样透传给 HAL,
+ * HAL 用 LL 库零翻译灌入寄存器。mini_tree 自行配置 RCC + GPIO AF, 不依赖 CubeMX。
+ *   uart-base/uart-clk: UART 外设基址 + 时钟使能位
+ *   tx/rx-port/pin/clk/af: GPIO 端口基址 + 位掩码 + 时钟 + AF 编号
+ *   data-width/parity/stop-bits: LL_USART_xxx 宏值
  */
-
 #include "stm32f407.dtsi"
 #include "stm32f407-dma.dtsi"
-#include <dt-bindings/uart/uart-parameter.h>
-#include <dt-bindings/hw/hw-instance.h>
-#include <dt-bindings/gpio/gpio-ctl.h>
+#include <stm32f4xx.h>
+#include <stm32f4xx_hal_gpio.h>
+#include <stm32f4xx_hal_gpio_ex.h>
+#include <stm32f4xx_ll_bus.h>
+#include <stm32f4xx_ll_usart.h>
 
 &soc {
 	uart_cap: uart-cap {
-		compatible = "stm32,uart-platform-cap";
+		compatible = "uart-platform-cap";
 		mini-tree,platform;
 		host-max = <6>;			/* USART1/2/3 + UART4/5/6 */
 		max-xfer = <512>;
@@ -25,19 +30,26 @@
 	};
 
 	uart1: uart@0 {
-		compatible = "stm32,uart1";
+		compatible = "uart";
 		reg = <0>;
-		host-id = <0>;
-		hw-instance = <DTS_HW_UART4>;
+		uart-base = <UART4_BASE>;
+		uart-clk  = <LL_APB1_GRP1_PERIPH_UART4>;
+		uart-baud = <115200>;
+		data-width = <LL_USART_DATAWIDTH_8B>;
+		parity     = <LL_USART_PARITY_NONE>;
+		stop-bits  = <LL_USART_STOPBITS_1>;
 		dma-tx = <&dma_uart4_tx>;
-		rx-port = <DTS_GPIOA>;
-		rx-pin = <DTS_GPIO_PIN_1>;
-		tx-port = <DTS_GPIOC>;
-		tx-pin = <DTS_GPIO_PIN_10>;
-		uart-trans-baund = <115200>;
-		data-bit = <8>;
-		stop-bit = <0>;
-		parity = <0>;
+
+		tx-port = <GPIOC_BASE>;
+		tx-pin  = <GPIO_PIN_10>;
+		tx-clk  = <LL_AHB1_GRP1_PERIPH_GPIOC>;
+		tx-af   = <GPIO_AF8_UART4>;
+
+		rx-port = <GPIOA_BASE>;
+		rx-pin  = <GPIO_PIN_1>;
+		rx-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
+		rx-af   = <GPIO_AF8_UART4>;
+
 		status = "okay";
 	};
 };

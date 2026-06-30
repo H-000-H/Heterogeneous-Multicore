@@ -1,3 +1,11 @@
+/*
+ * board_dma.c — 板级 DMA 通道注册实现 (STM32)
+ *
+ * board_dma_id_from_phandle: 解析 phandle 引用的 DMA 设备并读取其 reg ID.
+ * board_dma_register_channels: 遍历 stm32,dma-channel 节点, 读取
+ *   controller/stream/channel 属性调 hal_dma_stm32_register_from_props,
+ *   最后调 hal_dma_stm32_init 完成 DMA 控制器初始化.
+ */
 #include "board_dma.h"
 #include "device.h"
 #include "board_devtable.h"

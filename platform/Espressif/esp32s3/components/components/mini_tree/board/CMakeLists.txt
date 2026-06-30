@@ -47,7 +47,6 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/esp32s3-ws2812.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-uart.dtsi"
-        "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${BOARD_DT_BINDINGS_DIR}/uart/uart-parameter.h"

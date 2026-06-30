@@ -67,7 +67,7 @@ bus/spi/spi_bus.c
 | 属性 | 含义 |
 |------|------|
 | `host-id` | 逻辑 host 编号（默认 `SPI_DEFAULT_HOST_ID` = 1） |
-| `mosi-port` / `mosi-pin` 等 | 逻辑引脚 → `hal_pin_map_hw_gpio()` |
+| `mosi-port` / `mosi-pin` 等 | DTSI 直投厂商宏值 (GPIOA_BASE / GPIO_Pin_7 / RCC_APB2Periph_GPIOA) |
 | `dma-chan` | DMA 配置占位（-1 表示未指定） |
 | `max-transfer-buffer` | 单次传输上限（默认 4096 B） |
 
@@ -135,10 +135,9 @@ w25q64_spi_drv
 ## 7. 引脚与配置流
 
 ```
-DTS: cs-port / cs-pin, mosi-port / mosi-pin …
-  → hal_pin_probe()  → hal_pin_t { port, pin }
-  → hal_pin_map_hw_gpio()
-  → spi_hal_ch32.c  → SPI 模式与分频
+DTSI: cs-port / cs-pin, mosi-port / mosi-pin … (厂商宏值直投)
+  → device_get_prop_int()  → hal_spi_config { port, pin, clk_periph, af, ... }
+  → hal_spi_ch32.c  → SPI 模式与分频, GPIO AF 自配置
 ```
 
 逻辑端口 enum 与 `gpio-ctl.h`（`GPIOA` … `GPIOE`）同名同值。

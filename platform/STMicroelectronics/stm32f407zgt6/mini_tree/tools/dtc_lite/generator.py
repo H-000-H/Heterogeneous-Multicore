@@ -6,7 +6,7 @@ import os
 import shutil
 from typing import Dict, List, Optional, Set, Tuple
 
-from .ast import DtsNode, DtsProperty
+from .dts_ast import DtsNode, DtsProperty
 from .compiler import DTSCompiler
 from .platform import is_platform_node
 

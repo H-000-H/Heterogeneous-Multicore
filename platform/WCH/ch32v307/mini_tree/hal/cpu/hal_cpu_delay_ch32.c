@@ -1,3 +1,9 @@
+/*
+ * CPU 延时 — CH32 SysTick/RISC-V 周期计数实现
+ *
+ * us/ms 延时委托 WCH Delay_Init/Delay_Us/Delay_Ms (基于 SysTick)
+ * hal_delay_cycles 使用 rdcycle 指令读取 RISC-V 机器周期计数
+ */
 #include "hal_cpu_delay.h"
 #include "debug.h"
 

@@ -1,3 +1,9 @@
+/*
+ * W25Q64 驱动 — SPI NOR Flash 应用层接口
+ *
+ * 定义页/扇区/块容量与 JEDEC ID 校验 (EF 40 17)
+ * MTD 风格 ioctl: SEEK / SECTOR_ERASE / READ_JEDEC_ID
+ */
 #ifndef W25Q64_DRV_H
 #define W25Q64_DRV_H
 

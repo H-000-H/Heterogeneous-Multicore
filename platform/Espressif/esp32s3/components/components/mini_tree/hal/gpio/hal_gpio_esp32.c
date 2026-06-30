@@ -1,16 +1,11 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * GPIO HAL — ESP32-S3 实现
  *
- * 适配 hal_gpio.h 结构体与 API, 调用 ESP-IDF gpio driver。
- * 平台私有: pin 查找表、DTS bounds 校验、raw 读写。
- *
- * 寄存器约定:
- *   - fast_get_level 调 gpio_get_level (读实际引脚电平)
- *   - fast_set_level 调 gpio_set_level (写 GPIO_OUT_REG)
- *   - fast_toggle   读-改-写 (非原子, VFS 持锁下安全)
- *
- * ESP32 无 Port 表: 单逻辑端口 DTS_GPIOZERO=0, pin 即 SoC gpio_num_t。
+ * DTSI 直接提供 ESP-IDF 枚举值: gpio-port=0/gpio-pin/gpio-clk=0/gpio-mode/gpio-pull,
+ * HAL 原样透传给 gpio_config() + gpio_set_pull_mode(), 零翻译零查表。
+ * ESP32 适配统一头: port=0/clk_periph=0 (无基地址/时钟概念), pin 承载 SoC GPIO 编号,
+ * gpio_config() 内部处理时钟。
  */
 #include "hal_gpio.h"
 #include "VFS.h"
@@ -18,156 +13,106 @@
 #include "driver/gpio.h"
 #include "hal/gpio_types.h"
 
-/* =========================================================================
- * DTS 数字 → SoC gpio_num_t (数组下标 = DTS gpio-pin)
- * ESP32 无 Port 表: 单逻辑端口 DTS_GPIOZERO=0, pin 即 SoC 编号.
- * ========================================================================= */
-static const gpio_num_t g_pin_lut[] =
+/**
+ * @brief GPIO 硬件直投初始化: DTSI ESP-IDF 枚举值零翻译透传给 gpio_config + gpio_set_pull_mode
+ * @param obj GPIO 对象指针 (由 VFS probe 填值)
+ * @param cfg 模式配置 (mode/pull 直接承载 gpio_mode_t / gpio_pull_mode_t 枚举值)
+ * @return 成功返回 VFS_OK, obj/cfg 为空或未激活返回 VFS_ERR_INVAL, gpio_config 失败返回 VFS_ERR_IO
+ */
+int hal_gpio_init(hal_gpio_obj_t* obj, const struct hal_gpio_mode_cfg *cfg)
 {
-    [0]  = 0,  [1]  = 1,  [2]  = 2,  [3]  = 3,  [4]  = 4,
-    [5]  = 5,  [6]  = 6,  [7]  = 7,  [8]  = 8,  [9]  = 9,
-    [10] = 10, [11] = 11, [12] = 12, [13] = 13, [14] = 14,
-    [15] = 15, [16] = 16, [17] = 17, [18] = 18, [19] = 19,
-    [20] = 20, [21] = 21, [22] = 22, [23] = 23, [24] = 24,
-    [25] = 25, [26] = 26, [27] = 27, [28] = 28, [29] = 29,
-    [30] = 30, [31] = 31, [32] = 32, [33] = 33, [34] = 34,
-    [35] = 35, [36] = 36, [37] = 37, [38] = 38, [39] = 39,
-    [40] = 40, [41] = 41, [42] = 42, [43] = 43, [44] = 44,
-    [45] = 45, [46] = 46, [47] = 47, [48] = 48,
-};
-#define PIN_LUT_SIZE (sizeof(g_pin_lut) / sizeof(g_pin_lut[0]))
-
-static int hal_gpio_dts_bounds_ok(uint32_t dts_port, uint32_t dts_pin)
-{
-    (void)dts_port; /* ESP32 单端口, 不查 Port 表 */
-    return dts_pin < PIN_LUT_SIZE;
-}
-
-int hal_gpio_dts_resolve(uint32_t dts_port, uint32_t dts_pin, int *hw_gpio_out)
-{
-    if (!hw_gpio_out)
-        return VFS_ERR_INVAL;
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-    *hw_gpio_out = (int)g_pin_lut[dts_pin];
-    return VFS_OK;
-}
-
-int hal_gpio_write_raw_dts(uint32_t dts_port, uint32_t dts_pin, uint8_t level)
-{
-    gpio_num_t hw;
-
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-    hw = g_pin_lut[dts_pin];
-    gpio_set_level(hw, level ? 1 : 0);
-    return VFS_OK;
-}
-
-int hal_gpio_read_raw_dts(uint32_t dts_port, uint32_t dts_pin, uint8_t *level_out)
-{
-    gpio_num_t hw;
-
-    if (!level_out)
-        return VFS_ERR_INVAL;
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-    hw = g_pin_lut[dts_pin];
-    *level_out = (uint8_t)(gpio_get_level(hw) ? 1 : 0);
-    return VFS_OK;
-}
-
-static gpio_mode_t hal_gpio_map_mode(int mode)
-{
-    switch ((hal_gpio_mode_t)mode)
-    {
-    case HAL_GPIO_MODE_INPUT:        return GPIO_MODE_INPUT;
-    case HAL_GPIO_MODE_OUTPUT:       return GPIO_MODE_OUTPUT;
-    case HAL_GPIO_MODE_INPUT_OUTPUT: return GPIO_MODE_INPUT_OUTPUT;
-    case HAL_GPIO_MODE_OPEN_DRAIN:   return GPIO_MODE_OUTPUT_OD;
-    default:                         return GPIO_MODE_DISABLE;
-    }
-}
-
-static int hal_gpio_pin_usable(hal_pin_t pin)
-{
-    return hal_pin_is_valid(pin) &&
-           hal_gpio_dts_bounds_ok((uint32_t)HAL_PIN_PORT(pin), (uint32_t)HAL_PIN_NUM(pin));
-}
-
-int hal_gpio_set_level(hal_pin_t pin, int level)
-{
-    if (!hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-    return hal_gpio_fast_set_level(pin, level);
-}
-
-int hal_gpio_read_level(hal_pin_t pin, int *level_out)
-{
-    if (!level_out)
-        return VFS_ERR_INVAL;
-    if (!hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-    return hal_gpio_fast_get_level(pin, level_out);
-}
-
-int hal_gpio_get_level(hal_pin_t pin)
-{
-    int level = 0;
-
-    if (hal_gpio_read_level(pin, &level) != VFS_OK)
-        return 0;
-    return level;
-}
-
-int hal_gpio_toggle(hal_pin_t pin)
-{
-    if (!hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-    return hal_gpio_fast_toggle(pin);
-}
-
-int hal_gpio_init(hal_pin_t pin, const struct hal_gpio_mode_cfg *cfg)
-{
-    gpio_num_t pin_num;
+    gpio_config_t io_conf;
     esp_err_t ret;
 
-    if (!cfg || !hal_gpio_pin_usable(pin))
+    if (!obj || !cfg || !obj->is_used)
         return VFS_ERR_INVAL;
 
-    pin_num = g_pin_lut[HAL_PIN_NUM(pin)];
-    gpio_reset_pin(pin_num);
-    ret = gpio_config(&(gpio_config_t){
-        .intr_type    = GPIO_INTR_DISABLE,
-        .mode         = hal_gpio_map_mode(cfg->mode),
-        .pin_bit_mask = (1ULL << pin_num),
-        .pull_down_en = (cfg->pull == HAL_GPIO_PULL_DOWN) ? 1 : 0,
-        .pull_up_en   = (cfg->pull == HAL_GPIO_PULL_UP) ? 1 : 0,
-    });
+    gpio_reset_pin((gpio_num_t)obj->pin);
+    io_conf.intr_type    = GPIO_INTR_DISABLE;
+    io_conf.mode         = (gpio_mode_t)cfg->mode;
+    io_conf.pin_bit_mask = (1ULL << obj->pin);
+    io_conf.pull_up_en   = GPIO_PULLUP_DISABLE;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+
+    ret = gpio_config(&io_conf);
     if (ret != ESP_OK)
-        return ret;
+        return VFS_ERR_IO;
+
+    gpio_set_pull_mode((gpio_num_t)obj->pin, (gpio_pull_mode_t)cfg->pull);
     return VFS_OK;
 }
 
-int hal_gpio_deinit(hal_pin_t pin)
+/**
+ * @brief GPIO 反初始化: 调 gpio_reset_pin 复位为默认状态
+ * @param obj GPIO 对象指针
+ * @return 成功返回 VFS_OK, obj 为空或未激活返回 VFS_ERR_INVAL
+ */
+int hal_gpio_deinit(hal_gpio_obj_t* obj)
 {
-    if (!hal_gpio_pin_usable(pin))
+    if (!obj || !obj->is_used)
         return VFS_ERR_INVAL;
-    gpio_reset_pin(g_pin_lut[HAL_PIN_NUM(pin)]);
+    gpio_reset_pin((gpio_num_t)obj->pin);
     return VFS_OK;
 }
 
-int hal_pin_map_hw_gpio(hal_pin_t pin)
+/* =========================================================================
+ * Raw 原始接口: 直接 SoC GPIO 编号硬刷, 不耗费池子
+ * ========================================================================= */
+/**
+ * @brief Raw 原始接口: 直接强转 DTSI 数字为 gpio_num_t 调 gpio_set_level 硬刷输出
+ * @param dts_port_base ESP32 = SoC GPIO 编号 (STM32/WCH = GPIO 基地址)
+ * @param dts_pin_mask  ESP32 忽略 (STM32/WCH = GPIO_PIN_x)
+ * @param level         目标电平 (非零置位, 0 复位)
+ * @return 成功返回 VFS_OK
+ */
+int hal_gpio_write_raw_dts(uint32_t dts_port_base, uint32_t dts_pin_mask, uint8_t level)
 {
-    int hw;
+    COMPAT_IGNORE_RESULT(dts_pin_mask);
+    gpio_set_level((gpio_num_t)dts_port_base, level);
+    return VFS_OK;
+}
 
-    if (!hal_pin_is_valid(pin))
-        return -1;
-    if (hal_gpio_dts_resolve((uint32_t)HAL_PIN_PORT(pin), (uint32_t)HAL_PIN_NUM(pin), &hw) !=
-        VFS_OK)
-        return -1;
-    return hw;
+/* =========================================================================
+ * fast path (从头中立化版本 hal_gpio.h 移入此处, vendor 强转在本 .c 内部完成)
+ * ========================================================================= */
+/**
+ * @brief 快路径: 设置 GPIO 输出电平 (直调 ESP-IDF gpio_set_level)
+ * @param obj   GPIO 对象指针
+ * @param level 目标电平 (1=高, 0=低)
+ * @return 成功返回 VFS_OK, obj 为空返回 VFS_ERR_INVAL
+ */
+int hal_gpio_fast_set_level(hal_gpio_obj_t* obj, int level)
+{
+    if (!obj)
+        return VFS_ERR_INVAL;
+    gpio_set_level((gpio_num_t)obj->pin, level);
+    return VFS_OK;
+}
+
+/**
+ * @brief 快路径: 读取 GPIO 当前输入电平 (直调 ESP-IDF gpio_get_level)
+ * @param obj       GPIO 对象指针
+ * @param level_out 用于回传电平的指针 (1=高, 0=低)
+ * @return 成功返回 VFS_OK, obj 或 level_out 为空返回 VFS_ERR_INVAL
+ */
+int hal_gpio_fast_get_level(hal_gpio_obj_t* obj, int *level_out)
+{
+    if (!obj || !level_out)
+        return VFS_ERR_INVAL;
+    *level_out = gpio_get_level((gpio_num_t)obj->pin);
+    return VFS_OK;
+}
+
+/**
+ * @brief 快路径: 翻转 GPIO 输出电平 (读当前电平后写反值)
+ * @param obj GPIO 对象指针
+ * @return 成功返回 VFS_OK, obj 为空返回 VFS_ERR_INVAL
+ */
+int hal_gpio_fast_toggle(hal_gpio_obj_t* obj)
+{
+    if (!obj)
+        return VFS_ERR_INVAL;
+    int cur = gpio_get_level((gpio_num_t)obj->pin);
+    gpio_set_level((gpio_num_t)obj->pin, !cur);
+    return VFS_OK;
 }

@@ -6,6 +6,8 @@
  */
 #include "hal_dma.h"
 #include "hal_dma_ch32.h"
+#include "hal_spi.h"
+#include "hal_uart.h"
 #include "VFS.h"
 #include "osal.h"
 #include "compiler_compat.h"
@@ -13,9 +15,6 @@
 #include "ch32v30x_rcc.h"
 
 static int                 s_dma_engine_ready;
-
-extern void hal_spi_ch32_dma_abort(void);
-extern void hal_uart_ch32_dma_abort(void);
 
 static int ch32_dma_timed_out(uint32_t start_ms, uint32_t timeout_ms)
 {
@@ -112,6 +111,6 @@ void hal_dma_init_struct(struct hal_dma_chan* chan)
 
 void hal_dma_force_stop(void)
 {
-    hal_spi_ch32_dma_abort();
-    hal_uart_ch32_dma_abort();
+    hal_spi_dma_abort();
+    hal_uart_dma_abort(NULL, NULL);
 }

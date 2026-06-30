@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * STM32F407 TIM
+ *
+ * Bindings:
+ *   stm32,tim1 — hal/tim/hal_tim.c
+ *
+ * 模式字段直接使用 ST 厂商 LL 头里的寄存器宏值，无 HAL 层枚举抽象，
+ * 也无需在 dt-bindings 里镜像一次 DTS_TIM_* 宏: dtc-lite 会用 cpp 跑
+ * 厂商头 (-E -P -dM) 提取全部 #define, 再做链式展开与常量求值。
+ *
+ * 时钟/GPIO：由 CubeMX MX_TIMx_Init() 在 main pre_execution 钩子完成；
+ * mini_tree 不重复配置 RCC。
+ */
+
+#include "stm32f407.dtsi"
+#include <stm32f4xx.h>
+#include <stm32f4xx_ll_tim.h>
+
+&soc {
+	tim_cap: tim-cap {
+		compatible = "stm32,tim-platform-cap";
+		mini-tree,platform;
+		host-max = <14>;		/* TIM1..TIM14 */
+	};
+
+	tim1: tim@1 {
+		compatible = "stm32,tim1";
+		reg = <1>;
+		hw-instance = <TIM1_BASE>;
+		counter-mode = <LL_TIM_COUNTERMODE_UP>;
+		one-pulse-mode = <LL_TIM_ONEPULSEMODE_REPETITIVE>;
+		freq-hz = <84000000>;
+		period-us = <1000>;
+		dead-time-ns = <0>;
+		status = "disabled";
+	};
+};

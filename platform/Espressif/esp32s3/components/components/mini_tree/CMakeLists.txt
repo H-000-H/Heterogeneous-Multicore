@@ -155,7 +155,7 @@ idf_component_register(
     INCLUDE_DIRS
         "."
         "${GENERATED_BOARD_DIR}"
-        "board/dt-bindings/gpio"
+        "board/dt-bindings/hw"
         "board/include"
         "core/include"
         "bus"
@@ -237,7 +237,6 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/esp32s3-ws2812.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-spi.dtsi"
         "${BOARD_DTSI_DIR}/esp32s3-uart.dtsi"
-        "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/led/ws2812-timing.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"

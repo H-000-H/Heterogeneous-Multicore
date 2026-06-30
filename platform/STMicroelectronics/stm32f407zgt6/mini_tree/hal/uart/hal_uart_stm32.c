@@ -1,11 +1,10 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
- * UART HAL — STM32F4 实现 (vtable 模式)
+ * UART HAL — STM32F4 实现
  *
- * 适配 ESP32 hal_uart.h vtable 架构, 保留 STM32 LL_USART 寄存器操作。
- * transmit (从机半双工) 返回 VFS_ERR_NOTSUPP。
- *
- * HAL 层不分配数据缓冲区。所有 tx/rx 指针由调用者提供。
+ * 设计: 硬件直投, DTSI 厂商宏值零翻译透传给 LL 库。
+ * - hal_uart_dev 嵌入 bus 层, HAL 无池管理无 vtable
+ * - 自行配置 GPIO AF, 不依赖 CubeMX; write/read 用 LL_USART 轮询, fast path 访问 dev->uart
  */
 #include "hal_uart.h"
 #include "dma.h"
@@ -13,16 +12,15 @@
 #include "osal.h"
 #include "compiler_compat.h"
 
-#include "stm32f4xx_ll_usart.h"
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_ll_usart.h"
+#include "stm32f4xx_ll_gpio.h"
+#include "stm32f4xx_ll_bus.h"
 
 #include "dt_config_gen.h"
 
 /* ── 平台参数：来自 DTS stm32,uart-platform-cap，无 DTS 时提供回退 ── */
-#ifndef DTC_GEN_STM32_UART_HOST_MAX
-#define DTC_GEN_STM32_UART_HOST_MAX  6
-#endif
 #ifndef DTC_GEN_STM32_UART_MAX_XFER
 #define DTC_GEN_STM32_UART_MAX_XFER  512U
 #endif
@@ -30,49 +28,37 @@
 #define DTC_GEN_STM32_UART_TIMEOUT_MS  10U
 #endif
 
-#define STM32_UART_HOST_MAX        DTC_GEN_STM32_UART_HOST_MAX
 #define STM32_UART_DMA_MAX_XFER    DTC_GEN_STM32_UART_MAX_XFER
 #define STM32_UART_READ_TIMEOUT_MS DTC_GEN_STM32_UART_TIMEOUT_MS
 
-struct hal_uart_stm32_priv {
-    USART_TypeDef* usart;
-};
-
-static USART_TypeDef* stm32_usart_instance(int uart_host)
+/*============================================================================*/
+/*                              LL 库直投 helper                              */
+/*============================================================================*/
+/* 纯 LL 库调用, 非抽象层 */
+/**
+ * @brief 配置 UART 复用引脚: 时钟使能 + AF 模式 + 推挽高速 (LL 库直投)
+ * @param pin 引脚配置 (含 port/pin/clk_periph/af)
+ */
+static void hal_uart_config_af_pin(const struct hal_uart_pin_cfg* pin)
 {
-    switch (uart_host)
-    {
-    case 1: return USART1;
-    case 2: return USART2;
-    case 3: return USART3;
-    case 4: return UART4;
-    case 5: return UART5;
-    case 6: return USART6;
-    default: return NULL;
-    }
+    GPIO_TypeDef* port = (GPIO_TypeDef*)pin->port;
+    LL_AHB1_GRP1_EnableClock(pin->clk_periph);
+    LL_GPIO_SetPinMode(port, pin->pin, LL_GPIO_MODE_ALTERNATE);
+    /* LL 库 API 按 pin 位域分两组: 0-7 走 AFRL, 8-15 走 AFRH */
+    if (pin->pin < 0x100U)
+        LL_GPIO_SetAFPin_0_7(port, pin->pin, pin->af);
+    else
+        LL_GPIO_SetAFPin_8_15(port, pin->pin, pin->af);
+    LL_GPIO_SetPinOutputType(port, pin->pin, LL_GPIO_OUTPUT_PUSHPULL);
+    LL_GPIO_SetPinSpeed(port, pin->pin, LL_GPIO_SPEED_FREQ_HIGH);
 }
 
-static uint32_t stm32_uart_data_width(hal_uart_data_bits_t bits, hal_uart_parity_t parity)
-{
-    /* 9 位数据宽度当且仅当 8 数据位 + 校验 (奇/偶) */
-    int wide9 = (bits == HAL_UART_DATA_BITS_8 && parity != HAL_UART_PARITY_NONE);
-    return wide9 ? LL_USART_DATAWIDTH_9B : LL_USART_DATAWIDTH_8B;
-}
-
-static uint32_t stm32_uart_parity(hal_uart_parity_t parity)
-{
-    if (parity == HAL_UART_PARITY_EVEN) return LL_USART_PARITY_EVEN;
-    if (parity == HAL_UART_PARITY_ODD)  return LL_USART_PARITY_ODD;
-    return LL_USART_PARITY_NONE;
-}
-
-static uint32_t stm32_uart_stop_bits(hal_uart_stop_bits_t stop)
-{
-    if (stop == HAL_UART_STOP_BITS_2)   return LL_USART_STOPBITS_2;
-    if (stop == HAL_UART_STOP_BITS_1_5) return LL_USART_STOPBITS_1_5;
-    return LL_USART_STOPBITS_1;
-}
-
+/**
+ * @brief 轮询等待 UART TC (发送完成) 标志置位
+ * @param usart      UART 外设寄存器基址
+ * @param timeout_ms 超时 (ms)
+ * @return 成功返回 VFS_OK, 超时返回 VFS_ERR_TIMEOUT
+ */
 static int stm32_uart_wait_tc(USART_TypeDef* usart, uint32_t timeout_ms)
 {
     uint32_t start = HAL_GetTick();
@@ -84,147 +70,172 @@ static int stm32_uart_wait_tc(USART_TypeDef* usart, uint32_t timeout_ms)
     return VFS_OK;
 }
 
-/* ===== vtable 实现 ===== */
-static int stm32_uart_open(const struct hal_uart_config_t* cfg)
+/*============================================================================*/
+/*                              Device 管理 API                               */
+/*============================================================================*/
+/**
+ * @brief UART Device 对象初始化: 清零 + 拷贝配置 + 缓存 uart + 标记 UNINIT
+ * @param dev      Device 对象指针
+ * @param pool_idx 设备在 bus 层池中的索引
+ * @param cfg      UART 配置 (DTSI 厂商宏值)
+ */
+void hal_uart_dev_init(struct hal_uart_dev* dev, int pool_idx,
+                       const struct hal_uart_config* cfg)
 {
-    USART_TypeDef*      usart;
+    __builtin_memset(dev, 0, sizeof(*dev));
+    dev->cfg      = *cfg;
+    dev->pool_idx = pool_idx;
+    dev->status   = UART_STATE_UNINIT;
+}
+
+/**
+ * @brief 打开 UART 硬件: 使能时钟 + 配置 TX/RX 复用 + LL_USART_Init + 缓存 uart + 标记 READY
+ * @param dev Device 对象指针
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, LL_USART_Init 失败返回 VFS_ERR_IO
+ */
+int hal_uart_dev_hw_open(struct hal_uart_dev* dev)
+{
     LL_USART_InitTypeDef init = {0};
+    USART_TypeDef*       uart;
 
-    if (!cfg)
+    if (!dev || !dev->cfg.uart)
         return VFS_ERR_INVAL;
+    if (dev->hw_inited)
+        return VFS_OK;
 
-    usart = stm32_usart_instance(cfg->uart_host);
-    if (!usart)
-        return VFS_ERR_NODEV;
+    uart = (USART_TypeDef*)dev->cfg.uart;
+    LL_APB1_GRP1_EnableClock(dev->cfg.uart_clk_periph);
 
-    LL_USART_Disable(usart);
+    hal_uart_config_af_pin(&dev->cfg.tx);
+    hal_uart_config_af_pin(&dev->cfg.rx);
 
-    init.BaudRate            = cfg->baud_rate;
-    init.DataWidth           = stm32_uart_data_width(cfg->data_bits, cfg->parity);
-    init.StopBits            = stm32_uart_stop_bits(cfg->stop_bits);
-    init.Parity              = stm32_uart_parity(cfg->parity);
+    LL_USART_Disable(uart);
+
+    init.BaudRate            = dev->cfg.baud_rate;
+    init.DataWidth           = dev->cfg.data_width;
+    init.StopBits            = dev->cfg.stop_bits;
+    init.Parity              = dev->cfg.parity;
     init.TransferDirection   = LL_USART_DIRECTION_TX_RX;
     init.HardwareFlowControl = LL_USART_HWCONTROL_NONE;
     init.OverSampling        = LL_USART_OVERSAMPLING_16;
 
-    if (LL_USART_Init(usart, &init) != SUCCESS)
+    if (LL_USART_Init(uart, &init) != SUCCESS)
         return VFS_ERR_IO;
 
-    LL_USART_ConfigAsyncMode(usart);
-    LL_USART_Enable(usart);
+    LL_USART_ConfigAsyncMode(uart);
+    LL_USART_Enable(uart);
 
+    /* 缓存 fast path 字段 */
+    dev->uart      = dev->cfg.uart;
+    dev->hw_inited = true;
+    dev->status    = UART_STATE_READY;
     return VFS_OK;
 }
 
-static int stm32_uart_close(const struct hal_uart_config_t* cfg)
+/**
+ * @brief 关闭 UART 硬件: 禁用 USART + 标记 UNINIT
+ * @param dev Device 对象指针
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL
+ */
+int hal_uart_dev_hw_close(struct hal_uart_dev* dev)
 {
-    USART_TypeDef* usart;
-
-    if (!cfg)
+    if (!dev || !dev->uart)
         return VFS_ERR_INVAL;
 
-    usart = stm32_usart_instance(cfg->uart_host);
-    if (!usart)
-        return VFS_ERR_NODEV;
-
-    LL_USART_Disable(usart);
+    LL_USART_Disable((USART_TypeDef*)dev->uart);
+    dev->hw_inited = false;
+    dev->status    = UART_STATE_UNINIT;
     return VFS_OK;
 }
 
-static int stm32_uart_write(struct hal_uart_dev* pdev, const uint8_t* data, size_t len)
+/*============================================================================*/
+/*                              同步传输                                       */
+/*============================================================================*/
+/**
+ * @brief UART 同步写: 逐字节 TXE 轮询发送 + 等待 TC 完成
+ * @param dev  Device 对象指针
+ * @param data 待发送数据
+ * @param len  字节数
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, 超时返回 VFS_ERR_TIMEOUT, 外设异常返回 VFS_ERR_IO
+ */
+int hal_uart_write(struct hal_uart_dev* dev, const uint8_t* data, size_t len)
 {
     USART_TypeDef* usart;
     uint32_t       start;
     size_t         i;
 
-    if (!pdev || !data || len == 0)
+    if (!dev || !data || len == 0)
         return VFS_ERR_INVAL;
 
-    usart = stm32_usart_instance(pdev->cfg.uart_host);
+    usart = (USART_TypeDef*)dev->uart;
     if (!usart)
         return VFS_ERR_IO;
 
+    dev->status = UART_STATE_BUSY;
     start = HAL_GetTick();
     for (i = 0; i < len; i++)
     {
         while (!LL_USART_IsActiveFlag_TXE(usart))
         {
             if ((uint32_t)(HAL_GetTick() - start) >= STM32_UART_READ_TIMEOUT_MS)
+            {
+                dev->status = UART_STATE_ERROR;
                 return VFS_ERR_TIMEOUT;
+            }
         }
         LL_USART_TransmitData8(usart, data[i]);
     }
 
-    return stm32_uart_wait_tc(usart, STM32_UART_READ_TIMEOUT_MS);
+    int ret = stm32_uart_wait_tc(usart, STM32_UART_READ_TIMEOUT_MS);
+    dev->status = (ret == VFS_OK) ? UART_STATE_READY : UART_STATE_ERROR;
+    return ret;
 }
 
-static int stm32_uart_read(struct hal_uart_dev* pdev, uint8_t* data, size_t len)
+/**
+ * @brief UART 同步读: 逐字节 RXNE 轮询接收, 超时已读到部分则返回已读字节数
+ * @param dev  Device 对象指针
+ * @param data 接收缓冲区
+ * @param len  字节数
+ * @return 成功返回读到的字节数, 参数非法返回 VFS_ERR_INVAL, 一字节未读到且超时返回 VFS_ERR_TIMEOUT, 外设异常返回 VFS_ERR_IO
+ */
+int hal_uart_read(struct hal_uart_dev* dev, uint8_t* data, size_t len)
 {
     USART_TypeDef* usart;
     uint32_t       start;
     size_t         i;
 
-    if (!pdev || !data || len == 0)
+    if (!dev || !data || len == 0)
         return VFS_ERR_INVAL;
 
-    usart = stm32_usart_instance(pdev->cfg.uart_host);
+    usart = (USART_TypeDef*)dev->uart;
     if (!usart)
         return VFS_ERR_IO;
 
+    dev->status = UART_STATE_BUSY;
     start = HAL_GetTick();
     for (i = 0; i < len; i++)
     {
         while (!LL_USART_IsActiveFlag_RXNE(usart))
         {
             if ((uint32_t)(HAL_GetTick() - start) >= STM32_UART_READ_TIMEOUT_MS)
+            {
+                dev->status = UART_STATE_ERROR;
                 return (i > 0) ? (int)i : VFS_ERR_TIMEOUT;
+            }
         }
         data[i] = LL_USART_ReceiveData8(usart);
     }
 
+    dev->status = UART_STATE_READY;
     return (int)len;
 }
 
-static int stm32_uart_deinit(const struct hal_uart_config_t* cfg)
-{
-    return stm32_uart_close(cfg);
-}
-
-static const struct hal_uart_bus s_stm32_uart_bus = {
-    .open     = stm32_uart_open,
-    .close    = stm32_uart_close,
-    .read     = stm32_uart_read,
-    .write    = stm32_uart_write,
-    .transmit = NULL,  /* 从机半双工不支持, bus 层不调用 */
-    .deinit   = stm32_uart_deinit,
-    ._impl    = NULL
-};
-
-const struct hal_uart_bus* hal_uart_bus_get(void)
-{
-    return &s_stm32_uart_bus;
-}
-
-int hal_uart_xfer_begin(struct hal_uart_dev* pdev, uint32_t timeout_ms)
-{
-    (void)timeout_ms;
-    if (!pdev)
-        return VFS_ERR_INVAL;
-    pdev->status = UART_STATE_BUSY;
-    return VFS_OK;
-}
-
-int hal_uart_xfer_end(struct hal_uart_dev* pdev)
-{
-    if (!pdev)
-        return VFS_ERR_INVAL;
-    pdev->status = UART_STATE_READY;
-    return VFS_OK;
-}
-
+/**
+ * @brief 强制停止所有 STM32 UART/USART (panic/reboot 路径使用)
+ * @return 成功返回 VFS_OK
+ */
 int hal_uart_force_stop(void)
 {
-    /* 关闭所有 USART */
     LL_USART_Disable(USART1);
     LL_USART_Disable(USART2);
     LL_USART_Disable(USART3);
@@ -234,12 +245,19 @@ int hal_uart_force_stop(void)
     return VFS_OK;
 }
 
-/* ===== DMA 传输 (保留原接口, 供 bus 层选用) ===== */
+/*============================================================================*/
+/*                              DMA 传输 (保留原接口, 供 bus 层选用)           */
+/*============================================================================*/
 struct hal_uart_dma_ctx {
     struct osal_sem* sync_sem;
     uint8_t          sem_storage[OSAL_SEM_STORAGE_SIZE];
 };
 
+/**
+ * @brief UART DMA 完成 ISR 回调: 释放 ctx 同步信号量唤醒等待线程
+ * @param chan      触发的 DMA 通道 (未使用)
+ * @param user_data hal_uart_dma_ctx 指针 (用于取 sync_sem)
+ */
 static void hal_uart_dma_isr(struct bus_dma_chan* chan, void* user_data)
 {
     struct hal_uart_dma_ctx* ctx = (struct hal_uart_dma_ctx*)user_data;
@@ -248,7 +266,16 @@ static void hal_uart_dma_isr(struct bus_dma_chan* chan, void* user_data)
         COMPAT_IGNORE_RESULT(osal_sem_post_from_isr(ctx->sync_sem, NULL));
 }
 
-int hal_uart_write_dma_stm32(struct hal_uart_dev* pdev,
+/**
+ * @brief UART DMA 写: 提交 TX DMA + 等信号量 + 等 TC 完成 (保留接口, 供 bus 层选用)
+ * @param pdev       Device 对象指针
+ * @param dma_tx     TX DMA 通道
+ * @param data       待发送数据
+ * @param len        字节数
+ * @param timeout_ms 超时 (ms)
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, 超时返回 VFS_ERR_TIMEOUT, 外设异常返回 VFS_ERR_IO, 信号量创建失败返回 VFS_ERR_NOMEM
+ */
+int hal_uart_write_dma(struct hal_uart_dev* pdev,
                               struct bus_dma_chan* dma_tx,
                               const uint8_t* data, size_t len,
                               uint32_t timeout_ms)
@@ -264,7 +291,7 @@ int hal_uart_write_dma_stm32(struct hal_uart_dev* pdev,
     if (len > STM32_UART_DMA_MAX_XFER)
         return VFS_ERR_INVAL;
 
-    usart = stm32_usart_instance(pdev->cfg.uart_host);
+    usart = (USART_TypeDef*)pdev->uart;
     if (!usart)
         return VFS_ERR_IO;
 
@@ -305,14 +332,19 @@ out:
     return ret;
 }
 
-void hal_uart_abort_stm32(struct hal_uart_dev* pdev, struct bus_dma_chan* dma_tx)
+/**
+ * @brief 强行中止 UART DMA: 关 DMA 请求 + abort TX 通道 (panic 路径使用)
+ * @param pdev   Device 对象指针
+ * @param dma_tx TX DMA 通道 (可为 NULL)
+ */
+void hal_uart_dma_abort(struct hal_uart_dev* pdev, struct bus_dma_chan* dma_tx)
 {
     USART_TypeDef* usart;
 
     if (!pdev)
         return;
 
-    usart = stm32_usart_instance(pdev->cfg.uart_host);
+    usart = (USART_TypeDef*)pdev->uart;
     if (!usart)
         return;
 

@@ -1,7 +1,7 @@
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H
 
-/* ── 板级兼容配置层 ──
+/* ── 板级配置聚合层 ──
  *
  * 配置真相源:
  *   1. board/dts/, board/dtsi/, board/dt-bindings/ — 硬件实例与属性

@@ -1,5 +1,5 @@
 CompileFlags:
-  CompilationDatabase: build/Debug
+  CompilationDatabase: build
   Add:
     - --target=riscv32-unknown-elf
     - -isystem
@@ -30,7 +30,7 @@ If:
   PathMatch: .*mini_tree[/\\].*\.(c|cpp|S)$
 CompileFlags:
   # compile_commands 提供绝对 -I；fallback 时用绝对 -I（clangd 以源文件目录为 cwd）
-  CompilationDatabase: build/Debug
+  CompilationDatabase: build
   Add:
     - --target=riscv32-unknown-elf
     - -DCONFIG_OSAL_FREERTOS
@@ -61,9 +61,16 @@ CompileFlags:
     - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/vfs/gpio
     - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/vfs/spi
     - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/vfs/uart
-    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/Debug/generated/board/mini_tree
-    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/Debug/generated/kconfig/mini_tree
-    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/Debug/generated/scrubber/mini_tree
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/SRC/Peripheral/inc
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/SRC/Core
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/SRC/Debug
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/SRC/User
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/lib/freeRTOS
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/lib/freeRTOS/include
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/mini_tree/lib/freeRTOS/portable/GCC/RISC-V
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/generated/board/mini_tree
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/generated/kconfig/mini_tree
+    - -I/home/ning/project/Heterogeneous-Multicore/platform/WCH/ch32v307/build/generated/scrubber/mini_tree
     - -I/home/ning/project/Heterogeneous-Multicore/platform/Espressif/esp32s3/managed_components/marcel-cd__etlcpp/etl/include
 
 ---
@@ -121,8 +128,8 @@ CompileFlags:
     - -I.
     - -I../../core/include
     - -I../../osal/include
-    - -I../../../build/Debug/generated/board/mini_tree
-    - -I../../../build/Debug/generated/kconfig/mini_tree
+    - -I../../../build/generated/board/mini_tree
+    - -I../../../build/generated/kconfig/mini_tree
 
 ---
 If:
@@ -145,6 +152,6 @@ CompileFlags:
 If:
   PathMatch: .*[/\\]app[/\\].*\.(c|cpp|S)$
 CompileFlags:
-  CompilationDatabase: build/Debug
+  CompilationDatabase: build
   Add:
     - -I/home/ning/project/Heterogeneous-Multicore/platform/Espressif/esp32s3/managed_components/marcel-cd__etlcpp/etl/include

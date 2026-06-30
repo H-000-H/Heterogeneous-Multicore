@@ -39,6 +39,8 @@ add_custom_command(
         "${BOARD_DTS}"
         "${BOARD_DTSI_DIR}/stm32f407.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-spi.dtsi"
+        "${BOARD_DTSI_DIR}/stm32f407-uart.dtsi"
+        "${BOARD_DTSI_DIR}/stm32f407-tim.dtsi"
         "${CMAKE_CURRENT_SOURCE_DIR}/dt-bindings/spi/spi-parameter.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_bus.c"
         "${CMAKE_CURRENT_SOURCE_DIR}/../vfs/spi/spi_client.c"

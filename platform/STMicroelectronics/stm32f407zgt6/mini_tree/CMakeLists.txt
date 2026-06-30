@@ -131,10 +131,28 @@ add_custom_command(
     VERBATIM
 )
 
+# STM32Cube HAL 头搜索路径与设备选择宏: 让 dtsi 里 #include <stm32f4xx_ll_*.h>
+# 能被 cpp 解析 (dtc-lite 通用 -I / -D 驱动, 无需在 py 里写厂商发现逻辑)
+set(VENDOR_INC_DIRS
+    "${CMAKE_CURRENT_LIST_DIR}/../Core/Inc"
+    "${CMAKE_CURRENT_LIST_DIR}/../Drivers/STM32F4xx_HAL_Driver/Inc"
+    "${CMAKE_CURRENT_LIST_DIR}/../Drivers/CMSIS/Device/ST/STM32F4xx/Include"
+    "${CMAKE_CURRENT_LIST_DIR}/../Drivers/CMSIS/Include")
+set(VENDOR_DEFINES "STM32F407xx")
+
+set(DTC_LITE_ARGS "")
+foreach(d ${VENDOR_INC_DIRS})
+    list(APPEND DTC_LITE_ARGS "-I${d}")
+endforeach()
+foreach(d ${VENDOR_DEFINES})
+    list(APPEND DTC_LITE_ARGS "-D${d}")
+endforeach()
+
 add_custom_command(
     OUTPUT  ${GEN_SRCS} ${GEN_HDRS}
     COMMAND "${CMAKE_COMMAND}" -E make_directory "${GENERATED_BOARD_DIR}"
     COMMAND "${Python3_EXECUTABLE}" "${DTC_LITE}" "${BOARD_DTS}" "${GENERATED_BOARD_DIR}"
+            ${DTC_LITE_ARGS}
             "${CMAKE_CURRENT_LIST_DIR}/drivers/flash"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/spi"
             "${CMAKE_CURRENT_LIST_DIR}/vfs/gpio"
@@ -143,8 +161,8 @@ add_custom_command(
             "${CMAKE_CURRENT_LIST_DIR}/bus/uart"
     DEPENDS
         "${DTC_LITE}"
-        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/ast.py"
-        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/lexer.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/dts_ast.py"
+        "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/grammar.py"
         "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/parser.py"
         "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/compiler.py"
         "${CMAKE_CURRENT_LIST_DIR}/tools/dtc_lite/generator.py"
@@ -154,10 +172,11 @@ add_custom_command(
         "${BOARD_DTSI_DIR}/stm32f407-gpio.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-spi.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-uart.dtsi"
+        "${BOARD_DTSI_DIR}/stm32f407-tim.dtsi"
         "${BOARD_DTSI_DIR}/stm32f407-dma.dtsi"
-        "${BOARD_DT_BINDINGS_DIR}/gpio/gpio-ctl.h"
         "${BOARD_DT_BINDINGS_DIR}/spi/spi-parameter.h"
         "${BOARD_DT_BINDINGS_DIR}/uart/uart-parameter.h"
+        "${CMAKE_CURRENT_LIST_DIR}/../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_tim.h"
         "${CMAKE_CURRENT_LIST_DIR}/drivers/flash/w25q64_spi_drv.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/spi/spi_vfs.c"
         "${CMAKE_CURRENT_LIST_DIR}/vfs/uart/uart_vfs.c"
@@ -217,7 +236,7 @@ target_include_directories(mini_tree
     PUBLIC
         "${CMAKE_CURRENT_LIST_DIR}"
         "${CMAKE_CURRENT_LIST_DIR}/algorithm/buffer"
-        "${CMAKE_CURRENT_LIST_DIR}/board/dt-bindings/gpio"
+        "${CMAKE_CURRENT_LIST_DIR}/board/dt-bindings/hw"
         "${CMAKE_CURRENT_LIST_DIR}/board/include"
         "${CMAKE_CURRENT_LIST_DIR}/core/include"
         ${HAL_INCLUDE_DIRS}

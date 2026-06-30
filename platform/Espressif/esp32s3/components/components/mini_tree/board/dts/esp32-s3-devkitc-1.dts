@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 /*
  * Espressif ESP32-S3-DevKitC-1 board
  *
@@ -44,36 +44,20 @@
 
 &spi1 {
 	status = "okay";
-	mosi-port = <DTS_GPIOZERO>;
-	mosi-pin = <11>;
-	miso-port = <DTS_GPIOZERO>;
-	miso-pin = <13>;
-	sclk-port = <DTS_GPIOZERO>;
-	sclk-pin = <12>;
 	max-trans-buffer = <2048>;/* 从机的一次传输最大宽度 */
 };
 
 &spi2 {
-	status 		="disabled";
-	mosi-port 	=<DTS_GPIOZERO>;
-	mosi-pin 	=<14>;
-	miso-port	=<DTS_GPIOZERO>;
-	miso-pin	=<15>;
-	sclk-port	=<DTS_GPIOZERO>;
-	sclk-pin	=<16>;
-	max-trans-buffer=<512>;/* 一个扇区大小 */
+	status = "disabled";
+	max-trans-buffer = <512>;/* 一个扇区大小 */
 };
 
 &fft_slave {
 	status = "okay";
-	cs-port = <DTS_GPIOZERO>;
-	cs-pin = <10>;
 };
 
-&w25q64_master{
-	status ="disabled";
-	cs-port = <DTS_GPIOZERO>;
-	cs-pin =<20>;
+&w25q64_master {
+	status = "disabled";
 };
 
 &gpios_pin {
@@ -81,14 +65,5 @@
 };
 
 &uart1 {
-	status 		 = "okay";
-	rx-port		 = <DTS_UART_RX_PORT>;
-	rx-pin		 = <DTS_UART_RX_PIN>;
-	tx-port 	 = <DTS_UART_TX_PORT>;
-	tx-pin		 = <DTS_UART_TX_PIN>;
-	max-trans-buffer = <1024>;
-	uart-trans-baund = <DTS_UART_BAUD >;
-	stop-bit	 =<0>;
-	parity		 =<0>;
-	data-bit	 =<0>;
+	status = "okay";
 };

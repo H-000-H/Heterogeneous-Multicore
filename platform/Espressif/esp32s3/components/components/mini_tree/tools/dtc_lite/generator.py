@@ -6,7 +6,7 @@ import os
 import shutil
 from typing import Dict, List, Optional, Set, Tuple
 
-from .ast import DtsNode, DtsProperty
+from .dts_ast import DtsNode, DtsProperty
 from .compiler import DTSCompiler
 from .platform import is_platform_node
 
@@ -147,9 +147,6 @@ class CGenerator:
             '',
             'const device_id_t* board_cascade_get(device_id_t id, int* count);',
             'const device_id_t* board_children_get(device_id_t id, int* count);',
-            '',
-            '/* 强制链接驱动 .o, 避免静态库 weak probe 符号未拉入导致 probe 表项为 NULL */',
-            'void board_driver_force_link(void);',
             '',
             '#ifdef __cplusplus',
             '}',
@@ -477,10 +474,10 @@ class CGenerator:
                     p_fn, r_fn = self.compiler.driver_map[compat]
                     if p_fn not in probe_extern_seen:
                         probe_extern_seen.add(p_fn)
-                        probe_externs.append(f'extern int {p_fn}(struct device* dev);')
+                        probe_externs.append(f'extern int __attribute__((weak)) {p_fn}(struct device* dev);')
                     if r_fn not in remove_extern_seen:
                         remove_extern_seen.add(r_fn)
-                        remove_externs.append(f'extern int {r_fn}(struct device* dev);')
+                        remove_externs.append(f'extern int __attribute__((weak)) {r_fn}(struct device* dev);')
                     probe_array.append(f'    [DEV_ID_{snake}] = {p_fn},')
                     remove_array.append(f'    [DEV_ID_{snake}] = {r_fn},')
                 elif is_platform_node(i):
@@ -552,16 +549,6 @@ class CGenerator:
             '}',
             '',
         ]
-
-        if probe_extern_seen or remove_extern_seen:
-            lines += ['void board_driver_force_link(void) {']
-            for p_fn in sorted(probe_extern_seen):
-                lines.append(f'    (void)&{p_fn};')
-            for r_fn in sorted(remove_extern_seen):
-                lines.append(f'    (void)&{r_fn};')
-            lines += ['}', '']
-        else:
-            lines += ['void board_driver_force_link(void) {}', '']
 
         cascade: Dict[int, List[int]] = self.compiler.compute_cascade_tables()
         children: Dict[int, List[int]] = self.compiler.compute_direct_children_tables()
@@ -666,6 +653,28 @@ class CGenerator:
                 lines.append(f'#define DTC_GEN_HEAP_SIZE  32768')
         else:
             lines.append(f'#define DTC_GEN_HEAP_SIZE  32768')
+
+        # ── platform-cap 节点：外设级平台容量参数 ──
+        # IP dtsi 中的 compatible 以 "-platform-cap" 结尾，
+        # 去掉后缀后的字符串转为前缀，所有整数属性 → DTC_GEN_<前缀>_<属性> 宏。
+        # 例：compatible = "stm32,spi-platform-cap" → 前缀 "STM32_SPI"
+        for dev in devs:
+            cprop: Optional[DtsProperty] = dev.get_prop('compatible')
+            if not cprop or not cprop.strings:
+                continue
+            compat: str = cprop.strings[0]
+            if not compat.endswith('-platform-cap'):
+                continue
+            stem: str = compat[:-len('-platform-cap')]
+            prefix: str = stem.replace(',', '_').replace('-', '_').upper()
+            for prop in dev.props:
+                pname: str = prop.name
+                if pname in ('compatible', '#address-cells', '#size-cells', 'reg', 'status'):
+                    continue
+                if not prop.ints:
+                    continue
+                macro = f'DTC_GEN_{prefix}_{pname.replace("-", "_").upper()}'
+                lines.append(f'#define {macro}  {prop.ints[0]}')
 
         lines += [
             '',

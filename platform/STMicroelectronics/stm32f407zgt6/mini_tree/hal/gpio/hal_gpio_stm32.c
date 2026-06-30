@@ -1,214 +1,136 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * GPIO HAL — STM32F4 实现
  *
- * 适配 ESP32 hal_gpio.h 结构体与 API, 保留 STM32 HAL 库调用。
- * 平台私有: 端口/引脚查找表、DTS bounds 校验、raw 读写。
- *
- * 寄存器约定:
- *   - fast_get_level 读 IDR (通过 HAL_GPIO_ReadPin, 反映真实引脚电平)
- *   - fast_set_level 写 BSRR (通过 HAL_GPIO_WritePin, 原子置位/复位)
- *   - fast_toggle   写 BSRR (通过 HAL_GPIO_TogglePin, 原子操作)
+ * 设计: 硬件直投, DTSI 厂商宏值零翻译透传给 LL 库。
+ * - DTSI 直接提供厂商宏值: gpio-port = <GPIOA_BASE>, gpio-pin = <GPIO_PIN_5>,
+ *   gpio-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>,
+ *   gpio-mode = <LL_GPIO_MODE_OUTPUT>, gpio-pull = <LL_GPIO_PULL_NO>
+ * - hal_gpio_obj_t 嵌入 VFS (VFS 管生命周期), HAL 无池管理
+ * - mode/pull 直接透传给 LL 库, 无 switch 翻译, 无自定义枚举
  */
 #include "hal_gpio.h"
 #include "VFS.h"
 #include "compiler_compat.h"
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_ll_gpio.h"
+#include "stm32f4xx_ll_bus.h"
 
 /* =========================================================================
- * 物理端口查找表 (解包 v[0])
+ * fast path 实现 (从 hal_gpio.h 移出, 直接刷寄存器, 零分支零查表)
  * ========================================================================= */
-GPIO_TypeDef *const g_stm32_port_lut[HAL_GPIO_PORT_COUNT] = {
-    [0] = GPIOA,
-    [1] = GPIOB,
-    [2] = GPIOC,
-    [3] = GPIOD,
-    [4] = GPIOE,
-    [5] = GPIOF,
-    [6] = GPIOG,
-};
-_Static_assert(sizeof(g_stm32_port_lut) / sizeof(g_stm32_port_lut[0]) == HAL_GPIO_PORT_COUNT,"hal gpio: port lut size");
-
-/* =========================================================================
- * 物理引脚掩码查找表 (解包 v[1])
- * ========================================================================= */
-const uint16_t g_stm32_pin_lut[HAL_GPIO_PIN_COUNT] = {
-    [0]  = GPIO_PIN_0,  [1]  = GPIO_PIN_1,  [2]  = GPIO_PIN_2,  [3]  = GPIO_PIN_3,
-    [4]  = GPIO_PIN_4,  [5]  = GPIO_PIN_5,  [6]  = GPIO_PIN_6,  [7]  = GPIO_PIN_7,
-    [8]  = GPIO_PIN_8,  [9]  = GPIO_PIN_9,  [10] = GPIO_PIN_10, [11] = GPIO_PIN_11,
-    [12] = GPIO_PIN_12, [13] = GPIO_PIN_13, [14] = GPIO_PIN_14, [15] = GPIO_PIN_15,
-};
-_Static_assert(sizeof(g_stm32_pin_lut) / sizeof(g_stm32_pin_lut[0]) == HAL_GPIO_PIN_COUNT,"hal gpio: pin lut size");
-
-/* =========================================================================
- * 端口时钟掩码查找表
- * ========================================================================= */
-static const uint32_t g_stm32_clock_lut[HAL_GPIO_PORT_COUNT] = {
-    [0] = RCC_AHB1ENR_GPIOAEN,
-    [1] = RCC_AHB1ENR_GPIOBEN,
-    [2] = RCC_AHB1ENR_GPIOCEN,
-    [3] = RCC_AHB1ENR_GPIODEN,
-    [4] = RCC_AHB1ENR_GPIOEEN,
-    [5] = RCC_AHB1ENR_GPIOFEN,
-    [6] = RCC_AHB1ENR_GPIOGEN,
-};
-_Static_assert(sizeof(g_stm32_clock_lut) / sizeof(g_stm32_clock_lut[0]) == HAL_GPIO_PORT_COUNT,"hal gpio: clock lut size");
-
-static inline int hal_gpio_dts_bounds_ok(uint32_t dts_port, uint32_t dts_pin)
+/**
+ * @brief 快路径: 原子设置 GPIO 输出电平 (直接刷 BSRR 寄存器)
+ * @param obj   GPIO 对象指针
+ * @param level 目标电平 (1=高, 0=低)
+ * @return 成功返回 VFS_OK, obj 为空返回 VFS_ERR_INVAL
+ */
+int hal_gpio_fast_set_level(hal_gpio_obj_t* obj, int level)
 {
-    return (dts_port < HAL_GPIO_PORT_COUNT) && (dts_pin < HAL_GPIO_PIN_COUNT);
-}
-
-int hal_gpio_dts_resolve(uint32_t dts_port, uint32_t dts_pin, int *hw_gpio_out)
-{
-    if (!hw_gpio_out)
+    if (!obj)
         return VFS_ERR_INVAL;
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-#if !COMPAT_HAVE_KCONFIG || defined(CONFIG_HAL_PIN_MAP_LINEAR)
-    *hw_gpio_out = (int)((dts_port << 4) | dts_pin);
-#else
-    *hw_gpio_out = (int)dts_pin;
-#endif
+    /* level=1: (!1)<<4 = 0,  掩码不变,    BSRR 低16位 → 原子置位
+     * level=0: (!0)<<4 = 16, 掩码左移16位, BSRR 高16位 → 原子复位
+     * 无条件跳转, 编译后单条 STR 指令 */
+    GPIO_TypeDef* GPIOx = (GPIO_TypeDef*)obj->port;
+    GPIOx->BSRR = (uint32_t)obj->pin << ((!level) << 4U);
     return VFS_OK;
-}
-
-static inline int hal_gpio_pin_usable(hal_pin_t pin)
-{
-    return hal_pin_is_valid(pin) && 
-           hal_gpio_dts_bounds_ok((uint32_t)HAL_PIN_PORT(pin), (uint32_t)HAL_PIN_NUM(pin));
-}
-
-static void stm32_gpio_enable_clock(int port_idx)
-{
-    if (port_idx >= 0 && (size_t)port_idx < HAL_GPIO_PORT_COUNT && g_stm32_clock_lut[port_idx])
-        SET_BIT(RCC->AHB1ENR, g_stm32_clock_lut[port_idx]);
-}
-
-static void stm32_gpio_fill_init(GPIO_InitTypeDef *init, int mode, int pull)
-{
-    init->Pull  = GPIO_NOPULL;
-    init->Speed = GPIO_SPEED_FREQ_HIGH;
-
-    switch ((hal_gpio_mode_t)mode)
-    {
-    case HAL_GPIO_MODE_OUTPUT:
-        init->Mode = GPIO_MODE_OUTPUT_PP;
-        break;
-    case HAL_GPIO_MODE_OPEN_DRAIN:
-        init->Mode = GPIO_MODE_OUTPUT_OD;
-        break;
-    case HAL_GPIO_MODE_INPUT_OUTPUT:
-        init->Mode = GPIO_MODE_OUTPUT_PP;
-        break;
-    case HAL_GPIO_MODE_INPUT:
-    default:
-        init->Mode = GPIO_MODE_INPUT;
-        break;
-    }
-
-    if (pull == HAL_GPIO_PULL_UP)
-        init->Pull = GPIO_PULLUP;
-    else if (pull == HAL_GPIO_PULL_DOWN)
-        init->Pull = GPIO_PULLDOWN;
-}
-
-int hal_gpio_write_raw_dts(uint32_t dts_port, uint32_t dts_pin, uint8_t level)
-{
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-    HAL_GPIO_WritePin(g_stm32_port_lut[dts_port], g_stm32_pin_lut[dts_pin],level ? GPIO_PIN_SET : GPIO_PIN_RESET);
-    return VFS_OK;
-}
-
-int hal_gpio_read_raw_dts(uint32_t dts_port, uint32_t dts_pin, uint8_t *level_out)
-{
-    if (!level_out)
-        return VFS_ERR_INVAL;
-    if (!hal_gpio_dts_bounds_ok(dts_port, dts_pin))
-        return VFS_ERR_INVAL;
-
-    *level_out = (uint8_t)(HAL_GPIO_ReadPin(g_stm32_port_lut[dts_port], g_stm32_pin_lut[dts_pin]) ==GPIO_PIN_SET);
-    return VFS_OK;
-}
-
-/* =========================================================================
- * 标准业务接口
- * ========================================================================= */
-int hal_gpio_set_level(hal_pin_t pin, int level)
-{
-    if (!hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-    return hal_gpio_fast_set_level(pin, level);
-}
-
-int hal_gpio_read_level(hal_pin_t pin, int *level_out)
-{
-    if (!level_out)
-        return VFS_ERR_INVAL;
-    if (!hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-    return hal_gpio_fast_get_level(pin, level_out);
 }
 
 /**
- * @brief 获取引脚电平
- * @note  注意：若引脚非法或未初始化，此函数默认返回 0。
+ * @brief 快路径: 读取 GPIO 当前输入电平 (直接读 IDR 寄存器)
+ * @param obj       GPIO 对象指针
+ * @param level_out 用于回传电平的指针 (1=高, 0=低)
+ * @return 成功返回 VFS_OK, obj 或 level_out 为空返回 VFS_ERR_INVAL
  */
-int hal_gpio_get_level(hal_pin_t pin)
+int hal_gpio_fast_get_level(hal_gpio_obj_t* obj, int *level_out)
 {
-    int level = 0;
-
-    if (hal_gpio_read_level(pin, &level) != VFS_OK)
-        return 0;
-    return level;
-}
-
-int hal_gpio_toggle(hal_pin_t pin)
-{
-    if (!hal_gpio_pin_usable(pin))
+    if (!obj || !level_out)
         return VFS_ERR_INVAL;
-    return hal_gpio_fast_toggle(pin);
-}
-
-int hal_gpio_init(hal_pin_t pin, const struct hal_gpio_mode_cfg *cfg)
-{
-    int              port_idx = HAL_PIN_PORT(pin);
-    int              pin_idx  = HAL_PIN_NUM(pin);
-    GPIO_InitTypeDef init     = {0};
-
-    if (!cfg || !hal_gpio_pin_usable(pin))
-        return VFS_ERR_INVAL;
-
-    stm32_gpio_enable_clock(port_idx);
-    init.Pin = g_stm32_pin_lut[pin_idx];
-    stm32_gpio_fill_init(&init, cfg->mode, cfg->pull);
-    HAL_GPIO_Init(g_stm32_port_lut[port_idx], &init);
+    GPIO_TypeDef* GPIOx = (GPIO_TypeDef*)obj->port;
+    *level_out = (GPIOx->IDR & obj->pin) ? 1 : 0;
     return VFS_OK;
 }
 
-int hal_gpio_deinit(hal_pin_t pin)
+/**
+ * @brief 快路径: 翻转 GPIO 输出电平 (异或 ODR 寄存器)
+ * @param obj GPIO 对象指针
+ * @return 成功返回 VFS_OK, obj 为空返回 VFS_ERR_INVAL
+ */
+int hal_gpio_fast_toggle(hal_gpio_obj_t* obj)
 {
-    int port_idx = HAL_PIN_PORT(pin);
-    int pin_idx  = HAL_PIN_NUM(pin);
-
-    if (!hal_gpio_pin_usable(pin))
+    if (!obj)
         return VFS_ERR_INVAL;
-
-    HAL_GPIO_DeInit(g_stm32_port_lut[port_idx], g_stm32_pin_lut[pin_idx]);
+    GPIO_TypeDef* GPIOx = (GPIO_TypeDef*)obj->port;
+    GPIOx->ODR ^= obj->pin;
     return VFS_OK;
 }
 
-int hal_pin_map_hw_gpio(hal_pin_t pin)
+/* =========================================================================
+ * 纯硬件直投初始化
+ * ========================================================================= */
+/**
+ * @brief GPIO 硬件直投初始化: DTSI 厂商宏值零翻译透传给 LL 库
+ * @param obj GPIO 对象指针 (由 VFS probe 填值)
+ * @param cfg 模式配置 (mode/pull 直接承载 LL_GPIO_MODE_* / LL_GPIO_PULL_* 宏值)
+ * @return 成功返回 VFS_OK, obj/cfg 为空或未激活返回 VFS_ERR_INVAL
+ */
+int hal_gpio_init(hal_gpio_obj_t* obj, const struct hal_gpio_mode_cfg *cfg)
 {
-    int hw;
+    GPIO_TypeDef* GPIOx;
 
-    if (!hal_pin_is_valid(pin))
-        return -1;
-    if (hal_gpio_dts_resolve((uint32_t)HAL_PIN_PORT(pin), (uint32_t)HAL_PIN_NUM(pin), &hw) !=
-        VFS_OK)
-        return -1;
-    return hw;
+    if (!obj || !cfg || !obj->is_used)
+        return VFS_ERR_INVAL;
+
+    GPIOx = (GPIO_TypeDef*)obj->port;
+    LL_AHB1_GRP1_EnableClock(obj->clk_periph);
+
+    LL_GPIO_SetPinMode(GPIOx, obj->pin, cfg->mode);
+    LL_GPIO_SetPinPull(GPIOx, obj->pin, cfg->pull);
+
+    /* 输出属性默认高速推挽 (后续可根据 DTS 业务扩展) */
+    LL_GPIO_SetPinOutputType(GPIOx, obj->pin, LL_GPIO_OUTPUT_PUSHPULL);
+    LL_GPIO_SetPinSpeed(GPIOx, obj->pin, LL_GPIO_SPEED_FREQ_HIGH);
+
+    return VFS_OK;
+}
+
+/**
+ * @brief GPIO 物理级释放: 重置为模拟模式 + 无上下拉, 等效去初始化
+ * @param obj GPIO 对象指针
+ * @return 成功返回 VFS_OK, obj 为空或未激活返回 VFS_ERR_INVAL
+ */
+int hal_gpio_deinit(hal_gpio_obj_t* obj)
+{
+    GPIO_TypeDef* GPIOx;
+
+    if (!obj || !obj->is_used)
+        return VFS_ERR_INVAL;
+
+    GPIOx = (GPIO_TypeDef*)obj->port;
+    /* 物理级释放: 直接重置为模拟模式 + 无上下拉, 等效去初始化 */
+    LL_GPIO_SetPinMode(GPIOx, obj->pin, LL_GPIO_MODE_ANALOG);
+    LL_GPIO_SetPinPull(GPIOx, obj->pin, LL_GPIO_PULL_NO);
+    return VFS_OK;
+}
+
+/* =========================================================================
+ * Raw 原始接口: 直接数字强转物理硬刷, 不耗费池子
+ * ========================================================================= */
+/**
+ * @brief Raw 原始接口: 直接强转 DTSI 数字为 GPIO 基地址, 配合 LL 库硬刷输出
+ * @param dts_port_base DTSI 提供的 GPIO 端口基地址 (如 GPIOA_BASE)
+ * @param dts_pin_mask  DTSI 提供的引脚掩码 (如 GPIO_PIN_5)
+ * @param level         目标电平 (非零置位, 0 复位)
+ * @return 成功返回 VFS_OK
+ */
+int hal_gpio_write_raw_dts(uint32_t dts_port_base, uint32_t dts_pin_mask, uint8_t level)
+{
+    /* MCU 地址空间平坦, 直接强转基地址配合 LL 库硬刷 */
+    if (level)
+        LL_GPIO_SetOutputPin((GPIO_TypeDef *)dts_port_base, (uint16_t)dts_pin_mask);
+    else
+        LL_GPIO_ResetOutputPin((GPIO_TypeDef *)dts_port_base, (uint16_t)dts_pin_mask);
+
+    return VFS_OK;
 }

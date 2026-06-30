@@ -1,5 +1,5 @@
-/* STM32 DMA dt-bindings (dtc-lite 预处理用，勿加 #ifndef guard) */
-
+#ifndef __DMA_PARAMETER_H__
+#define __DMA_PARAMETER_H__
 #define DTS_DMA_CTRL_DMA1       1
 #define DTS_DMA_CTRL_DMA2       2
 
@@ -29,3 +29,4 @@
 #define HAL_DMA_BOARD_DEFAULT   (-1)
 #define HAL_DMA_DISABLED        (-2)
 #define HAL_DMA_MIN_BLOCK       32
+#endif

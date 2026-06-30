@@ -1,3 +1,9 @@
+/*
+ * WS2812 驱动 — 全彩 LED 设备驱动实现
+ *
+ * 基于 hal_pulse_engine 发送, 设备池 + io_mutex 生命周期管理
+ * 支持 GRB/RGB 色序配置、scale8 亮度缩放与 SET_COLOR/OFF ioctl
+ */
 #include "ws2812_drv.h"
 #include "device.h"
 #include "driver.h"

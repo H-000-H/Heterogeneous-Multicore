@@ -1,3 +1,9 @@
+/*
+ * 脉冲引擎 — ESP32-S3 RMT 发送实现
+ *
+ * 基于 rmt_tx 通道 + bytes/copy 双编码器, MSB 优先
+ * send 先发数据帧再追加 reset_code 复位码, 同步等待完成
+ */
 #include "hal_pulse_engine.h"
 #include "compiler_compat.h"
 #include "driver/rmt_tx.h"

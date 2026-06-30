@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 /*
  * CH32V307 GPIO — SoC default parameters
  *
@@ -6,10 +6,16 @@
  * Bindings:
  *   ch32,gpio              — GPIO 控制器 (平台节点, 无 DRIVER_REGISTER)
  *   heterogeneous,gpios    — 单引脚配置实例 → vfs/gpio/vfs-gpio.c
+ *
+ * 硬件直投: gpio-port/gpio-pin/gpio-clk 直接用 WCH 厂商标准外设头里的物理宏值
+ * (GPIOA_BASE / GPIO_Pin_0 / RCC_APB2Periph_GPIOA), dtc-lite 用 cpp 跑厂商头
+ * 提取 #define 后链式展开。VFS probe 原样透传给 HAL, 对象内 GPIOx/pin_mask/clk_periph
+ * 即厂商物理值, 零查表零计算。gpio-mode 用 GPIOMode_TypeDef 枚举值
+ * (GPIO_Mode_Out_PP / GPIO_Mode_IPU / ...), mode+pull 已编码在一起, HAL 直接透传。
  */
 
 #include "ch32v307.dtsi"
-#include <dt-bindings/gpio/gpio-ctl.h>
+#include <ch32v30x.h>
 
 &soc {
 	gpio: gpio@0 {
@@ -23,10 +29,11 @@
 	gpios_pin: gpios-pin@0 {
 		compatible = "heterogeneous,gpios";
 		reg = <0>;
-		gpio-port = <DTS_GPIOA>;
-		gpio-pin = <DTS_GPIO_PIN_0>;
-		gpio-mode = <DTS_GPIO_DEFAULT_OUTPUT>;
-		gpio-pull = <DTS_GPIO_DEFAULT_OUTPUT_PULL>;
+		gpio-port = <GPIOA_BASE>;
+		gpio-pin = <GPIO_Pin_0>;
+		gpio-clk  = <RCC_APB2Periph_GPIOA>;
+		gpio-mode = <GPIO_Mode_Out_PP>;
+                gpio-pull = <0>;
 		gpio-intr = <DTS_GPIO_DEFAULT_INTR>;
 		default-level = <DTS_GPIO_DEFAULT_LEVEL>;
 		status = "disabled";

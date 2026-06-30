@@ -1,3 +1,9 @@
+/*
+ * 脉冲引擎 HAL — WS2812 / 单总线时序外设抽象
+ *
+ * 驱动层仅调用 open/send/close, 屏蔽底层 RMT 细节
+ * 时序参数 (t0h/t0l/t1h/t1l/reset ticks) 由调用方注入
+ */
 #pragma once
 
 #include <stdint.h>

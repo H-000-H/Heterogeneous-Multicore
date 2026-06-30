@@ -12,10 +12,10 @@ python dtc-lite.py <board.dts> <output_dir> [driver_source_dirs...]
 
 | 模块 | 职责 |
 |------|------|
-| `dtc_lite/lexer.py` | PLY 词法分析 |
-| `dtc_lite/parser.py` | 递归下降语法分析（消费 lexer token 流） |
+| `dtc_lite/grammar.py` | Lark 文法 (Earley 算法) |
+| `dtc_lite/parser.py` | Transformer 把 parse tree 转 AST |
+| `dtc_lite/dts_ast.py` | DtsNode / DtsProperty 数据结构 |
 | `dtc_lite/compiler.py` | `#include` 预处理、overlay 合并、驱动扫描 |
 | `dtc_lite/generator.py` | C 代码生成 |
-| `vendor/ply/` | vendored [PLY](https://github.com/dabeaz/ply) |
 
-设备树编写规范见 `board/docs/devicetree.md`。
+依赖 `lark` 包（`pip install lark-parser`）。设备树编写规范见 `board/docs/devicetree.md`。

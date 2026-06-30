@@ -6,10 +6,17 @@
  * Bindings:
  *   stm32,gpio             — GPIO 控制器 (平台节点, 无 DRIVER_REGISTER)
  *   heterogeneous,gpios    — 单引脚配置实例 → vfs/gpio/vfs-gpio.c
+ *
+ * 硬件直投: gpio-port/gpio-pin/gpio-clk 直接用 ST 厂商 HAL 头里的物理宏值
+ * (GPIOA_BASE / GPIO_PIN_5 / LL_AHB1_GRP1_PERIPH_GPIOA), dtc-lite 用 cpp 跑厂商头
+ * 提取 #define 后链式展开。VFS probe 原样透传给 HAL, 对象内 GPIOx/pin_mask/clk_periph
+ * 即厂商物理值, 零查表零计算。gpio-mode/gpio-pull 仍用 LL 头宏值 (与 HAL_GPIO_MODE_* 枚举一致)。
  */
 
 #include "stm32f407.dtsi"
-#include <dt-bindings/gpio/gpio-ctl.h>
+#include <stm32f4xx_hal.h>
+#include <stm32f4xx_ll_gpio.h>
+#include <stm32f4xx_ll_bus.h>
 
 &soc {
 	gpio: gpio@0 {
@@ -23,10 +30,11 @@
 	gpios_pin: gpios-pin@0 {
 		compatible = "heterogeneous,gpios";
 		reg = <0>;
-		gpio-port = <DTS_GPIOA>;
-		gpio-pin = <DTS_GPIO_PIN_0>;
-		gpio-mode = <DTS_GPIO_DEFAULT_OUTPUT>;
-		gpio-pull = <DTS_GPIO_DEFAULT_OUTPUT_PULL>;
+		gpio-port = <GPIOA_BASE>;
+		gpio-pin = <GPIO_PIN_0>;
+		gpio-clk  = <LL_AHB1_GRP1_PERIPH_GPIOA>;
+		gpio-mode = <LL_GPIO_MODE_OUTPUT>;
+		gpio-pull = <LL_GPIO_PULL_NO>;
 		gpio-intr = <DTS_GPIO_DEFAULT_INTR>;
 		default-level = <DTS_GPIO_DEFAULT_LEVEL>;
 		status = "disabled";

@@ -1,9 +1,11 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * SPI HAL — CH32V307 实现 (Master only)
  *
- * 适配 ESP32 hal_spi.h 结构体与 API, 保留 CH32 寄存器操作。
- * slave / async 返回 VFS_ERR_NOTSUPP。
+ * 设计: 硬件直投, DTSI 厂商宏值零翻译透传给标准外设库。
+ * - hal_spi_bus_host 嵌入 bus 层, HAL 无 s_spi_hosts[] 池
+ * - spi_sync: CS 变更检测用 cs_port + cs_pin 直接比较 (多设备共线不打架)
+ * - slave / async 返回 VFS_ERR_NOTSUPP
  */
 #include "hal_spi.h"
 #include "hal_dma_ch32.h"
@@ -27,23 +29,63 @@
 #define HAL_SPI_MAX_XFER  DTC_GEN_CH32_SPI_MAX_XFER
 #define CH32_SPI1_DR_ADDR   ((uint32_t)&SPI1->DATAR)
 
-struct hal_spi_ch32_priv {
-    SPI_TypeDef* spi;
-};
-
-static struct hal_spi_bus_host s_spi_hosts[HAL_SPI_HOST_MAX];
+/* dummy buffer: DMA 路径下 tx/rx 为 NULL 时填充占位。
+ * - s_dummy_tx 填 0xFF: 用户只收时, DMA 仍需往 SPI->DATAR 写驱动 SCLK
+ * - s_dummy_rx 丢弃区:  用户只发时, DMA 仍需从 SPI->DATAR 读避免 OVR
+ * 32 字节对齐适配 DMA; WCH 单 host 无需 per-host 索引。 */
 static uint8_t s_dummy_tx[HAL_SPI_MAX_XFER] COMPAT_ALIGNED(32);
 static uint8_t s_dummy_rx[HAL_SPI_MAX_XFER] COMPAT_ALIGNED(32);
 
-static SPI_TypeDef* ch32_spi_instance(int host_id)
+/* 前向声明: spi_sync 按 dma-chan 分派调 hal_spi_transfer_dma_ch32,
+ * 后者内部调 ch32_spi_dma_abort (静态 helper, 定义在 DMA 段)。 */
+static void ch32_spi_dma_abort(SPI_TypeDef* spi);
+int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
+                              struct bus_dma_chan* dma_tx,
+                              struct bus_dma_chan* dma_rx,
+                              const uint8_t* tx, uint8_t* rx,
+                              size_t len, uint32_t timeout_ms);
+
+/*============================================================================*/
+/*                              标准外设库直投 helper                          */
+/*============================================================================*/
+/* WCH 的 GPIOMode_TypeDef 已把 mode+af 编码在一起 (GPIO_Mode_AF_PP), 直接透传 */
+/**
+ * @brief 配置 SPI 复用引脚: 时钟使能 + AF_PP 模式 (标准外设库直投)
+ * @param pin 引脚配置 (含 port/pin/clk_periph/mode, mode 承载 GPIOMode_TypeDef)
+ */
+static void hal_spi_config_af_pin(const struct hal_spi_pin_cfg* pin)
 {
-    switch (host_id)
-    {
-    case 0: return SPI1;
-    default: return NULL;
-    }
+    GPIO_InitTypeDef init;
+    GPIO_TypeDef*    port;
+
+    RCC_APB2PeriphClockCmd(pin->clk_periph, ENABLE);
+
+    port = (GPIO_TypeDef*)pin->port;
+    init.GPIO_Pin   = pin->pin;
+    init.GPIO_Speed = GPIO_Speed_50MHz;
+    init.GPIO_Mode  = (GPIOMode_TypeDef)pin->af;
+    GPIO_Init(port, &init);
 }
 
+/**
+ * @brief 复位 SPI 复用引脚为浮空输入 (等效去初始化)
+ * @param pin 引脚配置
+ */
+static void hal_spi_reset_af_pin(const struct hal_spi_pin_cfg* pin)
+{
+    GPIO_InitTypeDef init;
+    GPIO_TypeDef*    port = (GPIO_TypeDef*)pin->port;
+
+    init.GPIO_Pin  = pin->pin;
+    init.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(port, &init);
+}
+
+/**
+ * @brief 由目标时钟频率选最近档位的标准外设库波特率预分频值
+ * @param clock_hz 目标时钟频率 (Hz), <=0 时返回最大分频
+ * @return SPI_BaudRatePrescaler_* 宏值
+ */
 static uint16_t ch32_spi_prescaler(int clock_hz)
 {
     if (clock_hz <= 0) return SPI_BaudRatePrescaler_256;
@@ -57,12 +99,22 @@ static uint16_t ch32_spi_prescaler(int clock_hz)
     return SPI_BaudRatePrescaler_256;
 }
 
+/**
+ * @brief 清空 SPI RXNE 残留数据, 防止误读历史字节
+ * @param spi SPI 外设寄存器基址
+ */
 static void ch32_spi_clear_errors(SPI_TypeDef* spi)
 {
     while (SPI_I2S_GetFlagStatus(spi, SPI_I2S_FLAG_RXNE) != RESET)
         (void)SPI_I2S_ReceiveData(spi);
 }
 
+/**
+ * @brief 轮询等待 SPI BSY 标志清零
+ * @param spi        SPI 外设寄存器基址
+ * @param timeout_ms 超时 (ms)
+ * @return 成功返回 VFS_OK, 超时返回 VFS_ERR_TIMEOUT
+ */
 static int ch32_spi_wait_idle(SPI_TypeDef* spi, uint32_t timeout_ms)
 {
     uint32_t start = osal_time_ms();
@@ -74,86 +126,82 @@ static int ch32_spi_wait_idle(SPI_TypeDef* spi, uint32_t timeout_ms)
     return VFS_OK;
 }
 
-static struct hal_spi_ch32_priv* ch32_priv(struct hal_spi_bus_host* host)
+/*============================================================================*/
+/*                              Host 管理 API                                 */
+/*============================================================================*/
+/**
+ * @brief SPI Host 初始化: 使能 SPI 时钟 + 配置 MOSI/MISO/SCLK 引脚 + 缓存 fast path 字段
+ * @param host  Host 对象指针 (由 bus 层嵌入)
+ * @param hw_idx dummy buffer 索引 (per-host 防 DMA 踩踏)
+ * @param cfg   总线配置 (DTSI 厂商宏值)
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, spi 为空返回 VFS_ERR_NODEV
+ */
+int hal_spi_bus_host_init(struct hal_spi_bus_host* host, int hw_idx,
+                          const struct hal_spi_bus_config* cfg)
 {
-    return (struct hal_spi_ch32_priv*)host->hw_priv_storage;
-}
-
-/* ===== Host 管理 API ===== */
-int hal_spi_bus_host_init(int host_id, const struct hal_spi_bus_config* cfg)
-{
-    struct hal_spi_bus_host*     host;
-    struct hal_spi_ch32_priv*    priv;
-    SPI_TypeDef*                 spi;
-
-    if (!cfg || host_id < 0 || host_id >= HAL_SPI_HOST_MAX)
+    if (!host || !cfg || hw_idx < 0 || hw_idx >= HAL_SPI_HOST_MAX)
         return VFS_ERR_INVAL;
-    if (cfg->host_id != host_id)
-        return VFS_ERR_INVAL;
-
-    host = &s_spi_hosts[host_id];
     if (host->bus_ready)
         return VFS_OK;
-
-    spi = ch32_spi_instance(host_id);
-    if (!spi)
+    if (!cfg->spi)
         return VFS_ERR_NODEV;
 
     __builtin_memset(host, 0, sizeof(*host));
     host->cfg = *cfg;
+
     if (host->cfg.bus_role != HAL_SPI_BUS_ROLE_MASTER &&
         host->cfg.bus_role != HAL_SPI_BUS_ROLE_SLAVE)
         host->cfg.bus_role = HAL_SPI_BUS_ROLE_MASTER;
     if (host->cfg.max_transfer_sz <= 0)
         host->cfg.max_transfer_sz = (int)HAL_SPI_MAX_TRANSFER_BYTES;
     else if (host->cfg.max_transfer_sz > (int)HAL_SPI_MAX_TRANSFER_BYTES)
-        return VFS_ERR_INVAL;
+        host->cfg.max_transfer_sz = (int)HAL_SPI_MAX_TRANSFER_BYTES;
 
-    priv = ch32_priv(host);
-    priv->spi = spi;
+    RCC_APB2PeriphClockCmd(cfg->spi_clk_periph, ENABLE);
 
-    host->bus_ready = 1;
+    hal_spi_config_af_pin(&cfg->mosi);
+    hal_spi_config_af_pin(&cfg->miso);
+    hal_spi_config_af_pin(&cfg->sclk);
+
+    /* 缓存 fast path 字段 */
+    host->spi      = cfg->spi;
+    host->hw_idx   = hw_idx;
+    host->bus_ready = true;
     return VFS_OK;
 }
 
-int hal_spi_bus_host_deinit(int host_id)
+/**
+ * @brief SPI Host 反初始化: 关闭 SPI + 复位 MOSI/MISO/SCLK 为浮空输入
+ * @param host Host 对象指针
+ * @return 成功返回 VFS_OK, host 为空返回 VFS_ERR_INVAL, 未就绪直接返回 VFS_OK
+ */
+int hal_spi_bus_host_deinit(struct hal_spi_bus_host* host)
 {
-    struct hal_spi_bus_host* host;
-
-    if (host_id < 0 || host_id >= HAL_SPI_HOST_MAX)
+    if (!host)
         return VFS_ERR_INVAL;
-
-    host = &s_spi_hosts[host_id];
     if (!host->bus_ready)
         return VFS_OK;
 
-    if (host->ref_count > 0)
-        return VFS_ERR_BUSY;
+    SPI_Cmd((SPI_TypeDef*)host->spi, DISABLE);
+    /* 引脚复位为浮空输入 (同 GPIO deinit 模式) */
+    hal_spi_reset_af_pin(&host->cfg.mosi);
+    hal_spi_reset_af_pin(&host->cfg.miso);
+    hal_spi_reset_af_pin(&host->cfg.sclk);
 
-    host->bus_ready = 0;
+    host->bus_ready = false;
     return VFS_OK;
 }
 
-int hal_spi_bus_host_get(int host_id, struct hal_spi_bus_host** out)
-{
-    struct hal_spi_bus_host* host;
-
-    if (!out)
-        return VFS_ERR_INVAL;
-    *out = NULL;
-
-    if (host_id < 0 || host_id >= HAL_SPI_HOST_MAX)
-        return VFS_ERR_INVAL;
-
-    host = &s_spi_hosts[host_id];
-    if (!host->bus_ready)
-        return VFS_ERR_NODEV;
-
-    *out = host;
-    return VFS_OK;
-}
-
-/* ===== Device 管理 API ===== */
+/*============================================================================*/
+/*                              Device 管理 API                               */
+/*============================================================================*/
+/**
+ * @brief SPI Device 对象初始化: 清零 + 绑定 host + 拷贝 device 配置 (硬件尚未打开)
+ * @param dev      Device 对象指针
+ * @param pool_idx 设备在 bus 层池中的索引
+ * @param host     所属 Host 对象指针
+ * @param dev_cfg  设备配置 (mode/clock_speed/CS 等)
+ */
 void hal_spi_dev_init(struct hal_spi_dev* dev, int pool_idx,
                       struct hal_spi_bus_host* host,
                       const struct hal_spi_device_config* dev_cfg)
@@ -167,17 +215,23 @@ void hal_spi_dev_init(struct hal_spi_dev* dev, int pool_idx,
     dev->cfg      = *dev_cfg;
 }
 
+/**
+ * @brief 将 device 配置应用到 SPI 硬件: 关 SPI → 填 SPI_InitTypeDef → 重启 SPI
+ * @param host     Host 对象指针
+ * @param dev_cfg  设备配置 (mode/clock_speed_hz)
+ * @return 成功返回 VFS_OK, 参数非法或 host->spi 为空返回 VFS_ERR_IO
+ */
 static int ch32_spi_apply_dev_cfg(struct hal_spi_bus_host* host,
-                                  const struct hal_spi_device_config* dev_cfg)
+                                   const struct hal_spi_device_config* dev_cfg)
 {
-    struct hal_spi_ch32_priv* priv;
-    SPI_InitTypeDef           init = {0};
+    SPI_InitTypeDef init = {0};
+    SPI_TypeDef*    spi;
 
-    priv = ch32_priv(host);
-    if (!priv || !priv->spi)
+    if (!host || !host->spi || !dev_cfg)
         return VFS_ERR_IO;
 
-    SPI_Cmd(priv->spi, DISABLE);
+    spi = (SPI_TypeDef*)host->spi;
+    SPI_Cmd(spi, DISABLE);
     init.SPI_Direction         = SPI_Direction_2Lines_FullDuplex;
     init.SPI_Mode              = SPI_Mode_Master;
     init.SPI_DataSize          = SPI_DataSize_8b;
@@ -187,11 +241,16 @@ static int ch32_spi_apply_dev_cfg(struct hal_spi_bus_host* host,
     init.SPI_BaudRatePrescaler = ch32_spi_prescaler(dev_cfg->clock_speed_hz);
     init.SPI_FirstBit          = SPI_FirstBit_MSB;
     init.SPI_CRCPolynomial     = 7;
-    SPI_Init(priv->spi, &init);
-    SPI_Cmd(priv->spi, ENABLE);
+    SPI_Init(spi, &init);
+    SPI_Cmd(spi, ENABLE);
     return VFS_OK;
 }
 
+/**
+ * @brief 打开 SPI Device 硬件: 应用 device 配置 + 标记 hw_open + 增加 host 引用计数
+ * @param dev Device 对象指针
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, host 未就绪返回 VFS_ERR_INVAL
+ */
 int hal_spi_dev_hw_open(struct hal_spi_dev* dev)
 {
     struct hal_spi_bus_host* host;
@@ -217,6 +276,11 @@ int hal_spi_dev_hw_open(struct hal_spi_dev* dev)
     return VFS_OK;
 }
 
+/**
+ * @brief 关闭 SPI Device 硬件: 减少 host 引用计数 + 标记 hw_open=0 (不关 SPI 外设)
+ * @param dev Device 对象指针
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, 未打开直接返回 VFS_OK
+ */
 int hal_spi_dev_hw_close(struct hal_spi_dev* dev)
 {
     struct hal_spi_bus_host* host;
@@ -235,12 +299,22 @@ int hal_spi_dev_hw_close(struct hal_spi_dev* dev)
     return VFS_OK;
 }
 
-/* ===== 同步传输 (Master) ===== */
+/*============================================================================*/
+/*                              同步传输 (Master)                             */
+/*============================================================================*/
+/**
+ * @brief SPI 轮询传输: 逐字节 TXE/RXNE 标志轮询, 超时检测基于 osal_time_ms
+ * @param host        Host 对象指针
+ * @param tx          发送缓冲区 (可为 NULL, 内部填 0xFF)
+ * @param rx          接收缓冲区 (可为 NULL, 仅丢弃)
+ * @param len         传输字节数
+ * @param timeout_ms  超时 (ms, 当前实现未做超时检测)
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, 外设异常返回 VFS_ERR_IO
+ */
 static int ch32_spi_transfer_poll(struct hal_spi_bus_host* host,
                                    const uint8_t* tx, uint8_t* rx,
                                    size_t len, uint32_t timeout_ms)
 {
-    struct hal_spi_ch32_priv* priv;
     SPI_TypeDef*              spi;
     uint32_t                  start;
     size_t                    i;
@@ -249,14 +323,13 @@ static int ch32_spi_transfer_poll(struct hal_spi_bus_host* host,
     if (!host || len == 0)
         return VFS_ERR_INVAL;
 
-    priv = ch32_priv(host);
-    if (!priv || !priv->spi)
+    if (!host->spi)
         return VFS_ERR_IO;
 
     if (len > HAL_SPI_MAX_XFER)
         return VFS_ERR_INVAL;
 
-    spi   = priv->spi;
+    spi   = (SPI_TypeDef*)host->spi;
     start = osal_time_ms();
 
     for (i = 0; i < len; i++)
@@ -283,6 +356,15 @@ static int ch32_spi_transfer_poll(struct hal_spi_bus_host* host,
     return VFS_OK;
 }
 
+/**
+ * @brief SPI 同步传输 (Master): 配置变更检测后转 ch32_spi_transfer_poll 执行
+ * @param dev        Device 对象指针 (必须已 hw_open 且 host 为 master)
+ * @param tx         发送缓冲区 (可为 NULL)
+ * @param rx         接收缓冲区 (可为 NULL)
+ * @param len        传输字节数
+ * @param timeout_ms 超时 (ms)
+ * @return 成功返回 VFS_OK, 参数非法返回 VFS_ERR_INVAL, 配置应用失败或超时返回对应 VFS_ERR_*
+ */
 int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
              size_t len, uint32_t timeout_ms)
 {
@@ -295,9 +377,12 @@ int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
     if (len > (size_t)dev->ctlr->cfg.max_transfer_sz)
         return VFS_ERR_INVAL;
 
-    /* 若 device config 变化则重新应用 */
-    if (!hal_pin_equal(dev->ctlr->active_cfg.cs_pin, dev->cfg.cs_pin) ||
-        dev->ctlr->active_cfg.mode != dev->cfg.mode ||
+    /* 配置变更检测: CS 引脚 + mode + clock 任一变化则重配 SPI。
+     * 多设备共线时, 不同 device 的 cs_port/cs_pin 不同,
+     * 切换设备自动触发重配, 保证不会读到上一个设备的残留配置。 */
+    if (dev->ctlr->active_cfg.cs_port    != dev->cfg.cs_port    ||
+        dev->ctlr->active_cfg.cs_pin     != dev->cfg.cs_pin     ||
+        dev->ctlr->active_cfg.mode        != dev->cfg.mode        ||
         dev->ctlr->active_cfg.clock_speed_hz != dev->cfg.clock_speed_hz)
     {
         int ret = ch32_spi_apply_dev_cfg(dev->ctlr, &dev->cfg);
@@ -306,28 +391,34 @@ int spi_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
         dev->ctlr->active_cfg = dev->cfg;
     }
 
+    /* 按 dma-chan 分派: >=0 走 DMA, <0 走轮询。
+     * WCH DMA 函数自管 DMA1_Channel2/3, 不依赖 bus_dma_chan* 参数。 */
+    if (dev->ctlr->cfg.dma_chan >= 0)
+        return hal_spi_transfer_dma_ch32(dev->ctlr, NULL, NULL, tx, rx, len, timeout_ms);
+
     return ch32_spi_transfer_poll(dev->ctlr, tx, rx, len, timeout_ms);
 }
 
-/* ===== Slave / Async API: st/ch 不支持, bus 层直接返回 NOTSUPP ===== */
-
-/* ===== DMA 传输 (保留原接口, 供 bus 层选用) ===== */
-static void ch32_spi_dma_abort(SPI_TypeDef* spi)
-{
-    SPI_I2S_DMACmd(spi, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
-    (void)hal_dma_ch32_channel_disable(DMA1_Channel2, HAL_DMA_XFER_TIMEOUT_MS);
-    (void)hal_dma_ch32_channel_disable(DMA1_Channel3, HAL_DMA_XFER_TIMEOUT_MS);
-    (void)ch32_spi_wait_idle(spi, HAL_DMA_XFER_TIMEOUT_MS);
-    ch32_spi_clear_errors(spi);
-}
-
+/*============================================================================*/
+/*                              DMA 传输 (自管 DMA1_Channel2/3)                */
+/*============================================================================*/
+/**
+ * @brief SPI DMA 同步传输: 自管 DMA1_Channel2(RX)/Channel3(TX), 内部轮询 TC 标志
+ * @param host       Host 对象指针
+ * @param dma_tx     未使用 (WCH 自管 DMA 通道, 保留参数为接口兼容)
+ * @param dma_rx     未使用 (同上)
+ * @param tx         发送缓冲 (NULL 时用 s_dummy_tx 填 0xFF)
+ * @param rx         接收缓冲 (NULL 时用 s_dummy_rx 丢弃)
+ * @param len        字节数
+ * @param timeout_ms 未使用 (内部用 HAL_DMA_XFER_TIMEOUT_MS)
+ * @return 成功返回 VFS_OK, 失败返回 VFS_ERR_*
+ */
 int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
                                struct bus_dma_chan* dma_tx,
                                struct bus_dma_chan* dma_rx,
                                const uint8_t* tx, uint8_t* rx,
                                size_t len, uint32_t timeout_ms)
 {
-    struct hal_spi_ch32_priv* priv;
     SPI_TypeDef*              spi;
     const uint8_t*            tx_buf;
     uint8_t*                  rx_buf;
@@ -340,14 +431,13 @@ int hal_spi_transfer_dma_ch32(struct hal_spi_bus_host* host,
     if (!host || len == 0)
         return VFS_ERR_INVAL;
 
-    priv = ch32_priv(host);
-    if (!priv || !priv->spi)
+    if (!host->spi)
         return VFS_ERR_IO;
 
     if (len > HAL_SPI_MAX_XFER)
         return VFS_ERR_INVAL;
 
-    spi = priv->spi;
+    spi = (SPI_TypeDef*)host->spi;
 
     hal_dma_ch32_clocks_enable();
 
@@ -403,21 +493,97 @@ out:
     return ret;
 }
 
+/**
+ * @brief 中止 SPI DMA 传输 (转 ch32_spi_dma_abort 静态 helper)
+ * @param host Host 对象指针
+ */
 void hal_spi_abort_ch32(struct hal_spi_bus_host* host)
 {
-    struct hal_spi_ch32_priv* priv;
-
-    if (!host)
+    if (!host || !host->spi)
         return;
 
-    priv = ch32_priv(host);
-    if (!priv || !priv->spi)
-        return;
-
-    ch32_spi_dma_abort(priv->spi);
+    ch32_spi_dma_abort((SPI_TypeDef*)host->spi);
 }
 
-void hal_spi_ch32_dma_abort(void)
+/*============================================================================*/
+/*                              DMA 强制中止 (panic/reboot 路径)               */
+/*============================================================================*/
+/**
+ * @brief 强行中止 SPI DMA: 关 DMA 请求 + 禁用 DMA1 通道 2/3 + 等空闲 + 清残留
+ * @param spi SPI 外设寄存器基址
+ */
+static void ch32_spi_dma_abort(SPI_TypeDef* spi)
+{
+    SPI_I2S_DMACmd(spi, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
+    (void)hal_dma_ch32_channel_disable(DMA1_Channel2, HAL_DMA_XFER_TIMEOUT_MS);
+    (void)hal_dma_ch32_channel_disable(DMA1_Channel3, HAL_DMA_XFER_TIMEOUT_MS);
+    (void)ch32_spi_wait_idle(spi, HAL_DMA_XFER_TIMEOUT_MS);
+    ch32_spi_clear_errors(spi);
+}
+
+/**
+ * @brief 强行中止 SPI1 上的 DMA (panic/reboot 路径全局入口, hal_dma_force_stop 调用)
+ */
+void hal_spi_dma_abort(void)
 {
     ch32_spi_dma_abort(SPI1);
+}
+
+/*============================================================================*/
+/*                              异步传输 (CH32 不支持, 返回 NOTSUPP)           */
+/*============================================================================*/
+int hal_spi_transfer_async(struct hal_spi_dev* dev,
+                           const uint8_t* tx, uint8_t* rx,
+                           size_t len, hal_spi_callback_t cb,
+                           void* userdata)
+{
+    COMPAT_IGNORE_RESULT(dev);
+    COMPAT_IGNORE_RESULT(tx);
+    COMPAT_IGNORE_RESULT(rx);
+    COMPAT_IGNORE_RESULT(len);
+    COMPAT_IGNORE_RESULT(cb);
+    COMPAT_IGNORE_RESULT(userdata);
+    return VFS_ERR_NOTSUPP;
+}
+
+int hal_spi_transfer_poll(struct hal_spi_dev* dev, uint32_t timeout_ms)
+{
+    COMPAT_IGNORE_RESULT(dev);
+    COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
+}
+
+int hal_spi_get_trans_result(struct hal_spi_dev* dev, uint8_t* rx_data, size_t rx_cap,
+                             size_t* trans_len, uint32_t timeout_ms)
+{
+    COMPAT_IGNORE_RESULT(dev);
+    COMPAT_IGNORE_RESULT(rx_data);
+    COMPAT_IGNORE_RESULT(rx_cap);
+    COMPAT_IGNORE_RESULT(trans_len);
+    COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
+}
+
+/*============================================================================*/
+/*                              Slave 传输 (CH32 不支持, 返回 NOTSUPP)         */
+/*============================================================================*/
+int spi_slave_sync(struct hal_spi_dev* dev, const uint8_t* tx, uint8_t* rx,
+                   size_t len, uint32_t timeout_ms)
+{
+    COMPAT_IGNORE_RESULT(dev);
+    COMPAT_IGNORE_RESULT(tx);
+    COMPAT_IGNORE_RESULT(rx);
+    COMPAT_IGNORE_RESULT(len);
+    COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
+}
+
+int spi_slave_queue_tx(struct hal_spi_dev* dev, const uint8_t* data, size_t len,
+                       uint32_t timeout_ms)
+{
+    COMPAT_IGNORE_RESULT(dev);
+    COMPAT_IGNORE_RESULT(data);
+    COMPAT_IGNORE_RESULT(len);
+    COMPAT_IGNORE_RESULT(timeout_ms);
+    return VFS_ERR_NOTSUPP;
 }

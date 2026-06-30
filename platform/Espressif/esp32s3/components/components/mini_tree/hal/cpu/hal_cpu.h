@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+/* SPDX-License-Identifier: Apache-2.0 */
 /*
  * CPU HAL 层 — 硬件抽象接口 (ESP32-S3, Xtensa LX7 双核)
  *

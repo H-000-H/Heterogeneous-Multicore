@@ -1,3 +1,10 @@
+/*
+ * osal_freertos.c — OSAL FreeRTOS 后端实现
+ *
+ * 将 OSAL API 映射到 xSemaphore/xQueue/xTaskCreate 等 FreeRTOS 原语
+ * 静态互斥锁/信号量池 + 槽位池 (osal_pool), ISR 检测按 ARM/RISC-V 架构分支
+ * ESP32 平台额外嵌入 portMUX 适配 taskENTER_CRITICAL_ISR 路径
+ */
 #ifdef  CONFIG_OSAL_FREERTOS
 
 #define ALLOW_HEAP_ALLOC

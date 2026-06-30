@@ -1,3 +1,9 @@
+/*
+ * compiler_compat — 编译器兼容性抽象层
+ *
+ * 统一 GCC/Clang 的 __attribute__ 与内置函数差异, 功能受 Kconfig 开关控制
+ * 提供 warn_unused_result、format、container_of、likely/unlikely、RAM_EXEC 等通用宏
+ */
 #ifndef COMPILER_COMPAT_H
 #define COMPILER_COMPAT_H
 

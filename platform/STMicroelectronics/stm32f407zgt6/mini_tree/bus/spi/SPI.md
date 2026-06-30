@@ -68,7 +68,7 @@ bus/spi/spi_bus.c
 |------|------|
 | `host-id` | 逻辑 host 编号（默认 `SPI_DEFAULT_HOST_ID` = 1） |
 | `hw-instance` | 硬件 SPI 外设号（1→SPI1，见 `DTS_HW_SPI1`） |
-| `mosi-port` / `mosi-pin` 等 | 逻辑引脚 → `hal_pin_map_hw_gpio()` |
+| `mosi-port` / `mosi-pin` 等 | DTSI 直投厂商宏值 (GPIOA_BASE / GPIO_PIN_5 / RCC_AHB1_GRP1_PERIPH_GPIOA / GPIO_AF5_SPI1) |
 | `dma-tx` / `dma-rx` | 指向 `stm32f407-dma.dtsi` 中 DMA 节点 |
 | `max-transfer-buffer` | 单次传输上限（默认 4096 B） |
 
@@ -155,10 +155,9 @@ w25q64_spi_drv
 ## 7. 引脚与配置流
 
 ```
-DTS: cs-port / cs-pin, mosi-port / mosi-pin …
-  → hal_pin_probe()  → hal_pin_t { port, pin }
-  → hal_pin_map_hw_gpio()  → STM32 引脚编号（HAL 层当前用于 CS；MOSI/MISO/SCLK 由 Cube 初始化）
-  → spi_hal_stm32.c  → LL_SPI 模式与分频
+DTSI: cs-port / cs-pin, mosi-port / mosi-pin … (厂商宏值直投)
+  → device_get_prop_int()  → hal_spi_config { port, pin, clk_periph, af, ... }
+  → hal_spi_stm32.c  → LL_SPI 模式与分频, GPIO AF 自配置
 ```
 
 逻辑端口 enum 与 `gpio-ctl.h`（`GPIOA` …）同名同值。

@@ -1,3 +1,9 @@
+/*
+ * Timer HAL — 通用定时器抽象接口
+ *
+ * 支持单次/周期模式与输出比较/PWM/输入捕获/编码器通道
+ * 提供启停、回调注册、计数值读取及 force_stop 安全停机
+ */
 #ifndef HAL_TIMER_H
 #define HAL_TIMER_H
 
