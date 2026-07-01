@@ -11,6 +11,9 @@
 
 void fifo_init(struct fifo_spsc* handle, Fifo_Data_type* buf, uint16_t size)
 {
+    if (!handle || !buf || size == 0)
+        return;
+
     handle->buf = buf;
     handle->size = size;
     FIFO_STORE_REL(handle->r_ptr, 0);

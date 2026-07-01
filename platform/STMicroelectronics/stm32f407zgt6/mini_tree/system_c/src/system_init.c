@@ -34,7 +34,7 @@
 static const char* kTag = "SysInit";
 
 /* SIOF 防御标志: OS + EventBus 就绪前为 false, 禁止全局构造函数偷跑 */
-bool g_system_os_initialized = false;
+volatile bool g_system_os_initialized = false;
 
 void mini_tree_pre_os_init(void)
 {

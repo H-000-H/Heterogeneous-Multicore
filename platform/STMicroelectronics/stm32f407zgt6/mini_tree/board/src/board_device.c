@@ -33,10 +33,6 @@ _Static_assert(OSAL_MUTEX_POOL_SIZE >= DEV_ID_COUNT,
 static struct device s_devices[DEV_ID_COUNT] COMPAT_ALIGNED(4);
 static uint8_t s_device_lock_storage[DEV_ID_COUNT][OSAL_MUTEX_STORAGE_SIZE] COMPAT_ALIGNED(4);
 
-/* ── device_set_status FSM 原子锁 (IEC 61508 2.7.1) ── */
-static uint8_t s_status_lock_storage[OSAL_SPINLOCK_STORAGE_SIZE] COMPAT_ALIGNED(4);
-static struct osal_spinlock* const s_status_lock = (struct osal_spinlock*)s_status_lock_storage;
-
 static int device_status_can_transit(enum device_status from, enum device_status to)
 {
     if (from == to) return 1;
@@ -60,7 +56,7 @@ static int device_status_can_transit(enum device_status from, enum device_status
         return to == DEVICE_STATUS_RUNNING || to == DEVICE_STATUS_READY ||
                to == DEVICE_STATUS_REMOVED || to == DEVICE_STATUS_ERROR;
     case DEVICE_STATUS_ERROR:
-        return 0;
+        return to == DEVICE_STATUS_REMOVED;
     case DEVICE_STATUS_REMOVED:
         return to == DEVICE_STATUS_READY || to == DEVICE_STATUS_DISABLED;
     default:
@@ -89,6 +85,7 @@ int device_tree_init(void)
             if (osal_mutex_create_static_recursive(&lock, s_device_lock_storage[i], sizeof(s_device_lock_storage[i])) == 0)
             {
                 s_devices[i].lock = lock;
+                device_lc_bind(&s_devices[i], lock);
             }
             else
             {
@@ -96,7 +93,6 @@ int device_tree_init(void)
             }
         }
     }
-    osal_spinlock_init(s_status_lock);
 
     /* 池水位线预警 */
     if (board_dev_count() >= OSAL_MUTEX_POOL_SIZE * 9 / 10)
@@ -222,7 +218,12 @@ static int safe_parse_int32(const char* str, int* out)
         p++;
         if (*p == 'x' || *p == 'X')
         { base = 16; p++; }
-        else if (*p != '\0')
+        else if (*p == '\0')
+        {
+            *out = 0;
+            return 0;
+        }
+        else
         { base = 8; }
     }
 
@@ -372,16 +373,20 @@ enum device_criticality device_get_criticality(const struct device* dev)
 
 int device_set_status(struct device* dev, enum device_status status)
 {
+    int ret = VFS_OK;
+
     if (!dev) return VFS_ERR_INVAL;
-    osal_spinlock_lock(s_status_lock);
+    if (dev->lock && osal_mutex_lock(dev->lock, OSAL_LOCK_TIMEOUT_DEFAULT_MS) != 0)
+        return VFS_ERR_BUSY;
+
     if (!device_status_can_transit(dev->status, status))
-    {
-        osal_spinlock_unlock(s_status_lock);
-        return VFS_ERR_INVAL;
-    }
-    dev->status = status;
-    osal_spinlock_unlock(s_status_lock);
-    return VFS_OK;
+        ret = VFS_ERR_INVAL;
+    else
+        dev->status = status;
+
+    if (dev->lock)
+        (void)osal_mutex_unlock(dev->lock);
+    return ret;
 }
 
 int device_set_priv(struct device* dev, void* priv)
@@ -468,7 +473,7 @@ int device_open(struct device* dev, void* arg)
     int ret = dev->ops->open ? dev->ops->open(dev, arg) : dev->ops->init(dev);
     if (ret == VFS_OK)
     {
-        dev->status = DEVICE_STATUS_RUNNING;
+        COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_RUNNING));
     }
     COMPAT_IGNORE_RESULT(device_unlock(dev));
     return ret;
@@ -493,7 +498,7 @@ int device_close(struct device* dev)
     int ret = dev->ops->close(dev);
     if (ret == VFS_OK)
     {
-        dev->status = DEVICE_STATUS_PROBED;
+        COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_PROBED));
     }
     COMPAT_IGNORE_RESULT(device_unlock(dev));
     return ret;
@@ -566,7 +571,7 @@ int device_suspend(struct device* dev)
             return ret;
         }
     }
-    dev->status = DEVICE_STATUS_SUSPENDED;
+    COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_SUSPENDED));
     COMPAT_IGNORE_RESULT(device_unlock(dev));
     return VFS_OK;
 }
@@ -593,7 +598,7 @@ int device_resume(struct device* dev)
             return ret;
         }
     }
-    dev->status = DEVICE_STATUS_RUNNING;
+    COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_RUNNING));
     COMPAT_IGNORE_RESULT(device_unlock(dev));
     return VFS_OK;
 }
@@ -629,7 +634,7 @@ void device_ops_unregister(struct device* dev)
 
     if (device_lock(dev) != VFS_OK) return;
 
-    dev->status = DEVICE_STATUS_REMOVED;
+    COMPAT_IGNORE_RESULT(device_set_status(dev, DEVICE_STATUS_REMOVED));
 
     COMPAT_IGNORE_RESULT(device_unlock(dev));
 

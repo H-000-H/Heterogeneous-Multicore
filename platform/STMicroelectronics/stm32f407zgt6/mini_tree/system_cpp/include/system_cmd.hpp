@@ -238,7 +238,7 @@ inline bool SystemCmd::registerCmd(const char* name, bool (*handler)(const Args&
             if (raw_ctx == nullptr) return false;
         }
         Args typed_arg;
-        ::memcpy(&typed_arg, raw_arg, sizeof(Args));
+        COMPAT_MEM_COPY(&typed_arg, raw_arg, sizeof(Args));
         auto* ctx = static_cast<Ctx*>(raw_ctx);
         return handler(typed_arg, ctx);
     };
@@ -284,7 +284,7 @@ inline bool SystemCmd::registerCmd(const char* name, bool (*handler)(const Args&
         if (!raw_arg || len < sizeof(Args)) return false;
         if (raw_ctx == nullptr) return false;
         Args typed_arg;
-        ::memcpy(&typed_arg, raw_arg, sizeof(Args));
+        COMPAT_MEM_COPY(&typed_arg, raw_arg, sizeof(Args));
         const auto* ctx = static_cast<const Ctx*>(raw_ctx);
         return handler(typed_arg, ctx);
     };

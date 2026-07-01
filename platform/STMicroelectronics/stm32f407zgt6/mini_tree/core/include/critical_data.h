@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include <string.h>
+#include "compiler_compat.h"
 
 #ifdef __cplusplus
 extern "C" 
@@ -86,14 +86,14 @@ public:
     {
         m_data = val;
         uint32_t raw = 0;
-        memcpy(&raw, &val, sizeof(T));
+        COMPAT_MEM_COPY(&raw, &val, sizeof(T));
         m_inv_data = ~raw;
     }
 
     bool validate() const
     {
         uint32_t raw = 0;
-        memcpy(&raw, &m_data, sizeof(T));
+        COMPAT_MEM_COPY(&raw, &m_data, sizeof(T));
         return raw == ~m_inv_data;
     }
 

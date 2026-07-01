@@ -38,7 +38,7 @@ int production_log_init(void)
 {
     hal_storage_init();
 
-    memset(&s_state, 0, sizeof(s_state));
+    COMPAT_MEM_SET(&s_state, 0, sizeof(s_state));
     size_t len = sizeof(s_state);
     hal_storage_read_blob(PROD_LOG_STORAGE_SLOT, (uint8_t*)&s_state, &len);
 

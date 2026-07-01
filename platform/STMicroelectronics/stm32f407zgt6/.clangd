@@ -44,6 +44,8 @@ CompileFlags:
     - -DSTM32F407xx
     - -DUSE_HAL_DRIVER
     - -I.
+    - -I../../board/include
+    - -I../../core/include
 
 ---
 If:

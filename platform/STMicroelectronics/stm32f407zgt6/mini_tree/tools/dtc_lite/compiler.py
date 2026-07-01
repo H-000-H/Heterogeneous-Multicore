@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import os
 import re
 import subprocess
@@ -17,8 +19,10 @@ class DTSCompiler:
 
     def __init__(self, dts_path: str, driver_dirs: Optional[List[str]] = None,
                  extra_inc_dirs: Optional[List[str]] = None,
-                 extra_defines: Optional[List[str]] = None) -> None:
+                 extra_defines: Optional[List[str]] = None,
+                 out_dir: Optional[str] = None) -> None:
         self.dts_path: str = dts_path
+        self.out_dir: Optional[str] = out_dir
         self.board_dir: str = os.path.dirname(os.path.dirname(os.path.abspath(dts_path)))
         self.driver_dirs: List[str] = driver_dirs or []
         self.root: Optional[DtsNode] = None
@@ -31,6 +35,13 @@ class DTSCompiler:
         self.device_irq_info: List[List[Tuple[int, int, int]]] = []  # index matches device_list
         self._macros: Dict[str, str] = {}
         self._visited: Set[str] = set()
+        # 宏名排序缓存: _macros 增删时失效
+        self._macro_names: List[str] = []
+        self._macro_names_key: Optional[Tuple[int, int]] = None
+        # C 预处理器路径缓存
+        self._cpp: Optional[str] = None
+        # cpp 输出缓存目录 (按头文件 mtime / include / define / cpp 路径做 key)
+        self._cpp_cache_dir: Optional[str] = None
         # 通用 C 头支持: 用户通过命令行 -I / -D 传入任意厂商头搜索路径与预定义宏,
         # dtc-lite 见到 #include <xxx.h> 不在 dt-bindings/ 下时, 就用 cpp 跑该头
         # 提取全部 #define (含链式展开与常量求值), 不再为每个厂商写发现逻辑.
@@ -62,6 +73,29 @@ class DTSCompiler:
                 continue
         return False
 
+    def _cpp_cache_path(self, header_path: str) -> Optional[str]:
+        """返回该头文件 cpp 输出的缓存路径; 无输出目录或无法读取 mtime 时返回 None."""
+        if not self.out_dir:
+            return None
+        try:
+            mtime: float = os.path.getmtime(header_path)
+        except OSError:
+            return None
+        if self._cpp_cache_dir is None:
+            self._cpp_cache_dir = os.path.join(self.out_dir, '.dtc_cache')
+            os.makedirs(self._cpp_cache_dir, exist_ok=True)
+        key_data: Dict[str, Any] = {
+            'path': os.path.abspath(header_path),
+            'mtime': mtime,
+            'inc': sorted(os.path.abspath(d) for d in self._extra_inc_dirs),
+            'def': sorted(self._extra_defines),
+            'cpp': self._cpp or '',
+        }
+        key: str = hashlib.sha256(
+            json.dumps(key_data, sort_keys=True).encode('utf-8')
+        ).hexdigest()
+        return os.path.join(self._cpp_cache_dir, f'{key}.json')
+
     def _extract_header_macros(self, header_path: str) -> bool:
         """用系统的 C 预处理器 (优先 arm-none-eabi-gcc, 回退 gcc/cpp) 跑该头
         (及其传递依赖), 同时提取:
@@ -80,69 +114,105 @@ class DTSCompiler:
         """
         if header_path in self._cpp_headers_loaded:
             return True
-        cpp: Optional[str] = self._find_cpp()
+        if self._cpp is None:
+            self._cpp = self._find_cpp()
+        cpp: Optional[str] = self._cpp
         if cpp is None:
             return False
 
-        # --- 公共参数 ---
-        inc_args: List[str] = []
-        for d in self._extra_inc_dirs:
-            inc_args.append(f'-I{d}')
-        for define in self._extra_defines:
-            inc_args.append(f'-D{define}')
-
-        # --- 第 1 步: cpp -dM 提取 #define ---
-        cmd_dM: List[str] = [cpp, '-E', '-P', '-dM', '-x', 'c'] + inc_args + [header_path]
         define_text: str = ''
-        try:
-            proc: subprocess.CompletedProcess = subprocess.run(
-                cmd_dM, capture_output=True, text=True, timeout=30, check=False,
-            )
-            if proc.returncode == 0 or proc.stdout:
-                define_text = proc.stdout
-        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
-            print(f"[dtc-lite] warning: cpp -dM failed on "
-                  f"'{header_path}': {e}", file=sys.stderr)
-            return False
-        if proc.returncode != 0:
-            print(f"[dtc-lite] warning: cpp -dM returned {proc.returncode} on "
-                  f"'{header_path}'", file=sys.stderr)
-            if not define_text:
+        enum_text: str = ''
+        from_cache: bool = False
+        cache_path: Optional[str] = self._cpp_cache_path(header_path)
+        if cache_path and os.path.isfile(cache_path):
+            try:
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    data: Dict[str, str] = json.load(f)
+                define_text = data.get('define_text', '')
+                enum_text = data.get('enum_text', '')
+                from_cache = True
+            except Exception:
+                pass
+
+        if not from_cache:
+            # --- 公共参数 ---
+            inc_args: List[str] = []
+            for d in self._extra_inc_dirs:
+                inc_args.append(f'-I{d}')
+            for define in self._extra_defines:
+                inc_args.append(f'-D{define}')
+
+            # --- 第 1 步: cpp -dM 提取 #define ---
+            cmd_dM: List[str] = [cpp, '-E', '-P', '-dM', '-x', 'c'] + inc_args + [header_path]
+            proc: subprocess.CompletedProcess
+            try:
+                proc = subprocess.run(
+                    cmd_dM, capture_output=True, text=True, timeout=30, check=False,
+                )
+                if proc.returncode == 0 or proc.stdout:
+                    define_text = proc.stdout
+            except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+                print(f"[dtc-lite] warning: cpp -dM failed on "
+                      f"'{header_path}': {e}", file=sys.stderr)
                 return False
+            if proc.returncode != 0:
+                print(f"[dtc-lite] warning: cpp -dM returned {proc.returncode} on "
+                      f"'{header_path}'", file=sys.stderr)
+                if not define_text:
+                    return False
+
+            # --- 第 2 步: cpp -E -P 提取 enum 块 ---
+            cmd_E: List[str] = [cpp, '-E', '-P', '-x', 'c'] + inc_args + [header_path]
+            proc2: subprocess.CompletedProcess
+            try:
+                proc2 = subprocess.run(
+                    cmd_E, capture_output=True, text=True, timeout=30, check=False,
+                )
+                if proc2.returncode == 0 or proc2.stdout:
+                    enum_text = proc2.stdout
+            except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+                print(f"[dtc-lite] warning: cpp -E failed on "
+                      f"'{header_path}': {e}", file=sys.stderr)
+                # define 已提取, enum 缺失不算致命
+            if proc2.returncode != 0:
+                print(f"[dtc-lite] warning: cpp -E returned {proc2.returncode} on "
+                      f"'{header_path}' (enums may be incomplete)", file=sys.stderr)
+
+            # 写缓存 (define 成功即可缓存; enum 为空也会缓存)
+            if cache_path and proc.returncode == 0:
+                try:
+                    with open(cache_path, 'w', encoding='utf-8') as f:
+                        json.dump({'define_text': define_text, 'enum_text': enum_text}, f)
+                except Exception:
+                    pass
 
         # cpp -dM 输出形如:  #define NAME VALUE
-        for line in define_text.split('\n'):
-            line = line.rstrip('\r')
-            m: Optional[re.Match] = re.match(
-                r'#define\s+(\w+)(?:\s+(.*))?$', line)
-            if m:
-                name: str = m.group(1)
-                value: str = (m.group(2) or '').strip()
-                # 不覆盖用户在 dt-bindings 里手写的宏 (dt-bindings 优先级更高)
-                if name not in self._macros:
-                    self._macros[name] = value
+        for line in define_text.splitlines():
+            if not line.startswith('#define'):
+                continue
+            rest: str = line[7:].lstrip()
+            if not rest:
+                continue
+            # 取第一个 C 标识符作为宏名 (与旧正则 \w+ 一致); 跳过函数式宏 NAME(...)
+            i: int = 0
+            while i < len(rest) and (rest[i].isalnum() or rest[i] == '_'):
+                i += 1
+            if i == 0 or rest[i:].startswith('('):
+                continue
+            name: str = rest[:i]
+            value: str = rest[i:].strip()
+            # 不覆盖用户在 dt-bindings 里手写的宏 (dt-bindings 优先级更高)
+            if name not in self._macros:
+                self._macros[name] = value
 
-        # --- 第 2 步: cpp -E -P 提取 enum 块 ---
-        # enum 常量不会被 -dM 输出 (cpp 只输出 #define), 必须用 -E -P 拿展开后
-        # 文本再正则解析. 输出含函数体/typedef 等, 但 enum 块语法独特, 正则可
-        # 精确匹配 ``enum [Name] { ... }`` (体里无嵌套大括号).
-        cmd_E: List[str] = [cpp, '-E', '-P', '-x', 'c'] + inc_args + [header_path]
-        try:
-            proc2: subprocess.CompletedProcess = subprocess.run(
-                cmd_E, capture_output=True, text=True, timeout=30, check=False,
-            )
-            if proc2.returncode == 0 or proc2.stdout:
-                self._extract_enums_from_text(proc2.stdout)
-        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
-            print(f"[dtc-lite] warning: cpp -E failed on "
-                  f"'{header_path}': {e}", file=sys.stderr)
-            # define 已提取, enum 缺失不算致命
-        if proc2.returncode != 0:
-            print(f"[dtc-lite] warning: cpp -E returned {proc2.returncode} on "
-                  f"'{header_path}' (enums may be incomplete)", file=sys.stderr)
+        # enum 块解析
+        self._extract_enums_from_text(enum_text)
 
         self._cpp_headers_loaded.add(header_path)
         return True
+
+    # 预编译 enum 块正则
+    _ENUM_BLOCK_RE: re.Pattern = re.compile(r'\benum\b\s*(?:\w+\s*)?\{([^{}]*)\}')
 
     def _extract_enums_from_text(self, text: str) -> None:
         """从 cpp 预处理后的文本里解析所有 ``enum [Tag] { ... }`` 块, 把每个
@@ -156,11 +226,16 @@ class DTSCompiler:
         支持: typedef enum { ... } Name;  enum Tag { ... };  enum { ... };
         不支持嵌套大括号 (enum 体内不应有大括号)。
         """
+        if '\nenum' not in text and not text.startswith('enum') and ' enum ' not in text:
+            return
         # 剥注释 (cpp -E 仍保留 // 与 /* */ 在某些情况下)
-        t: str = re.sub(r'/\*.*?\*/', ' ', text, flags=re.S)
-        t = re.sub(r'//[^\n]*', ' ', t)
+        t: str = text
+        if '/*' in t:
+            t = re.sub(r'/\*.*?\*/', ' ', t, flags=re.S)
+        if '//' in t:
+            t = re.sub(r'//[^\n]*', ' ', t)
         # 匹配 enum 块: enum 关键字 + 可选 tag + { 体 } (体内无大括号)
-        for m in re.finditer(r'\benum\b\s*(?:\w+\s*)?\{([^{}]*)\}', t):
+        for m in self._ENUM_BLOCK_RE.finditer(t):
             body: str = m.group(1)
             cur_val: int = -1  # 第一项无 = 时取 0 (下面的 +1)
             for item in body.split(','):
@@ -322,28 +397,83 @@ class DTSCompiler:
         """剥离 C 整数字面量的 U/L/UL 后缀, 如 0x10U → 0x10, 8UL → 8."""
         return self._C_INT_RE.sub(lambda m: m.group(1), text)
 
+    @staticmethod
+    def _replace_word(text: str, name: str, value: str) -> str:
+        """整词替换: 仅当 name 前后不是标识符字符时才替换。"""
+        n = len(name)
+        if n == 0:
+            return text
+        out: List[str] = []
+        i = 0
+        while True:
+            j = text.find(name, i)
+            if j == -1:
+                break
+            end = j + n
+            # 任一邻接字符为标识符字符则跳过整个 name
+            if (j > 0 and (text[j - 1].isalnum() or text[j - 1] == '_')) or \
+               (end < len(text) and (text[end].isalnum() or text[end] == '_')):
+                out.append(text[i:end])
+                i = end
+                continue
+            out.append(text[i:j])
+            out.append(value)
+            i = end
+        out.append(text[i:])
+        return ''.join(out)
+
+    @staticmethod
+    def _tokenize_identifiers(text: str) -> Set[str]:
+        """提取文本中的所有 C 标识符 (去重)。"""
+        tokens: Set[str] = set()
+        i = 0
+        n = len(text)
+        while i < n:
+            ch = text[i]
+            if ch.isalpha() or ch == '_':
+                j = i + 1
+                while j < n and (text[j].isalnum() or text[j] == '_'):
+                    j += 1
+                tokens.add(text[i:j])
+                i = j
+            elif ch.isdigit():
+                j = i + 1
+                while j < n and text[j].isalnum():
+                    j += 1
+                i = j
+            else:
+                i += 1
+        return tokens
+
     def _replace_macros(self, text: str) -> str:
         """对文本做宏替换。空值宏 (如头文件保护宏 DTS_TIM_CTL_H) 不参与替换，
-        避免把恰好包含该名字的标识符误替换成空串。用函数做替换值，防止宏值中
-        的反斜杠序列 (如 ``\\1``) 被 ``re.sub`` 当作回溯引用。
+        避免把恰好包含该名字的标识符误替换成空串。
 
         链式展开: 重复替换直到不再变化或达到上限 (处理 ``A → B → C → 0x10`` 这种
         厂商头里常见的链式 #define)。
         """
         if not self._macros:
             return text
+        # 缓存按长度降序排列的宏名列表
+        key: Tuple[int, int] = (id(self._macros), len(self._macros))
+        if key != self._macro_names_key:
+            self._macro_names = sorted(self._macros, key=lambda n: -len(n))
+            self._macro_names_key = key
+
         max_iters: int = 16
         for _ in range(max_iters):
             new_text: str = text
-            for name in sorted(self._macros, key=lambda n: -len(n)):
+            tokens: Set[str] = self._tokenize_identifiers(new_text)
+            for name in self._macro_names:
                 if not name:
                     continue
                 value: str = self._macros[name]
                 if not value:
                     # 空值宏 (头文件保护) 跳过
                     continue
-                new_text = re.sub(r'\b' + re.escape(name) + r'\b',
-                                  lambda _m, v=value: v, new_text)
+                if name not in tokens:
+                    continue
+                new_text = self._replace_word(new_text, name, value)
             if new_text == text:
                 break
             text = new_text
@@ -456,14 +586,14 @@ class DTSCompiler:
         text = self._preprocess(text)
         self.root = parse_dts(text, self.dts_path)
 
-        # 🚀 突破：先建立基础映射，再延迟合并，允许无序引用和虚空创生
+        # 突破：先建立基础映射，再延迟合并，允许无序引用和虚空创生
         self._build_label_map(self.root)
         self._merge_overlays()
-        
+
         # 重新为创生的节点刷新一次全局地图
         self.label_map.clear()
         self._build_label_map(self.root)
-        
+
         self._parse_special_nodes()
         self._scan_interrupt_controllers()
         self.device_list = self.root.collect_all_devices()
@@ -555,8 +685,8 @@ class DTSCompiler:
         for ref in refs:
             label: str = ref.name[1:]  # 剥离前缀 '&'
             target: Optional[DtsNode] = self.label_map.get(label)
-            
-            # 🚀 核心看齐 Linux：如果在 dtsi 里压根没声明过这个 label (例如 soc 或 spi1)
+
+            # 核心看齐 Linux：如果在 dtsi 里压根没声明过这个 label (例如 soc 或 spi1)
             if target is None:
                 # 策略：如果名称类似 soc，直接当做根下的主 soc 控制器自创
                 if label == "soc":
@@ -571,11 +701,11 @@ class DTSCompiler:
                         soc_node = DtsNode("soc", label="soc", parent=self.root, line=ref.line)
                         if self.root:
                             self.root.children.append(soc_node)
-                    
+
                     # 自动猜测物理外设名称，为板级直接生成对应的硬件基底
                     target = DtsNode(label, label=label, parent=soc_node, line=ref.line)
                     soc_node.children.append(target)
-                
+
                 # 现场注册回全局地图，让后面其他同名引用也能找到
                 self.label_map[label] = target
 

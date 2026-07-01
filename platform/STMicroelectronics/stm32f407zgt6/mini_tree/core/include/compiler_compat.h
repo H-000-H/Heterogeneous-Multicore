@@ -9,7 +9,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-
+#include "VFS.h"
 /* 统一类型获取宏 */
 #ifdef __cplusplus
 #define TYPEOF(expr) decltype(expr)
@@ -80,7 +80,11 @@
 /* 静态内存池、DMA buffer、OSAL backing storage 统一使用 COMPAT_ALIGNED(4)，见 static-pool-alignment.mdc */
 #define COMPAT_WEAK __attribute__((weak))
 #define COMPAT_TRAP()     __builtin_trap()
-#define COMPAT_CTZ(x)     __builtin_ctz(x)
+static inline uint32_t COMPAT_CTZ(uint32_t x)
+{
+    if(x == 0) return VFS_ERR_INVAL;
+    return __builtin_ctz(x);
+}
 #define COMPAT_PACKED     __attribute__((packed))
 /*===========================================================================================================================================================*/
 
@@ -307,7 +311,7 @@ static inline void auto_free_ptr(void *ptr)
  *   _eram_code = ADDR(.ram_code) + SIZEOF(.ram_code);
  *   _ram_code_flash = LOADADDR(.ram_code);
  *
- *   startup 中: memcpy(&_sram_code, &_ram_code_flash, _eram_code - _sram_code);
+ *   startup 中: COMPAT_MEM_COPY(&_sram_code, &_ram_code_flash, _eram_code - _sram_code);
  */
 #define RAM_EXEC  __attribute__((section(".ram_code")))
 /*===========================================================================================================================================================*/
@@ -342,13 +346,48 @@ static inline uint32_t COMPAT_RAND(uint32_t a, uint32_t b, uint32_t c, uint32_t 
 }
 /*===========================================================================================================================================================*/
 
-                                                            /*字节序枚举*/
 /*===========================================================================================================================================================*/
-typedef enum 
+/*错误码定义*/
+/*===========================================================================================================================================================*/
+static inline int COMPAT_MEM_SET(void* dest, int src, size_t size) 
 {
-    MSB = 0,
-    LSB ,
-}Endianness;
-/*===========================================================================================================================================================*/
+    if (dest == NULL) return VFS_ERR_INVAL;
+    if (size > 0) 
+    {
+#if defined(__GNUC__) || defined(__clang__)
+        __builtin_memset(dest, src, size);
+#else
+        memset(dest, src, size);
+#endif
+    }
+    return VFS_OK;
+}
 
+static inline int COMPAT_MEM_COPY(void* dest, const void* src, size_t size) 
+{
+    if (dest == NULL || src == NULL) return VFS_ERR_INVAL;
+    if (size > 0) 
+    {
+#if defined(__GNUC__) || defined(__clang__)
+        __builtin_memcpy(dest, src, size);
+#else
+        memcpy(dest, src, size);
+#endif
+    }
+    return VFS_OK;
+}
+
+static inline int COMPAT_MEM_MOVE(void* dest, const void* src, size_t size) 
+{
+    if (dest == NULL || src == NULL) return VFS_ERR_INVAL;
+    if (size > 0) 
+    {
+#if defined(__GNUC__) || defined(__clang__)
+        __builtin_memmove(dest, src, size);
+#else
+        memmove(dest, src, size);
+#endif
+    }
+    return VFS_OK;
+}
 #endif /* COMPILER_COMPAT_H */

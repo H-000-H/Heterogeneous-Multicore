@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
-#define VFS_GPIO_IMPL
+#define VFS_GPIO_IMPL  /* 激活豁免权限，允许本文件调用被毒死的 HAL 慢路径 API */
 #include "vfs-gpio.h"
 #include "VFS.h"
 #include "board_config.h"
@@ -17,16 +17,13 @@
 #define VFS_GPIO_PIN_COUNT DTC_GEN_COUNT_HETEROGENEOUS_GPIOS
 #define kTAG               "vfs-gpio"
 
-/* VFS priv: hal_gpio_obj_t 嵌入 (非指针), 生命周期由 VFS osal_pool 管理。
- * HAL 层无池管理, 无 alloc/free。 */
 struct vfs_gpio_priv
 {
-    struct file_operations ops;
-    struct osal_mutex*     io_mutex;
-    hal_gpio_obj_t         obj;        /* probe 时直接填硬件直投值 */
-    struct hal_gpio_mode_cfg mode_cfg;
-    int                    default_level;
-    int                    pool_idx;
+    struct file_operations              ops;
+    struct osal_mutex*                  io_mutex;
+    hal_gpio_dev_t                      obj;
+    int                                 default_level;
+    int                                 pool_idx;
 };
 
 static struct vfs_gpio_priv s_gpio_priv_pool[VFS_GPIO_PIN_COUNT] COMPAT_ALIGNED(4);
@@ -40,8 +37,7 @@ static uint8_t s_gpio_mutex_storage[VFS_GPIO_PIN_COUNT][OSAL_MUTEX_STORAGE_SIZE]
 pre_execution(160)
 static void gpio_priv_pool_boot_init(void)
 {
-    COMPAT_IGNORE_RESULT(osal_pool_init(&s_gpio_priv_pool_ctrl, s_gpio_priv_used,
-                                        VFS_GPIO_PIN_COUNT));
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_gpio_priv_pool_ctrl, s_gpio_priv_used,VFS_GPIO_PIN_COUNT));
 }
 
 /**
@@ -73,7 +69,7 @@ static int vfs_gpio_open(struct device* pdev, void* arg)
     ret = VFS_OK;
     if (first == 1)
     {
-        ret = hal_gpio_init(&priv->obj, &priv->mode_cfg);
+        ret = hal_gpio_init(&priv->obj);
         if (ret != VFS_OK)
             dev_lc_open_abort(lc);
         else if (priv->default_level != 0)
@@ -104,14 +100,14 @@ static int vfs_gpio_close(struct device* pdev)
     if (IS_ERR(lc))
         return PTR_ERR(lc);
 
-    last = dev_lc_close_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS);
+    last = dev_lc_open_begin(lc, OSAL_LOCK_TIMEOUT_DEFAULT_MS); /* 修正原子闭环状态机追踪 */
     if (last < 0)
         return last;
 
-    if (last)
+    if (last == 1)
         COMPAT_IGNORE_RESULT(hal_gpio_deinit(&priv->obj));
 
-    dev_lc_close_end(lc);
+    dev_lc_open_abort(lc); /* 释放 lc 引用状态 */
     return VFS_OK;
 }
 
@@ -161,10 +157,10 @@ static int vfs_gpio_ioctl(struct device* pdev, int cmd, void* arg, size_t arg_le
         if (!vfs_arg || arg_len != sizeof(*vfs_arg))
             ret = VFS_ERR_INVAL;
         else
-        {
-            vfs_arg->obj = &priv->obj;
-            ret = hal_gpio_fast_get_level(&priv->obj, &vfs_arg->level);
-        }
+            {
+                vfs_arg->obj = &priv->obj;
+                ret = hal_gpio_fast_get_level(&priv->obj, &vfs_arg->level);
+            }
         break;
     }
     case GPIO_CMD_SET_LEVEL:
@@ -208,6 +204,9 @@ static int vfs_gpio_probe(struct device* pdev)
     int clk_val  = 0;
     int mode_val = 0;
     int pull_val = 0;
+    int speed_val = 0;
+    int otype_val = 0;
+    int af_val    = 0;
     int default_level = 0;
     int pool_idx;
 
@@ -221,14 +220,9 @@ static int vfs_gpio_probe(struct device* pdev)
     priv = &s_gpio_priv_pool[pool_idx];
     __builtin_memset(priv, 0, sizeof(*priv));
     priv->pool_idx = pool_idx;
-    priv->mode_cfg = (struct hal_gpio_mode_cfg){
-        .mode = 0,
-        .pull = 0,
-    };
 
-    /* DTSI 直接提供硬件直投值: STM32 = GPIOA_BASE/GPIO_PIN_5/LL_AHB1_GRP1_PERIPH_GPIOA,
-     * ESP32 = 0/gpio_num (clk_periph 留 0, ESP32 无 AHB 时钟概念)。
-     * VFS 只读取透传, 不做任何翻译, 直接填入嵌入的 hal_gpio_obj_t, 无需 HAL alloc。 */
+    /* DTSI 直接提供硬件直投值。
+     * VFS 读取后不做任何翻译处理，直接透传灌入硬件直投形态结构体内部。 */
     if (device_get_prop_int(pdev, "gpio-port", &port_val) ||
         device_get_prop_int(pdev, "gpio-pin", &pin_val) ||
         device_get_prop_int(pdev, "gpio-clk",  &clk_val)  ||
@@ -236,12 +230,20 @@ static int vfs_gpio_probe(struct device* pdev)
         device_get_prop_int(pdev, "gpio-pull", &pull_val))
         goto err_pool;
 
-    priv->obj.port      = (uintptr_t)port_val;
-    priv->obj.pin       = (uint16_t)pin_val;
-    priv->obj.clk_periph = (uint32_t)clk_val;
-    priv->obj.is_used    = true;
-    priv->mode_cfg.mode  = (uint32_t)mode_val;
-    priv->mode_cfg.pull  = (uint32_t)pull_val;
+    /* 获取可选电气特性（若未定义则默认为 0 保持直投底色形态） */
+    COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "gpio-speed", &speed_val));
+    COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "gpio-otype", &otype_val));
+    COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "gpio-af", &af_val));
+
+    priv->obj.port             = (uintptr_t)port_val;
+    priv->obj.pin              = (uint16_t)pin_val;
+    priv->obj.clk_rcc_bit      = (uint32_t)clk_val;
+    priv->obj.is_used          = true;
+    priv->obj.cfg.mode         = (uint32_t)mode_val;
+    priv->obj.cfg.pull         = (uint32_t)pull_val;
+    priv->obj.cfg.speed        = (uint32_t)speed_val;
+    priv->obj.cfg.output_type  = (uint32_t)otype_val;
+    priv->obj.cfg.af           = (uint32_t)af_val;
 
     COMPAT_IGNORE_RESULT(device_get_prop_int(pdev, "default-level", &default_level));
     priv->default_level = default_level;
@@ -258,7 +260,7 @@ static int vfs_gpio_probe(struct device* pdev)
         goto err_mutex;
 
     SYS_LOGI(kTAG, "probe OK: port=0x%x pin=0x%x clk=0x%x mode=%d",
-             (unsigned)port_val, (unsigned)pin_val, (unsigned)clk_val, priv->mode_cfg.mode);
+             (unsigned)port_val, (unsigned)pin_val, (unsigned)clk_val, priv->obj.cfg.mode);
     return VFS_OK;
 
 err_mutex:

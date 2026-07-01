@@ -239,7 +239,7 @@ static osal_pool_t s_queue_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(152)
 static void osal_null_queue_pool_boot_init(void)
 {
-    osal_pool_init(&s_queue_pool_ctrl, s_queue_used, OSAL_NULL_MAX_QUEUES);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_queue_pool_ctrl, s_queue_used, OSAL_NULL_MAX_QUEUES));
 }
 
 /* ── 裸机临界区: 关全局中断 (单核 ISR vs 主循环互斥) ── */
@@ -309,7 +309,7 @@ static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(150)
 static void osal_null_mutex_pool_boot_init(void)
 {
-    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE));
 }
 
 /* ── 单调时钟 (由 SysTick 或定时器中断累加) ── */
@@ -442,13 +442,10 @@ void osal_spinlock_lock(struct osal_spinlock* lock)
 {
     if (!lock) return;
 
-    if (!osal_in_isr())
-    {
-        uint32_t irq = osal_null_irq_disable();
-        if (lock->nest == 0U)
-            lock->irq_saved = irq;
-        lock->nest++;
-    }
+    uint32_t irq = osal_null_irq_disable();
+    if (lock->nest == 0U)
+        lock->irq_saved = irq;
+    lock->nest++;
 
     osal_atomic_store_release_u32(&lock->locked, 1U);
 }
@@ -459,7 +456,7 @@ void osal_spinlock_unlock(struct osal_spinlock* lock)
 
     osal_atomic_store_release_u32(&lock->locked, 0U);
 
-    if (!osal_in_isr() && lock->nest > 0U)
+    if (lock->nest > 0U)
     {
         lock->nest--;
         if (lock->nest == 0U)
@@ -745,7 +742,7 @@ static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(151)
 static void osal_null_sem_pool_boot_init(void)
 {
-    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE));
 }
 
 int osal_sem_create_binary(struct osal_sem** out)

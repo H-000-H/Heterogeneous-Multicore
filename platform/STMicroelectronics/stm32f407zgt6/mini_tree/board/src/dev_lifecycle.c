@@ -138,10 +138,12 @@ void dev_lc_io_end(struct dev_lifecycle* lc)
 
 void dev_lc_remove_start(struct dev_lifecycle* lc)
 {
-    if (!lc)
+    if (!lc || !lc->io_lock)
         return;
 
+    COMPAT_IGNORE_RESULT(osal_mutex_lock(lc->io_lock, OSAL_WAIT_FOREVER));
     lc->state = DEV_LC_REMOVING;
+    COMPAT_IGNORE_RESULT(osal_mutex_unlock(lc->io_lock));
 }
 
 int dev_lc_remove_drain(struct dev_lifecycle* lc, uint32_t timeout_ms)
@@ -155,21 +157,24 @@ int dev_lc_remove_drain(struct dev_lifecycle* lc, uint32_t timeout_ms)
     const uint32_t start_ms = osal_time_ms();
     for (;;)
     {
-        if (osal_mutex_lock(lc->io_lock, timeout_ms) != 0)
+        uint32_t lock_timeout = timeout_ms;
+        if (timeout_ms != OSAL_WAIT_FOREVER)
+        {
+            const uint32_t elapsed = osal_time_ms() - start_ms;
+            if (elapsed >= timeout_ms)
+                return VFS_ERR_TIMEOUT;
+            lock_timeout = timeout_ms - elapsed;
+            if (lock_timeout == 0)
+                lock_timeout = 1;
+        }
+
+        if (osal_mutex_lock(lc->io_lock, lock_timeout) != 0)
             return VFS_ERR_TIMEOUT;
 
         if (lc->opens == 0 && lc->io_active == 0)
             return VFS_OK;
 
         (void)osal_mutex_unlock(lc->io_lock);
-
-        if (timeout_ms != OSAL_WAIT_FOREVER)
-        {
-            const uint32_t elapsed = osal_time_ms() - start_ms;
-            if (elapsed >= timeout_ms)
-                return VFS_ERR_TIMEOUT;
-        }
-
         osal_delay_ms(1);
     }
 }

@@ -13,7 +13,7 @@
 #include "stm32f4xx.h"
 
 #include <stddef.h>
-#include <string.h>
+#include "compiler_compat.h"
 #include "compiler_compat_poison.h"
 
 #ifndef STM32F407_APP_FLASH_BASE
@@ -85,7 +85,7 @@ bool hal_flash_read(uint32_t addr, uint8_t* buf, size_t len)
     if (addr < STM32F407_APP_FLASH_BASE) return false;
     if ((addr + len) > (STM32F407_APP_FLASH_BASE + STM32F407_APP_FLASH_SIZE)) return false;
 
-    memcpy(buf, (const void*)addr, len);
+    COMPAT_MEM_COPY(buf, (const void*)addr, len);
     return true;
 }
 

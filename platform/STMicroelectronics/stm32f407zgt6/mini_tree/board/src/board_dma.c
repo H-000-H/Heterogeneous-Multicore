@@ -23,6 +23,8 @@ int board_dma_id_from_phandle(const struct device* dev, const char* prop, int* o
 
     *out_id = -1;
     dma_dev = device_get_phandle_dev(dev, prop);
+    if (IS_ERR(dma_dev))
+        return PTR_ERR(dma_dev);
     if (!dma_dev)
         return VFS_ERR_NODEV;
 

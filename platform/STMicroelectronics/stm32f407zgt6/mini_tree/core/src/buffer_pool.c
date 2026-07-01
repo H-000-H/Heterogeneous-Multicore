@@ -9,8 +9,6 @@
 #include "compiler_compat.h"
 #include "compiler_compat_poison.h"
 
-#include <string.h>
-
 /* ── 内部常量 ── */
 #define BP_FREE_ALL  0xFFFFFFFFu
 
@@ -154,7 +152,7 @@ static void bitmap_free(volatile uint32_t* mask, uint32_t bit)
 struct bp_pool* bp_create(const struct bp_config* config)
 {
     if (!config || !config->name || config->buf_count == 0 ||
-        config->buf_count > BP_MAX_BUFS)
+        config->buf_count > BP_MAX_BUFS || config->buf_size == 0)
     {
         return NULL;
     }
@@ -174,7 +172,7 @@ struct bp_pool* bp_create(const struct bp_config* config)
             osal_free(pool);
             return NULL;
         }
-        memset(config->static_mem, 0, config->static_len);
+        COMPAT_MEM_SET(config->static_mem, 0, config->static_len);
         pool->pool_mem     = (uint8_t*)config->static_mem;
         pool->pool_mem_raw = NULL;
         pool->owned        = 0;

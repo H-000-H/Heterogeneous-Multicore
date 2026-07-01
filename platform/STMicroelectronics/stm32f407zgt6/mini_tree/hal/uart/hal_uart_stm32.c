@@ -17,7 +17,6 @@
 #include "stm32f4xx_ll_usart.h"
 #include "stm32f4xx_ll_gpio.h"
 #include "stm32f4xx_ll_bus.h"
-
 #include "dt_config_gen.h"
 
 /* ── 平台参数：来自 DTS stm32,uart-platform-cap，无 DTS 时提供回退 ── */
@@ -79,8 +78,7 @@ static int stm32_uart_wait_tc(USART_TypeDef* usart, uint32_t timeout_ms)
  * @param pool_idx 设备在 bus 层池中的索引
  * @param cfg      UART 配置 (DTSI 厂商宏值)
  */
-void hal_uart_dev_init(struct hal_uart_dev* dev, int pool_idx,
-                       const struct hal_uart_config* cfg)
+void hal_uart_dev_init(struct hal_uart_dev* dev, int pool_idx,const struct hal_uart_config* cfg)
 {
     __builtin_memset(dev, 0, sizeof(*dev));
     dev->cfg      = *cfg;

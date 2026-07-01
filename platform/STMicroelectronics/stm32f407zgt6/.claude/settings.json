@@ -11,7 +11,11 @@
       "Read(//c/Users/18514/**)",
       "Read(//c//**)",
       "Read(//d//**)",
-      "Bash(find \"C:/\" -maxdepth 4 -path \"*/SEGGER/*\" -name \"*.exe\" 2>/dev/null | head -20)"
+      "Bash(find \"C:/\" -maxdepth 4 -path \"*/SEGGER/*\" -name \"*.exe\" 2>/dev/null | head -20)",
+      "Bash(arm-none-eabi-gcc -fsyntax-only -I mini_tree/core/include -I mini_tree/hal/tim -I mini_tree/hal/system -I mini_tree/hal/soc/stm32f407 -I mini_tree/hal/uart -I mini_tree/system_cpp/include mini_tree/hal/tim/hal_tim.c)",
+      "Bash(find /home/ning/project/Heterogeneous-Multicore -name \"VFS.h\" 2>/dev/null | head -10)",
+      "Read(//home/ning/project/Heterogeneous-Multicore/**)",
+      "Bash(arm-none-eabi-gcc -fsyntax-only -I /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/core/include -I /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/board/include -I /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/hal/tim -I /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/hal/system -I /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/hal/soc/stm32f407 /home/ning/project/Heterogeneous-Multicore/platform/STMicroelectronics/stm32f407zgt6/mini_tree/hal/tim/hal_tim.c)"
     ]
   }
 }

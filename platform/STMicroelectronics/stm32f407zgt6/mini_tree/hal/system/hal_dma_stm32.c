@@ -14,8 +14,6 @@
 #include "stm32f4xx_ll_dma.h"
 #include "stm32f4xx.h"
 
-#include <string.h>
-
 #ifndef HAL_DMA_STM32_MAX_NODES
 #define HAL_DMA_STM32_MAX_NODES 16
 #endif
@@ -117,7 +115,7 @@ int hal_dma_stm32_init(void)
             continue;
 
         DMA_HandleTypeDef* hdma = &s_dma_handles[i];
-        memset(hdma, 0, sizeof(*hdma));
+        COMPAT_MEM_SET(hdma, 0, sizeof(*hdma));
 
         hdma->Instance                 = dma_stream_instance(s_dma_nodes[i].dma_idx, s_dma_nodes[i].stream);
         hdma->Init.Channel             = s_dma_nodes[i].channel << DMA_SxCR_CHSEL_Pos;

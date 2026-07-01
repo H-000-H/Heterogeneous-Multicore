@@ -98,14 +98,14 @@ void osal_spinlock_init(struct osal_spinlock* lock)
 void osal_spinlock_lock(struct osal_spinlock* lock)
 {
     if (!lock) return;
-    if (!osal_in_isr())
-    {
 #ifdef ESP_PLATFORM
+    if (osal_in_isr())
+        portENTER_CRITICAL_ISR(&lock->mux);
+    else
         taskENTER_CRITICAL(&lock->mux);
 #else
-        taskENTER_CRITICAL();
+    taskENTER_CRITICAL();
 #endif
-    }
     lock->locked = 1;
 }
 
@@ -113,14 +113,14 @@ void osal_spinlock_unlock(struct osal_spinlock* lock)
 {
     if (!lock) return;
     lock->locked = 0;
-    if (!osal_in_isr())
-    {
 #ifdef ESP_PLATFORM
+    if (osal_in_isr())
+        portEXIT_CRITICAL_ISR(&lock->mux);
+    else
         taskEXIT_CRITICAL(&lock->mux);
 #else
-        taskEXIT_CRITICAL();
+    taskEXIT_CRITICAL();
 #endif
-    }
 }
 
 /* ── 槽位池 (每池独立临界区锁) ── */
@@ -146,8 +146,7 @@ static inline void osal_pool_lock(osal_pool_t* pool)
     else
         taskENTER_CRITICAL(mux);
 #else
-    if (!osal_in_isr())
-        taskENTER_CRITICAL();
+    taskENTER_CRITICAL();
     (void)pool;
 #endif
 }
@@ -161,8 +160,7 @@ static inline void osal_pool_unlock(osal_pool_t* pool)
     else
         taskEXIT_CRITICAL(mux);
 #else
-    if (!osal_in_isr())
-        taskEXIT_CRITICAL();
+    taskEXIT_CRITICAL();
     (void)pool;
 #endif
 }
@@ -231,7 +229,7 @@ static osal_pool_t       s_mutex_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(150)
 static void osal_mutex_pool_boot_init(void)
 {
-    osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_mutex_pool_ctrl, s_mutex_used, OSAL_MUTEX_POOL_SIZE));
 }
 
 /* ── 获取现在时间 ── */
@@ -392,7 +390,7 @@ static osal_pool_t   s_sem_pool_ctrl COMPAT_ALIGNED(4);
 pre_execution(151)
 static void osal_sem_pool_boot_init(void)
 {
-    osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE);
+    COMPAT_IGNORE_RESULT(osal_pool_init(&s_sem_pool_ctrl, s_sem_used, OSAL_SEM_POOL_SIZE));
 }
 
 static int osal_sem_init_binary(struct osal_sem* sem)

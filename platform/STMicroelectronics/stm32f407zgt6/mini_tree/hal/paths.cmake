@@ -3,6 +3,7 @@ get_filename_component(_HAL_ROOT "${CMAKE_CURRENT_LIST_DIR}" ABSOLUTE)
 set(HAL_INCLUDE_DIRS
     "${_HAL_ROOT}/gpio"
     "${_HAL_ROOT}/cpu"
+    "${_HAL_ROOT}/tim"
     "${_HAL_ROOT}/pwm"
     "${_HAL_ROOT}/analog"
     "${_HAL_ROOT}/storage"
